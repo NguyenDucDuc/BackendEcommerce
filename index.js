@@ -1,0 +1,18 @@
+const express = require('express');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
+require('dotenv').config()
+
+app.use(express.json())
+
+
+io.on('connection', (socket) => {
+  console.log(`${socket.id} connected`);
+});
+
+server.listen(5000, () => {
+  console.log('server is running...');
+});
