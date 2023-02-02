@@ -9,6 +9,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      city: {
+        type: Sequelize.STRING
+      },
       district: {
         type: Sequelize.STRING
       },
