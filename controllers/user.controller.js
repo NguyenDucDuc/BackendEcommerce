@@ -7,7 +7,7 @@ module.exports = {
             const body = req.body
             const {code, data} = await userService.registerUser(body)
             // create address and reference to table User
-            const newAddress = await addressService.create(body,data.id)
+            const newAddress = await addressService.create(body,data.data.id)
             res.status(code).json(data)
         } catch (error) {
             console.log(error)

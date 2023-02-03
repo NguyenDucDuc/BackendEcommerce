@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   Shop.init({
     shopName: DataTypes.STRING,
     rate: DataTypes.INTEGER,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT('long'),
     image: DataTypes.STRING,
     sellerId: DataTypes.INTEGER
   }, {

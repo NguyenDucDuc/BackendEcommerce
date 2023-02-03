@@ -23,13 +23,19 @@ module.exports = {
             })
             return {
                 code: 200,
-                data: newUser
+                data: {
+                    status: 200,
+                    data: newUser
+                }
             }
         } catch (error) {
             console.log(error)
             return {
                 code: 500,
-                data: "Error"
+                data: {
+                    status: 500,
+                    data: "Error"
+                }
             }
         }
     },
@@ -46,27 +52,42 @@ module.exports = {
                     return {
                         code: 200,
                         data: {
-                            user: user,
-                            accessToken: accessToken
+                            status: 200,
+                            data: {
+                                user: user,
+                                accessToken: accessToken
+                            }
                         }
                     }
                 }else {
                     return {
                         code: 400,
-                        data: "Username or password not valid!"
+                        data: {
+                            status: 400,
+                            data: "Username or password not valid!"
+                        }
+                        
                     }
                 }
             }else {
                 return {
                     code: 400,
-                    data: "Username or password not valid!"
+                    data: {
+                        status: 400,
+                        data: "Username or password not valid!"
+                    }
+                    
                 }
             }
         } catch (error) {
             console.log(error)
             return {
                 code: 500,
-                data: "Error"
+                data: {
+                    status: 500,
+                    data: "Error"
+                }
+                
             }
         }
     }

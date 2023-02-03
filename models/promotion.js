@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Promotion.init({
     code: DataTypes.STRING,
-    desc: DataTypes.STRING,
+    desc: DataTypes.TEXT('long'),
     value: DataTypes.FLOAT,
     isActive: DataTypes.BOOLEAN,
     shopId: DataTypes.INTEGER,

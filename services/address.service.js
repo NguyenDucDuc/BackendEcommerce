@@ -13,13 +13,19 @@ module.exports = {
             })
             return {
                 code: 200,
-                data: newAddress
+                data: {
+                    status: 200,
+                    data: newAddress
+                }
             }
         } catch (error) {
             console.log(error)
             return {
                 code: 500,
-                data: "Error"
+                data: {
+                    status: 500,
+                    data: "Error"
+                }
             }
         }
     }

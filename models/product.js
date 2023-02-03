@@ -30,7 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     rate: DataTypes.INTEGER,
     price: DataTypes.FLOAT,
     isActive: DataTypes.BOOLEAN,
-    desc: DataTypes.STRING,
+    desc: DataTypes.TEXT('long'),
     image: DataTypes.STRING,
     unitInStock: DataTypes.INTEGER,
     unitOnOrder: DataTypes.INTEGER,
