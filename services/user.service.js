@@ -2,6 +2,7 @@ const {User, Address} = require('../models')
 const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
+const responseUtil = require('../utils/response.util')
 
 module.exports = {
     registerUser: async (body) => {
@@ -21,13 +22,7 @@ module.exports = {
                 lastVisited: Date.now(),
                 isActive: true,
             })
-            return {
-                code: 200,
-                data: {
-                    status: 200,
-                    data: newUser
-                }
-            }
+            return newUser
         } catch (error) {
             console.log(error)
             return {
@@ -89,6 +84,14 @@ module.exports = {
                 }
                 
             }
+        }
+    },
+    getAll: async () => {
+        try {
+            const users = await User.findAll()
+            return responseUtil.getSuccess(users)
+        } catch (error) {
+            return responseUtil.serverError
         }
     }
 }
