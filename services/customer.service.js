@@ -1,15 +1,15 @@
-const {Seller} = require('../models')
+const {Customer} = require('../models')
 const responseUtil = require('../utils/response.util')
 
 
 module.exports = {
-    register: async (userId) => {
+    register: async (body, userId) => {
         try {
-            const newSeller = await Seller.create({
-                isConfirm: true,
+            const newCustomer = await Customer.create({
+                point: 0,
                 userId: userId
             })
-            return responseUtil.created(newSeller)
+            return responseUtil.created(newCustomer)
         } catch (error) {
             return responseUtil.serverError()
         }

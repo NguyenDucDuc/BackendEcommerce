@@ -1,5 +1,5 @@
 module.exports = {
-    badRequest: (errors) => {
+    errorsValidate: (errors) => {
         return {
             code: 400,
             data: {

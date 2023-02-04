@@ -1,4 +1,4 @@
-const {User, Address} = require('../models')
+const {User, Address, sequelize} = require('../models')
 const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
@@ -22,16 +22,11 @@ module.exports = {
                 lastVisited: Date.now(),
                 isActive: true,
             })
-            return newUser
+            
+            return responseUtil.created(newUser)
         } catch (error) {
             console.log(error)
-            return {
-                code: 500,
-                data: {
-                    status: 500,
-                    data: "Error"
-                }
-            }
+            return responseUtil.serverError()
         }
     },
     login: async (body) => {
@@ -44,22 +39,19 @@ module.exports = {
                         userId: user.id
                     }, "duc-nd")
                     console.log(accessToken)
-                    return {
-                        code: 200,
-                        data: {
-                            status: 200,
-                            data: {
-                                user: user,
-                                accessToken: accessToken
-                            }
-                        }
+                    //combine object
+                    const infoUser = {
+                        user: user,
+                        accessToken: accessToken
                     }
+                    return responseUtil.getSuccess(infoUser)
                 }else {
                     return {
                         code: 400,
                         data: {
                             status: 400,
-                            data: "Username or password not valid!"
+                            data: [],
+                            errors: "Username or password not valid !"
                         }
                         
                     }
@@ -76,19 +68,17 @@ module.exports = {
             }
         } catch (error) {
             console.log(error)
-            return {
-                code: 500,
-                data: {
-                    status: 500,
-                    data: "Error"
-                }
-                
-            }
+            return responseUtil.serverError()
         }
     },
-    getAll: async () => {
+    getAll: async (query) => {
         try {
-            const users = await User.findAll()
+            let queryString = `select * from users `
+            if(query.name){
+                const name = query.name
+                queryString += `where firstName like '%${name}%' or lastName like '%${name}%'`
+            }
+            const [users] = await sequelize.query(queryString)
             return responseUtil.getSuccess(users)
         } catch (error) {
             return responseUtil.serverError

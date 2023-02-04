@@ -2,6 +2,8 @@ const addressService = require("../services/address.service");
 const userService = require("../services/user.service");
 const {validationResult} =require('express-validator');
 const responseUtil = require("../utils/response.util");
+const customerService = require("../services/customer.service");
+const cartService = require("../services/cart.service");
 
 module.exports = {
     registerUser: async (req, res) => {
@@ -9,14 +11,16 @@ module.exports = {
             const body = req.body
             const errors = validationResult(req)
             if(errors.isEmpty()){
-                const newUser = await userService.registerUser(body)
+                const {code, data} = await userService.registerUser(body)
                 // create address and reference to table User
-                const newAddress = await addressService.create(newUser.id)
-                const {code, data} = responseUtil.created(newUser)
+                const newAddress = await addressService.create(body, data.data.id)
+                // create role customer
+                await customerService.register(body, data.data.id)
+                // create cart
+                await cartService.create(data.data.id)
                 res.status(code).json(data)
             }else {
-                
-                const {code, data} = responseUtil.badRequest(errors.array())
+                const {code, data} = responseUtil.errorsValidate(errors.array())
                 res.status(code).json(data)
             }
         } catch (error) {
@@ -37,8 +41,8 @@ module.exports = {
     },
     getAll: async (req, res) => {
         try {
-            
-            const {code, data} = await userService.getAll()
+            const query = req.query
+            const {code, data} = await userService.getAll(query)
             res.status(code).json(data)
         } catch (error) {
             const {code, data} = responseUtil.serverError()

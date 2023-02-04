@@ -1,15 +1,13 @@
-const {Seller} = require('../models')
+const {Cart} = require('../models')
 const responseUtil = require('../utils/response.util')
 
-
 module.exports = {
-    register: async (userId) => {
+    create: async (userId) => {
         try {
-            const newSeller = await Seller.create({
-                isConfirm: true,
+            const newCart = await Cart.create({
                 userId: userId
             })
-            return responseUtil.created(newSeller)
+            return responseUtil.created(newCart)
         } catch (error) {
             return responseUtil.serverError()
         }

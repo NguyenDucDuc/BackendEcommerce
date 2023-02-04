@@ -1,5 +1,6 @@
 const {Seller} = require('../models')
 const sellerService = require('../services/seller.service')
+const responseUtil = require('../utils/response.util')
 
 
 module.exports = {
@@ -9,10 +10,8 @@ module.exports = {
             res.status(code).json(data)
         } catch (error) {
             console.log(error)
-            res.status(500).json({
-                status: 500,
-                data: "Error"
-            })
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
         }
     }
 }

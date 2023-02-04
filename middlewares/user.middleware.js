@@ -1,11 +1,13 @@
 const User = require('../models')
 const jwt = require('jsonwebtoken')
+const responseUtil = require('../utils/response.util')
 
 module.exports = {
     verifyToken: async (req, res, next) => {
         try {
-            const token = req.headers.authorization
-            if(token) {
+            let token = "token"
+            token = req.headers.authorization
+            if(token !== "token") {
                 const accessToken = token.split(" ")[1]
                 const decode = await jwt.decode(accessToken, "duc-nd")
                 req.data = decode
@@ -13,15 +15,15 @@ module.exports = {
             }else {
                 return {
                     code: 400,
-                    data: "Token is not valid !"
+                    data: {
+                        status: 400,
+                        errors: "Token is not valid !"
+                    }
                 }
             }
         } catch (error) {
             console.log(error)
-            return {
-                code: 500,
-                data: "Error"
-            }
+            return responseUtil.serverError()
         }
     }
 }
