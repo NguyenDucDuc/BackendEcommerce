@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({AttributeGroup, OrderDetail, Shop, Category, ProductCart, ProductDateTime, ProductDecimal, ProductImage, ProductInt, ProductVarchar, Promotion}) {
       // define association here
-      this.hasMany(AttributeGroup, {foreignKey: "productId"})
       this.hasMany(OrderDetail, {foreignKey: 'productId'})
       this.belongsTo(Shop, {foreignKey: 'shopId'})
       this.belongsTo(Category, {foreignKey: 'categoryId'})
@@ -22,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(ProductInt, {foreignKey: 'productId'})
       this.hasMany(ProductVarchar, {foreignKey: 'productId'})
       this.hasMany(Promotion, {foreignKey: 'productId'})
+      this.belongsTo(AttributeGroup, {foreignKey: 'attributeGroupId'})
     }
   }
   Product.init({
@@ -35,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
     unitInStock: DataTypes.INTEGER,
     unitOnOrder: DataTypes.INTEGER,
     shopId: DataTypes.INTEGER,
-    categoryId: DataTypes.INTEGER
+    categoryId: DataTypes.INTEGER,
+    attributeGroupId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Product',

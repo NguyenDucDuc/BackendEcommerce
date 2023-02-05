@@ -12,14 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate({Attribute, Product, AttributeSet}) {
       // define association here
       this.belongsTo(Attribute,{foreignKey:'attributeId'})
-      this.belongsTo(Product,{foreignKey: "productId"})
+      this.hasMany(Product, {foreignKey: 'attributeGroupId'})
       this.hasMany(AttributeSet,{foreignKey:'attributeGroupId'})
     }
   }
   AttributeGroup.init({
     name: DataTypes.STRING,
-    attributeId: DataTypes.INTEGER,
-    productId: DataTypes.INTEGER
+    attributeId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'AttributeGroup',
