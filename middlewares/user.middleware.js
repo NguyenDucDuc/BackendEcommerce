@@ -25,5 +25,25 @@ module.exports = {
             console.log(error)
             return responseUtil.serverError()
         }
+    },
+    verifyUpdate: async (req, res, next) => {
+        try {
+            
+            if(parseInt(req.data.userId) === parseInt(req.params.userId)){
+                next()
+            }else {
+                return {
+                    code: 403,
+                    data: {
+                        status: 403,
+                        data: [],
+                        errors: "Forbbiden"
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
     }
 }

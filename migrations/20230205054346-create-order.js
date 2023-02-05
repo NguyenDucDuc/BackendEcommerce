@@ -15,13 +15,13 @@ module.exports = {
       shipAddress: {
         type: Sequelize.STRING
       },
-      attribute: {
+      shopId: {
         type: Sequelize.INTEGER
       },
       paymentId: {
         type: Sequelize.INTEGER
       },
-      shopId: {
+      attribute: {
         type: Sequelize.INTEGER
       },
       customerId: {

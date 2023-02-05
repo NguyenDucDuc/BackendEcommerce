@@ -2,24 +2,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Promotions', {
+    await queryInterface.createTable('Products', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      code: {
+      name: {
         type: Sequelize.STRING
       },
-      desc: {
-        type: Sequelize.TEXT('long')
+      sku: {
+        type: Sequelize.STRING
       },
-      value: {
+      rate: {
+        type: Sequelize.INTEGER
+      },
+      price: {
         type: Sequelize.FLOAT
       },
       isActive: {
         type: Sequelize.BOOLEAN
+      },
+      desc: {
+        type: Sequelize.STRING
+      },
+      image: {
+        type: Sequelize.STRING
+      },
+      unitInStock: {
+        type: Sequelize.INTEGER
+      },
+      unitOnOrder: {
+        type: Sequelize.INTEGER
       },
       shopId: {
         type: Sequelize.INTEGER,
@@ -28,10 +43,17 @@ module.exports = {
           key:'id'
         }
       },
-      productId: {
+      categoryId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Products',
+          model: 'Categories',
+          key:'id'
+        }
+      },
+      attributeGroupId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'AttributeGroups',
           key:'id'
         }
       },
@@ -46,6 +68,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Promotions');
+    await queryInterface.dropTable('Products');
   }
 };

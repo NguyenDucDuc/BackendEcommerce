@@ -81,7 +81,62 @@ module.exports = {
             const [users] = await sequelize.query(queryString)
             return responseUtil.getSuccess(users)
         } catch (error) {
-            return responseUtil.serverError
+            return responseUtil.serverError()
+        }
+    },
+    update: async (body, userId) => {
+        try {
+            const user = await User.findByPk(userId)
+            const address = await Address.findOne({where: {userId: userId}})
+            if(user){
+                if(body.firstName){
+                    user.firstName = body.firstName
+                }
+                if(body.lastName){
+                    user.lastName = body.lastName
+                }
+                if(body.phone){
+                    user.phone = body.phone
+                }
+                if(body.email){
+                    user.email = body.email
+                }
+                if(body.city){
+                    address.city = body.city
+                }
+                if(body.district){
+                    address.district = body.district
+                }
+                if(body.ward){
+                    address.ward = body.ward
+                }
+                if(body.street){
+                    address.street = body.street
+                }
+                if(body.detail){
+                    address.detail = body.detail
+                }
+                await address.save()
+                await user.save()
+            }
+            return responseUtil.getSuccess(user)
+        } catch (error) {
+            return responseUtil.serverError()
+        }
+    },
+    getDetail: async (userId) => {
+        try {
+            const user = await User.findByPk(userId)
+            const address = await Address.findOne({where: {userId: userId}})
+            // combine object
+            const userDetail = {
+                user,
+                address
+            }
+            return responseUtil.getSuccess(userDetail)
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
         }
     }
 }

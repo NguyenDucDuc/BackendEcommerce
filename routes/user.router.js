@@ -1,5 +1,6 @@
 const userController = require('../controllers/user.controller')
 const {check} = require('express-validator')
+const userMiddleware = require('../middlewares/user.middleware')
 const userRouter = require('express').Router()
 
 userRouter.post("/register", 
@@ -15,5 +16,7 @@ userRouter.post("/register",
 , userController.registerUser)
 userRouter.post("/login", userController.login)
 userRouter.get("/get-all", userController.getAll)
+userRouter.patch("/update/:userId", userMiddleware.verifyToken, userMiddleware.verifyUpdate, userController.update)
+userRouter.get("/get-detail/:userId", userController.getDetail)
 
 module.exports = {userRouter}

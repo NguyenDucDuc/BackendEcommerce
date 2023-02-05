@@ -13,7 +13,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       desc: {
-        type: Sequelize.TEXT('long')
+        type: Sequelize.STRING
       },
       image: {
         type: Sequelize.STRING

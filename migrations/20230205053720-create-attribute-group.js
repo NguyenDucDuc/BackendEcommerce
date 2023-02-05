@@ -2,29 +2,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Notifications', {
+    await queryInterface.createTable('AttributeGroups', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      content: {
+      name: {
         type: Sequelize.STRING
       },
-      type: {
-        type: Sequelize.STRING
-      },
-      valueId: {
-        type: Sequelize.STRING
-      },
-      creatorId: {
-        type: Sequelize.STRING
-      },
-      userId: {
+      attributeId: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'Users',
+          model: 'Attributes',
           key:'id'
         }
       },
@@ -39,6 +30,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Notifications');
+    await queryInterface.dropTable('AttributeGroups');
   }
 };

@@ -48,5 +48,28 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    update: async (req, res) => {
+        try {
+            const body = req.body
+            const userId = req.params.userId
+            const {code, data} = await userService.update(body, userId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    getDetail: async (req, res) => {
+        try {
+            const userId = req.params.userId
+            const {code, data} = await userService.getDetail(userId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }
