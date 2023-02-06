@@ -5,13 +5,30 @@ const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
 const nodemailer = require('nodemailer')
 const OTP = require('otp-generator')
+const cloudinary = require('cloudinary').v2
 require('dotenv').config()
 
+
+cloudinary.config({
+    cloud_name: "djbju13al",
+    api_key: "575615221649691",
+    api_secret: "Se08c_VicYMCRnyYIXGcDHpRmMY"
+})
+
+
 module.exports = {
-    registerUser: async (body) => {
+    registerUser: async (body, files) => {
         try {
             const oldUser = await User.findOne({where: {userName: body.userName}})
             if(!oldUser) {
+                //upload image to cloudinary
+                const avatar = files.avatar
+                const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
+                    public_id: `${Date.now()}`,
+                    resource_type: "auto",
+                    folder: "Avatar"
+                })
+                //
                 const salt = await bcrypt.genSalt(10)
                 const hashed = await bcrypt.hash(body.passWord, salt)
                 const newUser = await User.create({
@@ -20,7 +37,7 @@ module.exports = {
                     firstName: body.firstName,
                     lastName: body.lastName,
                     phone: body.phone,
-                    avatar: body.avatar,
+                    avatar: result.url,
                     email: body.email,
                     birthDay: Date.now(),
                     status: true,

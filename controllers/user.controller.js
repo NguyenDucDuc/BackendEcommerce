@@ -9,9 +9,10 @@ module.exports = {
     registerUser: async (req, res) => {
         try {
             const body = req.body
+            const files = req.files
             const errors = validationResult(req)
             if(errors.isEmpty()){
-                const {code, data} = await userService.registerUser(body)
+                const {code, data} = await userService.registerUser(body, files)
                 // create address and reference to table User
                 if(code === 201){
                     const newAddress = await addressService.create(body, data.data.id)
