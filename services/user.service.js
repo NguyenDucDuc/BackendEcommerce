@@ -165,13 +165,15 @@ module.exports = {
                     pass: process.env.GMAIL_PASSWORD
                 }
             })
+            const salt = await bcrypt.genSalt(10)
             const newPassword = await OTP.generate(6, {specialChars: false})
+            const hashed = await bcrypt.hash(newPassword, salt)
             await mailerTransport.sendMail({
                 to: user.email,
                 subject: "Reset your password",
-                html: `<h4>Your new password is </h4>: ${newPassword}`
+                html: `<h4>Your new password is: ${newPassword}</h4>`
             })
-            user.passWord = newPassword
+            user.passWord = hashed
             await user.save()
             return {
                 code: 200,
