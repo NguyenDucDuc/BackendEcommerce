@@ -18,5 +18,6 @@ userRouter.post("/login", userController.login)
 userRouter.get("/get-all", userController.getAll)
 userRouter.patch("/update/:userId", userMiddleware.verifyToken, userMiddleware.verifyUpdate, userController.update)
 userRouter.get("/get-detail/:userId", userController.getDetail)
+userRouter.post("/reset-password", userController.resetPassword)
 
 module.exports = {userRouter}
