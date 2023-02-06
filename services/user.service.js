@@ -3,27 +3,42 @@ const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
+const nodemailer = require('nodemailer')
+const OTP = require('otp-generator')
+require('dotenv').config()
 
 module.exports = {
     registerUser: async (body) => {
         try {
-            const salt = await bcrypt.genSalt(10)
-            const hashed = await bcrypt.hash(body.passWord, salt)
-            const newUser = await User.create({
-                userName: body.userName,
-                passWord: hashed,
-                firstName: body.firstName,
-                lastName: body.lastName,
-                phone: body.phone,
-                avatar: body.avatar,
-                email: body.email,
-                birthDay: Date.now(),
-                status: true,
-                lastVisited: Date.now(),
-                isActive: true,
-            })
+            const oldUser = await User.findOne({where: {userName: body.userName}})
+            if(!oldUser) {
+                const salt = await bcrypt.genSalt(10)
+                const hashed = await bcrypt.hash(body.passWord, salt)
+                const newUser = await User.create({
+                    userName: body.userName,
+                    passWord: hashed,
+                    firstName: body.firstName,
+                    lastName: body.lastName,
+                    phone: body.phone,
+                    avatar: body.avatar,
+                    email: body.email,
+                    birthDay: Date.now(),
+                    status: true,
+                    lastVisited: Date.now(),
+                    isActive: true,
+                })
+                return responseUtil.created(newUser)
+            }else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "Username already exists"
+                    }
+                }
+            }
             
-            return responseUtil.created(newUser)
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
@@ -137,6 +152,44 @@ module.exports = {
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
+        }
+    },
+    resetPassword: async (userName) => {
+        const user = await User.findOne({where: {userName: userName}})
+        if(user){
+            const mailerTransport = nodemailer.createTransport({
+                service: 'gmail',
+                host: 'smtp.gmail.com',
+                auth: {
+                    user: "nguyenducduc2441@gmail.com",
+                    pass: process.env.GMAIL_PASSWORD
+                }
+            })
+            const newPassword = await OTP.generate(6, {specialChars: false})
+            await mailerTransport.sendMail({
+                to: user.email,
+                subject: "Reset your password",
+                html: `<h4>Your new password is </h4>: ${newPassword}`
+            })
+            user.passWord = newPassword
+            await user.save()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: [],
+                    message: "Password has been refreshed"
+                }
+            }
+        }else {
+            return {
+                code: 400,
+                data: {
+                    status: 400,
+                    data: [],
+                    errors: "Username is doesn't exists"
+                }
+            }
         }
     }
 }
