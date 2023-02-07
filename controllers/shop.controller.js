@@ -1,4 +1,4 @@
-const shopServices = require("../services/shop.services")
+const shopServices = require("../services/shop.service")
 const responseUtil = require("../utils/response.util")
 const {Seller} = require('../models')
 
