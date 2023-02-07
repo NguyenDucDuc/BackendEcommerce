@@ -12,13 +12,6 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
-      attributeId: {
-        type: Sequelize.INTEGER,
-        references: {
-          model: 'Attributes',
-          key:'id'
-        }
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

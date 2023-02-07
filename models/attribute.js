@@ -11,7 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({AttributeGroup, AttributeSet, ProductDateTime, ProductDecimal,ProductImage, ProductInt, ProductVarchar}) {
       // define association here
-      this.hasMany(AttributeGroup,{foreignKey:"attributeId"})
       this.hasMany(AttributeSet, {foreignKey: "attributeId"})
       this.hasMany(ProductDateTime, {foreignKey: 'attributeId'})
       this.hasMany(ProductDecimal, {foreignKey: 'attributeId'})
