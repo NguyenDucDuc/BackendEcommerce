@@ -22,7 +22,7 @@ module.exports = {
             const oldUser = await User.findOne({where: {userName: body.userName}})
             if(!oldUser) {
                 //upload image to cloudinary
-                const avatar = files.avatar
+                const avatar = files.image
                 const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
                     public_id: `${Date.now()}`,
                     resource_type: "auto",
