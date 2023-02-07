@@ -3,27 +3,59 @@ const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
+const nodemailer = require('nodemailer')
+const OTP = require('otp-generator')
+const cloudinary = require('cloudinary').v2
+require('dotenv').config()
+
+
+cloudinary.config({
+    cloud_name: "djbju13al",
+    api_key: "575615221649691",
+    api_secret: "Se08c_VicYMCRnyYIXGcDHpRmMY"
+})
+
 
 module.exports = {
-    registerUser: async (body) => {
+    registerUser: async (body, files) => {
         try {
-            const salt = await bcrypt.genSalt(10)
-            const hashed = await bcrypt.hash(body.passWord, salt)
-            const newUser = await User.create({
-                userName: body.userName,
-                passWord: hashed,
-                firstName: body.firstName,
-                lastName: body.lastName,
-                phone: body.phone,
-                avatar: body.avatar,
-                email: body.email,
-                birthDay: Date.now(),
-                status: true,
-                lastVisited: Date.now(),
-                isActive: true,
-            })
+            const oldUser = await User.findOne({where: {userName: body.userName}})
+            if(!oldUser) {
+                //upload image to cloudinary
+                const avatar = files.avatar
+                const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
+                    public_id: `${Date.now()}`,
+                    resource_type: "auto",
+                    folder: "Avatar"
+                })
+                //
+                const salt = await bcrypt.genSalt(10)
+                const hashed = await bcrypt.hash(body.passWord, salt)
+                const newUser = await User.create({
+                    userName: body.userName,
+                    passWord: hashed,
+                    firstName: body.firstName,
+                    lastName: body.lastName,
+                    phone: body.phone,
+                    avatar: result.url,
+                    email: body.email,
+                    birthDay: Date.now(),
+                    status: true,
+                    lastVisited: Date.now(),
+                    isActive: true,
+                })
+                return responseUtil.created(newUser)
+            }else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "Username already exists"
+                    }
+                }
+            }
             
-            return responseUtil.created(newUser)
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
@@ -138,5 +170,46 @@ module.exports = {
             console.log(error)
             return responseUtil.serverError()
         }
+    },
+    resetPassword: async (userName) => {
+        const user = await User.findOne({where: {userName: userName}})
+        if(user){
+            const mailerTransport = nodemailer.createTransport({
+                service: 'gmail',
+                host: 'smtp.gmail.com',
+                auth: {
+                    user: "nguyenducduc2441@gmail.com",
+                    pass: process.env.GMAIL_PASSWORD
+                }
+            })
+            const salt = await bcrypt.genSalt(10)
+            const newPassword = await OTP.generate(6, {specialChars: false})
+            const hashed = await bcrypt.hash(newPassword, salt)
+            await mailerTransport.sendMail({
+                to: user.email,
+                subject: "Reset your password",
+                html: `<h4>Your new password is: ${newPassword}</h4>`
+            })
+            user.passWord = hashed
+            await user.save()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: [],
+                    message: "Password has been refreshed"
+                }
+            }
+        }else {
+            return {
+                code: 400,
+                data: {
+                    status: 400,
+                    data: [],
+                    errors: "Username is doesn't exists"
+                }
+            }
+        }
     }
 }
+

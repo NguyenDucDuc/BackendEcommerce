@@ -11,14 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({Attribute, Product, AttributeSet}) {
       // define association here
-      this.belongsTo(Attribute,{foreignKey:'attributeId'})
       this.hasMany(Product, {foreignKey: 'attributeGroupId'})
       this.hasMany(AttributeSet,{foreignKey:'attributeGroupId'})
     }
   }
   AttributeGroup.init({
     name: DataTypes.STRING,
-    attributeId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'AttributeGroup',

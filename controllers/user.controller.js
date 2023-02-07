@@ -9,15 +9,18 @@ module.exports = {
     registerUser: async (req, res) => {
         try {
             const body = req.body
+            const files = req.files
             const errors = validationResult(req)
             if(errors.isEmpty()){
-                const {code, data} = await userService.registerUser(body)
+                const {code, data} = await userService.registerUser(body, files)
                 // create address and reference to table User
-                const newAddress = await addressService.create(body, data.data.id)
-                // create role customer
-                await customerService.register(body, data.data.id)
-                // create cart
-                await cartService.create(data.data.id)
+                if(code === 201){
+                    const newAddress = await addressService.create(body, data.data.id)
+                    // create role customer
+                    await customerService.register(body, data.data.id)
+                    // create cart
+                    await cartService.create(data.data.id)
+                }
                 res.status(code).json(data)
             }else {
                 const {code, data} = responseUtil.errorsValidate(errors.array())
@@ -65,6 +68,17 @@ module.exports = {
         try {
             const userId = req.params.userId
             const {code, data} = await userService.getDetail(userId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    resetPassword: async (req, res) => {
+        try {
+            const userName = req.body.userName
+            const {code, data} = await userService.resetPassword(userName)
             res.status(code).json(data)
         } catch (error) {
             console.log(error)
