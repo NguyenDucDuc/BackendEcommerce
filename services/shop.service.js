@@ -27,6 +27,7 @@ module.exports = {
                     shopName: body.shopName,
                     rate: 0,
                     desc: body.desc,
+                    isBlock: true,
                     image: result.url,
                     sellerId: sellerId
                 })
@@ -42,6 +43,32 @@ module.exports = {
                 }
             }
             
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    block: async (shopId) => {
+        try {
+            const shop = await Shop.findOne({where: {id: shopId}})
+            if(shop){
+                shop.isBlock = false
+                await shop.save()
+            }
+            return responseUltil.getSuccess(shop)
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    unLock: async (shopId) => {
+        try {
+            const shop = await Shop.findOne({where: {id: shopId}})
+            if(shop){
+                shop.isBlock = true
+                await shop.save()
+            }
+            return responseUltil.getSuccess(shop)
         } catch (error) {
             console.log(error)
             return responseUltil.serverError()

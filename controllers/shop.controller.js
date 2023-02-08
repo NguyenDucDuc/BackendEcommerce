@@ -17,5 +17,27 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    block: async (req, res) => {
+        try {
+            const shopId = req.params.id
+            const {code, data} = await shopServices.block(shopId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    unLock: async (req, res) => {
+        try {
+            const shopId = req.params.id
+            const {code, data} = await shopServices.unLock(shopId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }

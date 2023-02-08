@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     rate: DataTypes.INTEGER,
     desc: DataTypes.TEXT('long'),
     image: DataTypes.STRING,
+    isBlock: DataTypes.BOOLEAN,
     sellerId: DataTypes.INTEGER
   }, {
     sequelize,

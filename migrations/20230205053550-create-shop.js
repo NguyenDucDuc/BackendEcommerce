@@ -21,6 +21,9 @@ module.exports = {
       image: {
         type: Sequelize.STRING
       },
+      isBlock: {
+        type: Sequelize.BOOLEAN
+      },
       sellerId: {
         type: Sequelize.INTEGER,
         references: {
