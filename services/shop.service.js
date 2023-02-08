@@ -15,7 +15,17 @@ cloudinary.config({
 module.exports = {
     create: async (body, sellerId, files) => {
         try {
-            
+            const shop = await Shop.findOne({where: {sellerId: sellerId}})
+            if(shop){
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "You can only create one store"
+                    }
+                }
+            }
             const oldShop = await Shop.findOne({where: {shopName: body.shopName}})
             if(!oldShop){
                 const image = files.image
