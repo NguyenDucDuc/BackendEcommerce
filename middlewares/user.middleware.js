@@ -1,6 +1,7 @@
 const User = require('../models')
 const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
+const {Admin} = require('../models')
 
 module.exports = {
     verifyToken: async (req, res, next) => {
@@ -37,6 +38,24 @@ module.exports = {
                         errors: "Forbbiden"
                     }
                 }
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
+    },
+    verifyAdmin: async (req, res, next) => {
+        try {
+            const userId = req.data.userId
+            const admin = await Admin.findOne({where: {userId: userId}})
+            if(admin){
+                next()
+            }else {
+                res.status(403).json({
+                    status: 403,
+                    data: [],
+                    errors: "Forbidden"
+                })
             }
         } catch (error) {
             console.log(error)
