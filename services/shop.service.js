@@ -1,14 +1,15 @@
 const {Shop, Seller} = require('../models')
 const responseUltil = require('../utils/response.util')
 const cloudinary = require('cloudinary').v2
+require('dotenv').config()
 
 
 
 
 cloudinary.config({
-    cloud_name: "djbju13al",
-    api_key: "575615221649691",
-    api_secret: "Se08c_VicYMCRnyYIXGcDHpRmMY"
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
 })
 
 module.exports = {

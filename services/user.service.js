@@ -10,9 +10,9 @@ require('dotenv').config()
 
 
 cloudinary.config({
-    cloud_name: "djbju13al",
-    api_key: "575615221649691",
-    api_secret: "Se08c_VicYMCRnyYIXGcDHpRmMY"
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
 })
 
 
@@ -22,7 +22,7 @@ module.exports = {
             const oldUser = await User.findOne({where: {userName: body.userName}})
             if(!oldUser) {
                 //upload image to cloudinary
-                const avatar = files.image
+                const avatar = files.avatar
                 const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
                     public_id: `${Date.now()}`,
                     resource_type: "auto",
