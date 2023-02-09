@@ -35,8 +35,14 @@ module.exports = {
     login: async (req, res) => {
         try {
             const body = req.body
-            const {code, data} = await userService.login(body)
-            res.status(code).json(data)
+            const errors = validationResult(req)
+            if(errors.isEmpty()){
+                const {code, data} = await userService.login(body)
+                res.status(code).json(data)
+            }else {
+                const {code, data} = responseUtil.errorsValidate(errors.array())
+                res.status(code).json(data)
+            }
         } catch (error) {
             console.log(error)
             res.status(500).json("Error")
@@ -77,9 +83,15 @@ module.exports = {
     },
     resetPassword: async (req, res) => {
         try {
-            const userName = req.body.userName
-            const {code, data} = await userService.resetPassword(userName)
-            res.status(code).json(data)
+            const errors = validationResult(req)
+            if(errors.isEmpty()){
+                const userName = req.body.userName
+                const {code, data} = await userService.resetPassword(userName)
+                res.status(code).json(data)
+            }else {
+                const {code, data} = await responseUtil.errorsValidate(errors.array())
+                res.status(code).json(data)
+            }
         } catch (error) {
             console.log(error)
             const {code, data} = responseUtil.serverError()
