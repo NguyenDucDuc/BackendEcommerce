@@ -4,6 +4,6 @@ const userMiddleware = require('../middlewares/user.middleware')
 
 const sellerRouter = require('express').Router()
 
-sellerRouter.post("/register", userMiddleware.verifyToken, sellerMiddleware.verifyRegister ,sellerController.register)
+sellerRouter.post("/", userMiddleware.verifyToken, sellerMiddleware.verifyRegister ,sellerController.register)
 
 module.exports = {sellerRouter}

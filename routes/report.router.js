@@ -3,6 +3,6 @@ const reportMiddleware = require('../middlewares/report.middleware')
 const userMiddleware = require('../middlewares/user.middleware')
 const reportRouter = require('express').Router()
 
-reportRouter.post("/create/:id", userMiddleware.verifyToken, reportMiddleware.verifyCreate ,reportController.create)
+reportRouter.post("/:shopId", userMiddleware.verifyToken, reportMiddleware.verifyCreate ,reportController.create)
 
 module.exports = {reportRouter}

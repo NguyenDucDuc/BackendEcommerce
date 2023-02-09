@@ -7,7 +7,7 @@ module.exports = {
     create: async (req, res) => {
         try {
             const customerId = req.data.userId
-            const shopId = req.params.id
+            const shopId = req.params.shopId
             const {code, data} = await reportService.create(customerId, shopId)
             res.status(code).json(data)
         } catch (error) {
