@@ -17,5 +17,14 @@ module.exports = {
             console.log(error)
             return responseUtil.serverError()
         }
+    },
+    getByUserId: async (userId) => {
+        try {
+            const notifications = await Notification.findAll({where: {userId: userId}})
+            return responseUtil.getSuccess(notifications)
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
     }
 }
