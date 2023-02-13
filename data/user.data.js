@@ -78,5 +78,37 @@ module.exports = [
     lastVisited: "2023-02-08 02:24:35",
     createdAt: "2023-02-08 02:24:35",
     updatedAt: "2023-02-08 02:24:35"
+  },
+  {
+    id: 6,
+    userName: "staff1",
+    passWord: "$2b$10$dItg8LdZp68eRMc0TNg.3uaYlQxt4846tKshaoLBD1oiOd8NBwN8O",
+    firstName: "Staff",
+    lastName: "",
+    phone: "0356879921",
+    email: "thanhnam@gmail.com",
+    avatar: "https://res.cloudinary.com/djbju13al/image/upload/v1675700522/Avatar/1675700519338.jpg",
+    birthDay: "2001-02-07 03:40:00",
+    status: true,
+    isActive: true,
+    lastVisited: "2023-02-08 02:24:35",
+    createdAt: "2023-02-08 02:24:35",
+    updatedAt: "2023-02-08 02:24:35"
+  },
+  {
+    id: 7,
+    userName: "staff2",
+    passWord: "$2b$10$dItg8LdZp68eRMc0TNg.3uaYlQxt4846tKshaoLBD1oiOd8NBwN8O",
+    firstName: "Tran",
+    lastName: "Anh Nam",
+    phone: "0356879921",
+    email: "trannam@gmail.com",
+    avatar: "https://res.cloudinary.com/djbju13al/image/upload/v1675700522/Avatar/1675700519338.jpg",
+    birthDay: "2001-02-07 03:40:00",
+    status: true,
+    isActive: true,
+    lastVisited: "2023-02-08 02:24:35",
+    createdAt: "2023-02-08 02:24:35",
+    updatedAt: "2023-02-08 02:24:35"
   }
 ]
