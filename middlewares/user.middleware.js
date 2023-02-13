@@ -1,7 +1,7 @@
 const User = require('../models')
 const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
-const {Admin} = require('../models')
+const {Admin, Staff} = require('../models')
 
 module.exports = {
     verifyToken: async (req, res, next) => {
@@ -59,7 +59,35 @@ module.exports = {
             }
         } catch (error) {
             console.log(error)
-            return responseUtil.serverError()
+            const {code, data} =  responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    verifyStaff: async(req, res, next) => {
+        try {
+            const userId = req.data.userId
+            if(userId){
+                const staffRole = await Staff.findOne({where: {userId: userId}})
+                if(staffRole){
+                    next()
+                } else {
+                    res.status(400).json({
+                        status: 400,
+                        data: [],
+                        errors: "User is not staff !"
+                    })
+                }
+            }else {
+                res.status(400).json({
+                    status: 400,
+                    data: [],
+                    errors: "Token is not valid !"
+                })
+            }
+        } catch (error) {
+            console.log(error)
+            const {code, data} =  responseUtil.serverError()
+            res.status(code).json(data)
         }
     }
 }

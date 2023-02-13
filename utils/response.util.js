@@ -36,5 +36,14 @@ module.exports = {
                 data: listObject
             }
         }
+    },
+    updateSuccess: (newObject) => {
+        return {
+            code: 200,
+            data: {
+                status: 200,
+                data: newObject
+            }
+        }
     }
 }

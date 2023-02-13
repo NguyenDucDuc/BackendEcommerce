@@ -6,7 +6,7 @@ module.exports = {
     register: async (userId) => {
         try {
             const newSeller = await Seller.create({
-                isConfirm: true,
+                isConfirm: false,
                 userId: userId
             })
             return responseUtil.created(newSeller)
