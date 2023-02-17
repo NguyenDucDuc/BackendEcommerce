@@ -15,5 +15,15 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    getAll: async (req, res) => {
+        try {
+            const {code, data} = await reportService.getAll()
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }

@@ -1,3 +1,4 @@
+const { client } = require('../databases/redis.init')
 const {Shop, Seller} = require('../models')
 const responseUltil = require('../utils/response.util')
 const cloudinary = require('cloudinary').v2
@@ -80,6 +81,40 @@ module.exports = {
                 await shop.save()
             }
             return responseUltil.getSuccess(shop)
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    getAll: async () => {
+        try {
+            const shopCache = await client.get("shops")
+            if(shopCache) {
+                console.log("cached shop")
+                return responseUltil.getSuccess(JSON.parse(shopCache))
+            } else {
+                const shops = await Shop.findAll()
+                await client.set("shops", JSON.stringify(shops))
+                console.log('add to redis')
+                return responseUltil.getSuccess(shops)
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    delete: async (shopId) => {
+        try {
+            console.log(shopId)
+            const shop = await Shop.findByPk(shopId)
+            await shop.destroy()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: shop
+                }
+            }
         } catch (error) {
             console.log(error)
             return responseUltil.serverError()

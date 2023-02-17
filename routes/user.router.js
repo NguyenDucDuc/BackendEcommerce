@@ -27,7 +27,7 @@ userRouter.get("/", userController.getAll)
 // update user
 userRouter.patch("/:userId", userMiddleware.verifyToken, userMiddleware.verifyUpdate, userController.update)
 // get user detail
-userRouter.get("/:userId", userController.getDetail)
+userRouter.get("/detail/:userId", userController.getDetail)
 // forget password
 userRouter.post("/reset-password", 
 [
@@ -38,6 +38,10 @@ userRouter.post("/reset-password",
 userRouter.post("/google-login", userController.googleLogin)
 // facebook login
 userRouter.post("/facebook-login", userController.facebookLogin)
+//
+userRouter.get("/stats-all", userController.statsAll)
+
+userRouter.post("/upload", userController.uploadAvatar)
 
 
 module.exports = {userRouter}

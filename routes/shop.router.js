@@ -12,7 +12,13 @@ shopRouter.post("/",
     check("image").notEmpty().withMessage("image is required"),
 ]
 ,userMiddleware.verifyToken, shopMiddleware.verifyCreate  , shopController.create)
+//
 shopRouter.patch("/block/:id", userMiddleware.verifyToken, userMiddleware.verifyAdmin, shopController.block)
+//
 shopRouter.patch("/unlock/:id", userMiddleware.verifyToken, userMiddleware.verifyAdmin, shopController.unLock)
+//
+shopRouter.get("/", userMiddleware.verifyToken ,userMiddleware.verifyAdmin , shopController.getAll)
+//
+shopRouter.delete("/:shopId", userMiddleware.verifyToken, shopMiddleware.verifyDelete ,shopController.delete)
 
 module.exports = {shopRouter}

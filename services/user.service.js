@@ -1,4 +1,4 @@
-const {User, Address, sequelize} = require('../models')
+const {User, Address, sequelize, Shop, Customer, Seller} = require('../models')
 const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
@@ -20,8 +20,25 @@ cloudinary.config({
 
 
 module.exports = {
+    uploadAvatar: async (files) => {
+        try {
+            console.log("AAA")
+            const avatar = files.avatar
+                const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
+                    public_id: `${Date.now()}`,
+                    resource_type: "auto",
+                    folder: "Avatar"
+                })
+                return {
+                    URL: result.url
+                }
+        } catch (error) {
+            console.log(error)
+        }
+    },
     registerUser: async (body, files) => {
         try {
+            console.log("ADAD")
             const oldUser = await User.findOne({where: {userName: body.userName}})
             if(!oldUser) {
                 //upload image to cloudinary
@@ -42,7 +59,7 @@ module.exports = {
                     phone: body.phone,
                     avatar: result.url,
                     email: body.email,
-                    birthDay: Date.now(),
+                    birthDay: body.birthDay,
                     status: true,
                     lastVisited: Date.now(),
                     isActive: true,
@@ -280,6 +297,25 @@ module.exports = {
                     errors: "Username is doesn't exists"
                 }
             }
+        }
+    },
+    statsAll: async () => {
+        try {
+            const sellers = await Seller.findAll()
+            const customers = await Customer.findAll()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: {
+                        customer: customers.length,
+                        counterparty: sellers.length
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
         }
     }
 }
