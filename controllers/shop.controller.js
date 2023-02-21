@@ -39,5 +39,26 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    getAll: async (req, res) => {
+        try {
+            const {code, data} = await shopServices.getAll()
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    delete: async (req, res) => {
+        try {
+            const shopId = parseInt(req.params.shopId)
+            const {code, data} = await shopServices.delete(shopId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }

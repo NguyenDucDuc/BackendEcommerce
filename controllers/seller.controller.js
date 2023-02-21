@@ -13,5 +13,35 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    getAll: async (req, res) => {
+        try {
+            const {code, data} = await sellerService.getAll()
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    lock: async (req, res) => {
+        try {
+            const {code,data} = await sellerService.lock(parseInt(req.params.userId))
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    unLock: async (req, res) => {
+        try {
+            const {code,data} = await sellerService.unLock(parseInt(req.params.userId))
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }

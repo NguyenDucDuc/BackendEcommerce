@@ -1,3 +1,4 @@
+const { customerRouter } = require('./customer.router')
 const { dataRouter } = require('./data.router')
 const { notificationRouter } = require('./notification.router')
 const { reportRouter } = require('./report.router')
@@ -17,5 +18,6 @@ indexRouter.use("/shop", shopRouter)
 indexRouter.use("/report", reportRouter)
 indexRouter.use("/notification", notificationRouter)
 indexRouter.use("/staff", staffRouter)
+indexRouter.use("/customer", customerRouter)
 
 module.exports = { indexRouter };

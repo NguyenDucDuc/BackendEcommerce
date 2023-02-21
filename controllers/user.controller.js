@@ -122,5 +122,24 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    statsAll: async (req, res) => {
+        try {
+            const {code, data} = await userService.statsAll()
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
+    },
+    uploadAvatar: async (req, res) => {
+        try {
+            console.log("AD")
+            const result = await userService.uploadAvatar(req.files)
+            res.status(200).json(result)
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

@@ -1,3 +1,4 @@
+const { client } = require('../databases/redis.init')
 const {Shop, Seller} = require('../models')
 const responseUltil = require('../utils/response.util')
 const cloudinary = require('cloudinary').v2
@@ -42,6 +43,8 @@ module.exports = {
                     image: result.url,
                     sellerId: sellerId
                 })
+                // add new shop to redis
+                await client.json.arrAppend("shops","$",newShop)
                 return responseUltil.created(newShop)
             }else {
                 return {
@@ -63,7 +66,7 @@ module.exports = {
         try {
             const shop = await Shop.findOne({where: {id: shopId}})
             if(shop){
-                shop.isBlock = false
+                shop.isBlock = true
                 await shop.save()
             }
             return responseUltil.getSuccess(shop)
@@ -76,10 +79,36 @@ module.exports = {
         try {
             const shop = await Shop.findOne({where: {id: shopId}})
             if(shop){
-                shop.isBlock = true
+                shop.isBlock = false
                 await shop.save()
             }
             return responseUltil.getSuccess(shop)
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    getAll: async () => {
+        try {
+            const shops = await Shop.findAll()
+            return responseUltil.getSuccess(shops)
+        } catch (error) {
+            console.log(error)
+            return responseUltil.serverError()
+        }
+    },
+    delete: async (shopId) => {
+        try {
+            console.log(shopId)
+            const shop = await Shop.findByPk(shopId)
+            await shop.destroy()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: shop
+                }
+            }
         } catch (error) {
             console.log(error)
             return responseUltil.serverError()

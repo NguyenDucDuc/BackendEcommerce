@@ -1,4 +1,4 @@
-const {User, Address, sequelize} = require('../models')
+const {User, Address, sequelize, Shop, Customer, Seller} = require('../models')
 const bcrypt = require('bcrypt')
 const { DATE } = require('sequelize')
 const jwt = require('jsonwebtoken')
@@ -20,6 +20,22 @@ cloudinary.config({
 
 
 module.exports = {
+    uploadAvatar: async (files) => {
+        try {
+            console.log("AAA")
+            const avatar = files.avatar
+                const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
+                    public_id: `${Date.now()}`,
+                    resource_type: "auto",
+                    folder: "Avatar"
+                })
+                return {
+                    URL: result.url
+                }
+        } catch (error) {
+            console.log(error)
+        }
+    },
     registerUser: async (body, files) => {
         try {
             const oldUser = await User.findOne({where: {userName: body.userName}})
@@ -42,11 +58,14 @@ module.exports = {
                     phone: body.phone,
                     avatar: result.url,
                     email: body.email,
-                    birthDay: Date.now(),
+                    birthDay: body.birthDay,
                     status: true,
                     lastVisited: Date.now(),
                     isActive: true,
                 })
+                // add newuser to redis
+                console.log('add new user to redis')
+                await client.json.arrAppend("users","$",newUser)
                 return responseUtil.created(newUser)
             }else {
                 return {
@@ -129,6 +148,9 @@ module.exports = {
                 await customerService.register(newUser.id)
                 // create cart
                 await cartService.create(newUser.id)
+                // add new user to redis
+                console.log("add new user to redis")
+                await client.json.arrAppend("users", "$", newUser)
                 return responseUtil.created(newUser)
             }
         } catch (error) {
@@ -166,23 +188,16 @@ module.exports = {
     },
     getAll: async (query) => {
         try {
-            const cacheUser = await client.get("users")
-            let queryString = `select * from users `
-            if(cacheUser && query.name === undefined){
-                console.log("cache list user")
-                return responseUtil.getSuccess(JSON.parse(cacheUser))
-            }
-            if(!cacheUser && query.name === undefined){
-                const [users] = await sequelize.query(queryString)
-                await client.set("users", JSON.stringify(users))
+            const cacheUser = await client.json.get("users")
+            if(cacheUser){
+                console.log("cached user")
+                return responseUtil.getSuccess(cacheUser)
+            }else {
+                console.log("add to redis")
+                const users = await User.findAll()
+                await client.json.set("users", "$", users)
                 return responseUtil.getSuccess(users)
             }
-            if(query.name){
-                const name = query.name
-                queryString += `where firstName like '%${name}%' or lastName like '%${name}%'`
-            }
-            const [users] = await sequelize.query(queryString)
-            return responseUtil.getSuccess(users)
         } catch (error) {
             return responseUtil.serverError()
         }
@@ -222,6 +237,7 @@ module.exports = {
                 await address.save()
                 await user.save()
             }
+            
             return responseUtil.getSuccess(user)
         } catch (error) {
             return responseUtil.serverError()
@@ -280,6 +296,25 @@ module.exports = {
                     errors: "Username is doesn't exists"
                 }
             }
+        }
+    },
+    statsAll: async () => {
+        try {
+            const sellers = await Seller.findAll()
+            const customers = await Customer.findAll()
+            return {
+                code: 200,
+                data: {
+                    status: 200,
+                    data: {
+                        customer: customers.length,
+                        counterparty: sellers.length
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
         }
     }
 }
