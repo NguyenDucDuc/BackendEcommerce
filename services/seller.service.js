@@ -9,6 +9,10 @@ module.exports = {
                 isConfirm: false,
                 userId: userId
             })
+            const user = await User.findByPk(userId)
+            // add new  seller to redis
+            await client.json.arrAppend("sellers","$",user)
+            console.log("add new seller to redis")
             return responseUtil.created(newSeller)
         } catch (error) {
             return responseUtil.serverError()
@@ -16,19 +20,84 @@ module.exports = {
     },
     getAll: async () => {
         try {
-            const sellerCache = await client.get("sellers")
-            if(sellerCache){
-                console.log("cached")
-                return responseUtil.getSuccess(JSON.parse(sellerCache))
+            const cacheSeller = await client.json.get('sellers', '$')
+            if(cacheSeller){
+                console.log("cached seller")
+                return responseUtil.getSuccess(cacheSeller)
             }else {
-                const [sellers] = await sequelize.query(`select u.* from users u, sellers s where u.id = s.userId`)
-                // add to redis
+                const [sellers] = await sequelize.query(`
+                select u.*
+                from users u, sellers s
+                where u.id = s.userId
+                `)
                 console.log("add to redis")
-                await client.set("sellers", JSON.stringify(sellers))
+                await client.json.set("sellers","$", sellers)
                 return responseUtil.getSuccess(sellers)
             }
         } catch (error) {
             console.log("asd")
+            return responseUtil.serverError()
+        }
+    },
+    lock: async (userId) => {
+        try {
+            const [[user]] = await sequelize.query(`
+                select u.*
+                from users u, sellers s
+                where u.id = s.userId and u.id = ${userId}
+            `)
+            if(user){
+                await sequelize.query(`
+                    update users
+                    set isActive = ${false}
+                    where id = ${userId}
+                `)
+                const newUser = await User.findOne({where: {id: userId}})
+                return responseUtil.updateSuccess(newUser)
+            }else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "user doesn't not exists"
+                    }
+                }
+            }
+            
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
+    },
+    unLock: async (userId) => {
+        try {
+            const [[user]] = await sequelize.query(`
+                select u.*
+                from users u, sellers s
+                where u.id = s.userId and u.id = ${userId}
+            `)
+            if(user){
+                await sequelize.query(`
+                    update users
+                    set isActive = ${true}
+                    where id = ${userId}
+                `)
+                const newUser = await User.findOne({where: {id: userId}})
+                return responseUtil.updateSuccess(newUser)
+            }else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "user doesn't not exists"
+                    }
+                }
+            }
+            
+        } catch (error) {
+            console.log(error)
             return responseUtil.serverError()
         }
     }

@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       desc: {
-        type: Sequelize.TEXT('long')
+        type: Sequelize.TEXT
       },
       image: {
         type: Sequelize.STRING

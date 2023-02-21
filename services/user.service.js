@@ -38,7 +38,6 @@ module.exports = {
     },
     registerUser: async (body, files) => {
         try {
-            console.log("ADAD")
             const oldUser = await User.findOne({where: {userName: body.userName}})
             if(!oldUser) {
                 //upload image to cloudinary
@@ -64,6 +63,9 @@ module.exports = {
                     lastVisited: Date.now(),
                     isActive: true,
                 })
+                // add newuser to redis
+                console.log('add new user to redis')
+                await client.json.arrAppend("users","$",newUser)
                 return responseUtil.created(newUser)
             }else {
                 return {
@@ -146,6 +148,9 @@ module.exports = {
                 await customerService.register(newUser.id)
                 // create cart
                 await cartService.create(newUser.id)
+                // add new user to redis
+                console.log("add new user to redis")
+                await client.json.arrAppend("users", "$", newUser)
                 return responseUtil.created(newUser)
             }
         } catch (error) {
@@ -183,23 +188,16 @@ module.exports = {
     },
     getAll: async (query) => {
         try {
-            const cacheUser = await client.get("users")
-            let queryString = `select * from users `
-            if(cacheUser && query.name === undefined){
-                console.log("cache list user")
-                return responseUtil.getSuccess(JSON.parse(cacheUser))
-            }
-            if(!cacheUser && query.name === undefined){
-                const [users] = await sequelize.query(queryString)
-                await client.set("users", JSON.stringify(users))
+            const cacheUser = await client.json.get("users")
+            if(cacheUser){
+                console.log("cached user")
+                return responseUtil.getSuccess(cacheUser)
+            }else {
+                console.log("add to redis")
+                const users = await User.findAll()
+                await client.json.set("users", "$", users)
                 return responseUtil.getSuccess(users)
             }
-            if(query.name){
-                const name = query.name
-                queryString += `where firstName like '%${name}%' or lastName like '%${name}%'`
-            }
-            const [users] = await sequelize.query(queryString)
-            return responseUtil.getSuccess(users)
         } catch (error) {
             return responseUtil.serverError()
         }
@@ -239,6 +237,7 @@ module.exports = {
                 await address.save()
                 await user.save()
             }
+            
             return responseUtil.getSuccess(user)
         } catch (error) {
             return responseUtil.serverError()

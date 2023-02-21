@@ -11,6 +11,7 @@ module.exports = {
       },
       attributeGroupId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'AttributeGroups',
           key:'id'
@@ -18,6 +19,7 @@ module.exports = {
       },
       attributeId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Attributes',
           key:'id'

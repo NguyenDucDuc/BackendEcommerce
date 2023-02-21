@@ -6,5 +6,7 @@ const sellerRouter = require('express').Router()
 
 sellerRouter.post("/", userMiddleware.verifyToken, sellerMiddleware.verifyRegister ,sellerController.register)
 sellerRouter.get("/", sellerController.getAll)
+sellerRouter.patch("/lock/:userId", sellerController.lock)
+sellerRouter.patch("/un-lock/:userId", sellerController.unLock)
 
 module.exports = {sellerRouter}

@@ -43,6 +43,8 @@ module.exports = {
                     image: result.url,
                     sellerId: sellerId
                 })
+                // add new shop to redis
+                await client.json.arrAppend("shops","$",newShop)
                 return responseUltil.created(newShop)
             }else {
                 return {
@@ -64,7 +66,7 @@ module.exports = {
         try {
             const shop = await Shop.findOne({where: {id: shopId}})
             if(shop){
-                shop.isBlock = false
+                shop.isBlock = true
                 await shop.save()
             }
             return responseUltil.getSuccess(shop)
@@ -77,7 +79,7 @@ module.exports = {
         try {
             const shop = await Shop.findOne({where: {id: shopId}})
             if(shop){
-                shop.isBlock = true
+                shop.isBlock = false
                 await shop.save()
             }
             return responseUltil.getSuccess(shop)
@@ -88,16 +90,8 @@ module.exports = {
     },
     getAll: async () => {
         try {
-            const shopCache = await client.get("shops")
-            if(shopCache) {
-                console.log("cached shop")
-                return responseUltil.getSuccess(JSON.parse(shopCache))
-            } else {
-                const shops = await Shop.findAll()
-                await client.set("shops", JSON.stringify(shops))
-                console.log('add to redis')
-                return responseUltil.getSuccess(shops)
-            }
+            const shops = await Shop.findAll()
+            return responseUltil.getSuccess(shops)
         } catch (error) {
             console.log(error)
             return responseUltil.serverError()
