@@ -23,6 +23,7 @@ module.exports = {
       },
       shopId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Shops',
           key:'id'
