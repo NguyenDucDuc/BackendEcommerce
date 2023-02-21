@@ -25,7 +25,7 @@ module.exports = {
         type: Sequelize.BOOLEAN
       },
       desc: {
-        type: Sequelize.STRING
+        type: Sequelize.TEXT
       },
       image: {
         type: Sequelize.STRING
@@ -38,6 +38,7 @@ module.exports = {
       },
       shopId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Shops',
           key:'id'
@@ -45,6 +46,7 @@ module.exports = {
       },
       categoryId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'Categories',
           key:'id'
@@ -52,6 +54,7 @@ module.exports = {
       },
       attributeGroupId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: 'AttributeGroups',
           key:'id'
