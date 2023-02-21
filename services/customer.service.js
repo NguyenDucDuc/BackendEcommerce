@@ -3,7 +3,7 @@ const responseUtil = require('../utils/response.util')
 
 
 module.exports = {
-    register: async (body, userId) => {
+    register: async (userId) => {
         try {
             const newCustomer = await Customer.create({
                 point: 0,

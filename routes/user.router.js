@@ -3,7 +3,8 @@ const {check} = require('express-validator')
 const userMiddleware = require('../middlewares/user.middleware')
 const userRouter = require('express').Router()
 
-userRouter.post("/register", 
+// register user
+userRouter.post("/", 
 [
     check('userName').notEmpty().withMessage("username is required !"),
     check('firstName').notEmpty().withMessage("first name is required !"),
@@ -14,10 +15,29 @@ userRouter.post("/register",
     check('street').notEmpty().withMessage("street is required !")
 ]
 , userController.registerUser)
-userRouter.post("/login", userController.login)
-userRouter.get("/get-all", userController.getAll)
-userRouter.patch("/update/:userId", userMiddleware.verifyToken, userMiddleware.verifyUpdate, userController.update)
-userRouter.get("/get-detail/:userId", userController.getDetail)
-userRouter.post("/reset-password", userController.resetPassword)
+// normal login
+userRouter.post("/login",  
+[
+    check('userName').notEmpty().withMessage("username is required !"),
+    check('passWord').notEmpty().withMessage("password is required !")
+]
+,userController.login)
+// get all user
+userRouter.get("/", userController.getAll)
+// update user
+userRouter.patch("/:userId", userMiddleware.verifyToken, userMiddleware.verifyUpdate, userController.update)
+// get user detail
+userRouter.get("/:userId", userController.getDetail)
+// forget password
+userRouter.post("/reset-password", 
+[
+    check('userName').notEmpty().withMessage("username is required !")
+]
+,userController.resetPassword)
+// google login
+userRouter.post("/google-login", userController.googleLogin)
+// facebook login
+userRouter.post("/facebook-login", userController.facebookLogin)
+
 
 module.exports = {userRouter}

@@ -5,14 +5,17 @@ const jwt = require('jsonwebtoken')
 const responseUtil = require('../utils/response.util')
 const nodemailer = require('nodemailer')
 const OTP = require('otp-generator')
+const { client } = require('../databases/redis.init')
+const customerService = require('./customer.service')
+const cartService = require('./cart.service')
 const cloudinary = require('cloudinary').v2
 require('dotenv').config()
 
 
 cloudinary.config({
-    cloud_name: "djbju13al",
-    api_key: "575615221649691",
-    api_secret: "Se08c_VicYMCRnyYIXGcDHpRmMY"
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
 })
 
 
@@ -103,9 +106,77 @@ module.exports = {
             return responseUtil.serverError()
         }
     },
+    googleLogin: async (body) => {
+        try {
+            const userName = body.email.split("@")[0]
+            const user = await User.findOne({where: {userName: userName}})
+            if(user){
+                return responseUtil.getSuccess(user)
+            }else {
+                // create new user
+                const newUser = await User.create({
+                    userName: userName,
+                    firstName: body.firstName,
+                    lastName: body.lastName,
+                    avatar: body.avatar,
+                    email: body.email,
+                    isActive: true,
+                    birthDay: Date.now(),
+                    lastVisited: Date.now(),
+                    status: true
+                })
+                // add to customer role
+                await customerService.register(newUser.id)
+                // create cart
+                await cartService.create(newUser.id)
+                return responseUtil.created(newUser)
+            }
+        } catch (error) {
+            return responseUtil.serverError()
+        }
+    },
+    facebookLogin: async (body) => {
+        try {
+            const userId = body.userId
+            const user = await User.findByPk(userId)
+            if(user){
+                return responseUtil.getSuccess(user)
+            } else {
+                const newUser = await User.create({
+                    id: userId,
+                    firstName: body.firstName,
+                    lastName: body.lastName,
+                    avatar: body.avatar,
+                    email: body.email,
+                    isActive: true,
+                    birthDay: Date.now(),
+                    lastVisited: Date.now(),
+                    status: true
+                })
+                // add to customer role
+                await customerService.register(newUser.id)
+                // create cart
+                await cartService.create(newUser.id)
+                return responseUtil.created(newUser)
+            }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError
+        }
+    },
     getAll: async (query) => {
         try {
+            const cacheUser = await client.get("users")
             let queryString = `select * from users `
+            if(cacheUser && query.name === undefined){
+                console.log("cache list user")
+                return responseUtil.getSuccess(JSON.parse(cacheUser))
+            }
+            if(!cacheUser && query.name === undefined){
+                const [users] = await sequelize.query(queryString)
+                await client.set("users", JSON.stringify(users))
+                return responseUtil.getSuccess(users)
+            }
             if(query.name){
                 const name = query.name
                 queryString += `where firstName like '%${name}%' or lastName like '%${name}%'`
