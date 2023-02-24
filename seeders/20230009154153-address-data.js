@@ -8,12 +8,7 @@ module.exports = {
     return queryInterface.bulkInsert('Addresses', addressData);
   },
 
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
-  }
+  async down(queryInterface, Sequelize) {
+    return queryInterface.bulkDelete('Addresses', null, {});
+  },
 };

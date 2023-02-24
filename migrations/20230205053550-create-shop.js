@@ -7,41 +7,46 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       shopName: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       rate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       desc: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       image: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
       },
       isBlock: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       sellerId: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+
         references: {
           model: 'Sellers',
-          key:'id'
-        }
+          key: 'id',
+        },
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Shops');
-  }
+  },
 };

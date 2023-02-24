@@ -12,5 +12,12 @@ module.exports = [
         userId: 2,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
-    }
+    },
+    {
+        id: 3,
+        point: 10,
+        userId: 6,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
 ]
