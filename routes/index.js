@@ -9,6 +9,7 @@ const { userRouter } = require('./user.router');
 const productRouter = require('./product.router');
 const orderRouter = require('./order.router');
 const adminRouter = require('./admin.router');
+const reviewRouter = require('./review.router');
 
 const indexRouter = require('express').Router();
 
@@ -23,5 +24,6 @@ indexRouter.use('/staff', staffRouter);
 indexRouter.use('/customer', customerRouter);
 indexRouter.use('/order', orderRouter);
 indexRouter.use('/admin', adminRouter);
+indexRouter.use('/review', reviewRouter);
 
 module.exports = { indexRouter };
