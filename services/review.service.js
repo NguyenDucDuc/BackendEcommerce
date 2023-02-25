@@ -132,6 +132,7 @@ const reviewService = {
           }
         );
 
+        transaction.commit();
         return {
           code: 201,
           data: {
@@ -144,6 +145,7 @@ const reviewService = {
         code: 400,
       };
     } catch (error) {
+      transaction.rollback();
       console.log(error);
       return {
         code: 500,
