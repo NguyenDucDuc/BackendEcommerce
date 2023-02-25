@@ -133,7 +133,6 @@ const reviewService = {
         );
 
         transaction.commit();
-
         return {
           code: 201,
           data: {
