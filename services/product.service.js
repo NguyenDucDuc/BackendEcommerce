@@ -293,26 +293,41 @@ const productService = {
     let { listAttributeFetch, listAttributeValidate, listAttributeID } =
       productService.createListAttributeData(listAttribute);
 
-    let listPromise = Object.keys(listAttributeFetch).map((attribute) => {
-      return db[DATA_TYPE[attribute]].findAll({
+    let listPromise = [
+      db.Product.count({
         where: {
-          productId: {
-            [Op.in]: listProductId,
-          },
-          attributeId: {
-            [Op.in]: listAttributeID,
-          },
+          [Op.and]: [
+            name ? { name: { [Op.substring]: name } } : {},
+            fP ? { price: { [Op.gte]: fP } } : {},
+            tP ? { price: { [Op.lte]: tP } } : {},
+            cateID ? { categoryId: cateID } : {},
+            !name && !cateID ? { isActive: true } : {},
+          ],
         },
-      });
+      }),
+    ];
+
+    Object.keys(listAttributeFetch).forEach((attribute) => {
+      listPromise.push(
+        db[DATA_TYPE[attribute]].findAll({
+          where: {
+            productId: {
+              [Op.in]: listProductId,
+            },
+            attributeId: {
+              [Op.in]: listAttributeID,
+            },
+          },
+        })
+      );
     });
 
     await Promise.all(listPromise)
-      .then((values) => {
+      .then(([productAmount, ...values]) => {
         let listValueFlat = values.reduce((list, value) => {
           list.push(...value);
           return list;
         }, []);
-
         listValueFlat.forEach((value) => {
           value.dataValues['name'] =
             listAttributeValidate[value.attributeId]['name'];
@@ -337,7 +352,12 @@ const productService = {
         });
 
         code = 200;
-        data = products.map((product) => listProduct[product.dataValues.id]);
+        data = {
+          listProduct: products.map(
+            (product) => listProduct[product.dataValues.id]
+          ),
+          productAmount: productAmount,
+        };
       })
       .catch((error) => {
         code = 400;
@@ -346,18 +366,6 @@ const productService = {
           message: 'Đã có lỗi xảy ra',
         };
       });
-
-    // const productAmount = await db.Product.count({
-    //   where: {
-    //     [Op.and]: [
-    //       name ? { name: { [Op.substring]: name } } : {},
-    //       fP ? { price: { [Op.gte]: fP } } : {},
-    //       tP ? { price: { [Op.lte]: tP } } : {},
-    //       cate ? { categoryId: cate } : {},
-    //       !name && !cate ? { isActive: true } : {},
-    //     ],
-    //   },
-    // });
 
     return {
       code: code,
@@ -414,10 +422,15 @@ const productService = {
         ? obj['listAttributeID'].push(attribute.id)
         : (obj['listAttributeID'] = [attribute.id]);
 
+      // if (!obj['listAttributeFetch'][attribute['backendType']]) {
+      //   obj['listAttributeFetch'] = {
+      //     [attribute['backendType']]: [attribute],
+      //   };
+      // } else {
+      //   obj['listAttributeFetch'][attribute['backendType']].push(attribute);
+      // }
       if (!obj['listAttributeFetch'][attribute['backendType']]) {
-        obj['listAttributeFetch'] = {
-          [attribute['backendType']]: [attribute],
-        };
+        obj['listAttributeFetch'][attribute['backendType']] = [attribute];
       } else {
         obj['listAttributeFetch'][attribute['backendType']].push(attribute);
       }
