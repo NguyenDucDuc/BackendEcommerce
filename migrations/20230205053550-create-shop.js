@@ -14,7 +14,7 @@ module.exports = {
         allowNull: false,
       },
       rate: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
       },
       desc: {
         type: Sequelize.TEXT,

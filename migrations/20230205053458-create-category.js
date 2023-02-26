@@ -21,7 +21,7 @@ module.exports = {
       },
       path: {
         type: Sequelize.STRING,
-        allowNull: false,
+        defaultValue: '',
       },
       parentId: {
         type: Sequelize.INTEGER,
@@ -29,9 +29,7 @@ module.exports = {
       level: {
         type: Sequelize.INTEGER,
       },
-      childrentCount: {
-        type: Sequelize.INTEGER,
-      },
+
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

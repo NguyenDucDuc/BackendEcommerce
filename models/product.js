@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       sku: DataTypes.STRING,
-      rate: DataTypes.INTEGER,
+      rate: DataTypes.FLOAT,
       price: DataTypes.DECIMAL,
       isActive: DataTypes.BOOLEAN,
       desc: DataTypes.TEXT('long'),

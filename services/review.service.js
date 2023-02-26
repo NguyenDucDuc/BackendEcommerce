@@ -22,7 +22,7 @@ const reviewService = {
         order: [['id', 'DESC']],
       });
       if (reviews) {
-        const pageAmount = await db.Review.count({
+        const amountReview = await db.Review.count({
           where: {
             productId: productId,
           },
@@ -33,7 +33,10 @@ const reviewService = {
             status: 200,
             data: {
               listReview: reviews,
-              pageAmount: pageAmount,
+              amountPage: Math.ceil(
+                amountReview / process.env.PAGE_SIZE_REVIEW
+              ),
+              amountReview: amountReview,
             },
           },
         };
@@ -107,23 +110,27 @@ const reviewService = {
       if (newReview) {
         const product = await newReview.getProduct();
         const shopId = product.shopId;
-        const { rateProduct } = await reviewService.calAVGRateOnProduct(
-          newReview.productId
+        const { totalRate: totalRateReview, amount: amountReview } =
+          await reviewService.calAVGRateOnProduct(newReview.productId);
+
+        product.rate = reviewService.calAVG(
+          totalRateReview
+            ? parseInt(totalRateReview) + newReview.rate
+            : newReview.rate,
+          parseInt(amountReview) + 1
         );
 
-        await _Product.update(
-          { rate: rateProduct },
-          {
-            where: {
-              id: newReview.productId,
-            },
-            transaction: transaction,
-          }
-        );
-
-        const { rateShop } = await reviewService.calAVGRateOnShop(shopId);
+        const { totalRate: totalRateProduct, amount: amountProduct } =
+          await reviewService.calAVGRateOnShop(shopId, product.id);
         await _Shop.update(
-          { rate: rateShop },
+          {
+            rate: reviewService.calAVG(
+              totalRateProduct
+                ? parseInt(totalRateProduct) + product.rate
+                : product.rate,
+              amountProduct ? parseInt(amountProduct) + 1 : 1
+            ),
+          },
           {
             where: {
               id: shopId,
@@ -131,8 +138,8 @@ const reviewService = {
             transaction: transaction,
           }
         );
-
-        transaction.commit();
+        await transaction.commit();
+        await product.save();
         return {
           code: 201,
           data: {
@@ -145,7 +152,7 @@ const reviewService = {
         code: 400,
       };
     } catch (error) {
-      transaction.rollback();
+      await transaction.rollback();
       console.log(error);
       return {
         code: 500,
@@ -155,33 +162,34 @@ const reviewService = {
 
   calAVGRateOnProduct: async (productId) => {
     try {
-      const rate = await db.sequelize.query(
-        `select avg(rate) as rateProduct from ecommerce.reviews where productId = :productId`,
+      const result = await db.sequelize.query(
+        `select sum(rate) as totalRate, count(id) as amount from ecommerce.reviews where productId = :productId`,
         {
           replacements: { productId: productId },
           plain: true,
         }
       );
-      return rate;
+      return result;
     } catch (error) {
       console.log(error);
     }
   },
 
-  calAVGRateOnShop: async (shopId) => {
+  calAVGRateOnShop: async (shopId, productId) => {
     try {
-      const rate = await db.sequelize.query(
-        `select avg(rate) as rateShop from ecommerce.products where shopId = :shopId`,
+      const result = await db.sequelize.query(
+        `select sum(rate) as totalRate, count(id) as amount from ecommerce.products where shopId = :shopId and not id = :id`,
         {
-          replacements: { shopId: shopId },
+          replacements: { shopId: shopId, id: productId },
           plain: true,
         }
       );
-      return rate;
+      return result;
     } catch (error) {
       console.log(error);
     }
   },
+  calAVG: (totalPoint, amnount) => (totalPoint / amnount).toFixed(1),
 };
 
 module.exports = reviewService;
