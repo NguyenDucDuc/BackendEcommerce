@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../models');
+const categoryService = require('./category.service');
 
 const DATA_TYPE = {
   int: 'ProductInt',
@@ -81,7 +82,7 @@ const productService = {
       };
     } catch (error) {
       console.log(error);
-      transaction.rollback();
+      await transaction.rollback();
       return {
         code: 500,
         data: {
@@ -269,7 +270,7 @@ const productService = {
     }
     if (cateID) {
       let category = await db.Category.findByPk(cateID);
-      categories = category.path.split('/').filter((item) => item >= cateID);
+      categories = await categoryService.getListCategoryVaild(category);
     }
     let products = await db.Product.findAll({
       where: {
@@ -323,7 +324,7 @@ const productService = {
     });
 
     await Promise.all(listPromise)
-      .then(([productAmount, ...values]) => {
+      .then(([amountProduct, ...values]) => {
         let listValueFlat = values.reduce((list, value) => {
           list.push(...value);
           return list;
@@ -356,7 +357,8 @@ const productService = {
           listProduct: products.map(
             (product) => listProduct[product.dataValues.id]
           ),
-          productAmount: productAmount,
+          amountPage: Math.ceil(amountProduct / process.env.PAGE_SIZE),
+          amountProduct: amountProduct,
         };
       })
       .catch((error) => {
@@ -422,13 +424,6 @@ const productService = {
         ? obj['listAttributeID'].push(attribute.id)
         : (obj['listAttributeID'] = [attribute.id]);
 
-      // if (!obj['listAttributeFetch'][attribute['backendType']]) {
-      //   obj['listAttributeFetch'] = {
-      //     [attribute['backendType']]: [attribute],
-      //   };
-      // } else {
-      //   obj['listAttributeFetch'][attribute['backendType']].push(attribute);
-      // }
       if (!obj['listAttributeFetch'][attribute['backendType']]) {
         obj['listAttributeFetch'][attribute['backendType']] = [attribute];
       } else {

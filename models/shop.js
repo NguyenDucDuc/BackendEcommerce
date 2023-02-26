@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Shop.init({
     shopName: DataTypes.STRING,
-    rate: DataTypes.INTEGER,
+    rate: DataTypes.FLOAT,
     desc: DataTypes.TEXT('long'),
     image: DataTypes.STRING,
     isBlock: DataTypes.BOOLEAN,

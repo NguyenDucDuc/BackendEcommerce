@@ -22,7 +22,7 @@ const orderService = {
 
       const shop = await db.Shop.findByPk(order.shopId);
       if (!shop) {
-        transaction.commit();
+        await transaction.commit();
         return {
           code: 404,
           data: {
@@ -93,7 +93,7 @@ const orderService = {
         }
       }
       if (!checkStock) {
-        transaction.rollback();
+        await transaction.rollback();
         return {
           code: 200,
           data: {
@@ -109,7 +109,7 @@ const orderService = {
         })
       );
       await Promise.all(listPromise);
-      transaction.commit();
+      await transaction.commit();
       return {
         code: 200,
         data: {
@@ -119,7 +119,7 @@ const orderService = {
       };
     } catch (error) {
       console.log(error);
-      transaction.rollback();
+      await transaction.rollback();
       return {
         code: 400,
         data: {
@@ -205,7 +205,7 @@ const orderService = {
           break;
       }
 
-      transaction.commit();
+      await transaction.commit();
 
       return {
         code: 200,
@@ -216,7 +216,7 @@ const orderService = {
       };
     } catch (error) {
       console.log(error);
-      transaction.rollback();
+      await transaction.rollback();
       return {
         code: 400,
         data: {
@@ -234,14 +234,14 @@ const orderService = {
           customerId: customerId,
         },
       });
-      if(!order){
+      if (!order) {
         return {
           code: 200,
           data: {
             status: 200,
-            message: 'Đơn hàng không tồn tại'
-          }
-        }
+            message: 'Đơn hàng không tồn tại',
+          },
+        };
       }
       const listOrderDetail = await db.OrderDetail.findAll({
         where: {
