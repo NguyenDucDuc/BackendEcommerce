@@ -1,5 +1,13 @@
 const db = require('../models');
 const { Op } = require('sequelize');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+cloudinary.config({
+  cloud_name: 'de5pwc5fq',
+  api_key: '747993572847511',
+  api_secret: 'Mw8_L682h95W9Wu_ixd8hg92rj0',
+});
 
 const categoryService = {
   getAllCategories: async () => {
@@ -32,6 +40,17 @@ const categoryService = {
   addCategory: async (category) => {
     const transaction = await db.sequelize.transaction();
     try {
+      if(category.image){
+        const result = await cloudinary.uploader.upload(
+          category.image.tempFilePath,
+          {
+            public_id: `${new Date().getTime()}`,
+            resource_type: 'auto',
+            folder: 'CategoryImage',
+          }
+        );
+        category.image = result.secure_url;
+      }
       const newCategory = await db.Category.create(category, {
         transaction: transaction,
       });

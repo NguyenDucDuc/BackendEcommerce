@@ -22,7 +22,6 @@ cloudinary.config({
 module.exports = {
     uploadAvatar: async (files) => {
         try {
-            console.log("AAA")
             const avatar = files.avatar
                 const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
                     public_id: `${Date.now()}`,

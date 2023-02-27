@@ -24,7 +24,11 @@ module.exports = {
   },
 
   addProduct: async (req, res) => {
-    let { attributes, ...product } = req.body.product;
+    let { attributes, ...product } = req.body;
+    if (req?.files) {
+      product.image = req.files.image;
+    }
+
     product.createAt = new Date();
     product.updateAt = new Date();
     try {
@@ -48,10 +52,12 @@ module.exports = {
     }
   },
   updateProduct: async (req, res) => {
-    let { productID, productData } = req.body;
+    let productData = req.body;
+    productData.image = req.files.image;
+    let productId = req.params.id;
     try {
       const { code, data } = await productService.updateProduct(
-        productID,
+        productId,
         productData
       );
       return res.status(code).json(data);
