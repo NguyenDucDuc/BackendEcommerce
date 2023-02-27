@@ -12,6 +12,9 @@ module.exports = {
   },
   addCategory: async (req, res) => {
     const category = req.body;
+    if (req.files) {
+      category.image = req.files.image;
+    }
     category.createdAt = new Date();
     category.updatedAt = new Date();
     try {

@@ -1,6 +1,14 @@
 const { Op } = require('sequelize');
 const db = require('../models');
 const categoryService = require('./category.service');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
+cloudinary.config({
+  cloud_name: 'de5pwc5fq',
+  api_key: '747993572847511',
+  api_secret: 'Mw8_L682h95W9Wu_ixd8hg92rj0',
+});
 
 const DATA_TYPE = {
   int: 'ProductInt',
@@ -35,6 +43,18 @@ const productService = {
             message: 'Chỉ thêm các thuộc tính của sản phẩm',
           },
         };
+      }
+
+      if (product.image) {
+        const result = await cloudinary.uploader.upload(
+          product.image.tempFilePath,
+          {
+            public_id: `${new Date().getTime()}`,
+            resource_type: 'auto',
+            folder: 'ProductImage',
+          }
+        );
+        product.image = result.secure_url;
       }
 
       let newProduct = await db.Product.create(product, {
@@ -142,6 +162,17 @@ const productService = {
     const { attributes, ...productBase } = productData;
     const transaction = await db.sequelize.transaction();
     try {
+      if (productBase.image) {
+        const result = await cloudinary.uploader.upload(
+          productBase.image.tempFilePath,
+          {
+            public_id: `${new Date().getTime()}`,
+            resource_type: 'auto',
+            folder: 'ProductImage',
+          }
+        );
+        productBase.image = result.secure_url;
+      }
       const listPromise = [];
       if (Object.keys(productBase).length) {
         listPromise.push(
@@ -153,7 +184,7 @@ const productService = {
           })
         );
       }
-      if (attributes.length) {
+      if (attributes?.length) {
         attributes.forEach(async (attribute) => {
           listPromise.push(
             db[DATA_TYPE[attribute['backendType']]].update(
