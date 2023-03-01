@@ -1,4 +1,5 @@
 const { QueryTypes } = require('sequelize');
+const resUtils = require('../utils/res.util');
 const db = require('../models');
 const adminService = {
   stats: async ({ shopId, type, month, quater, year, date }) => {
@@ -56,18 +57,10 @@ const adminService = {
           break;
       }
 
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: stats,
-        },
-      };
+      return resUtils.successful(200, stats);
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-      };
+      return resUtils.serverError();
     }
   },
 

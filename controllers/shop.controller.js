@@ -61,18 +61,7 @@ module.exports = {
       res.status(code).json(data);
     }
   },
-  getOrder: async (req, res) => {
-    try {
-      const { code, data } = await shopServices.getOrder({
-        state: req.query.state,
-        shopId: req.params.shopId,
-      });
-      return res.status(code).json(data);
-    } catch (error) {
-      console.log(error);
-      return res.status(500);
-    }
-  },
+
   revenueStats: async (req, res) => {
     let params = req.body;
     params.shopId = req.params.shopId;

@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../models');
+const resUtil = require('../utils/res.util');
 
 const STATUS_ORDER = {
   0: 'Đã hủy',
@@ -23,13 +24,7 @@ const orderService = {
       const shop = await db.Shop.findByPk(order.shopId);
       if (!shop) {
         await transaction.commit();
-        return {
-          code: 404,
-          data: {
-            status: 404,
-            message: 'Không tìm thấy cửa hàng',
-          },
-        };
+        return resUtil.clientError(404, 'Không tìm thấy cửa hàng');
       }
 
       const newOrder = await db.Order.create(order, {
@@ -94,13 +89,7 @@ const orderService = {
       }
       if (!checkStock) {
         await transaction.rollback();
-        return {
-          code: 200,
-          data: {
-            status: 200,
-            message: 'Hiện tại, sản phẩm đã hết hàng.',
-          },
-        };
+        return resUtil.clientError(404, 'Hiện tại sản phẩm đã hết hàng');
       }
 
       listPromise.push(
@@ -110,23 +99,11 @@ const orderService = {
       );
       await Promise.all(listPromise);
       await transaction.commit();
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          message: 'Bạn đã đặt hàng thành công.',
-        },
-      };
+      return resUtil.successful(200, [], 'Bạn đã đặt hàng thành công.');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra !',
-        },
-      };
+      return resUtil.serverError();
     }
   },
   confirmOrder: async ({ orderId, action }) => {
@@ -136,21 +113,9 @@ const orderService = {
 
       switch (order.state) {
         case 4:
-          return {
-            code: 200,
-            data: {
-              status: 200,
-              message: 'Đã hoàn thành',
-            },
-          };
+          return resUtil.clientError(404, 'Đơn hàng đã hoàn thành');
         case 0:
-          return {
-            code: 200,
-            data: {
-              status: 200,
-              message: 'Đã hủy',
-            },
-          };
+          return resUtil.clientError(404, 'Đơn hàng đã hủy');
       }
 
       switch (action) {
@@ -206,67 +171,61 @@ const orderService = {
       }
 
       await transaction.commit();
-
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: order,
-        },
-      };
+      return resUtil.successful(200, order);
     } catch (error) {
       console.log(error);
       await transaction.rollback();
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra.',
-        },
-      };
+      return resUtil.serverError();
     }
   },
-  getDetails: async ({ customerId, orderId }) => {
+  getDetails: async ({ customerId, shopId, orderId }) => {
     try {
       const order = await db.Order.findOne({
         where: {
-          id: orderId,
-          customerId: customerId,
+          [Op.and]: [
+            orderId ? { id: orderId } : {},
+            customerId ? { customerId: customerId } : {},
+            shopId ? { shopId: shopId } : {},
+          ],
         },
       });
       if (!order) {
-        return {
-          code: 200,
-          data: {
-            status: 200,
-            message: 'Đơn hàng không tồn tại',
-          },
-        };
+        return resUtil.clientError(404, 'Đơn hàng không tồn tại');
       }
       const listOrderDetail = await db.OrderDetail.findAll({
         where: {
           orderId: order.id,
         },
       });
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: {
-            ...order.dataValues,
-            listOrderDetail: listOrderDetail,
-          },
-        },
-      };
+      return resUtil.successful(200, {
+        ...order.dataValues,
+        listOrderDetail: listOrderDetail,
+      });
     } catch (error) {
       console.log(error);
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra',
+      return resUtil.serverError();
+    }
+  },
+  getOrder: async ({ shopId, customerId, state }) => {
+    try {
+      const listOrder = await db.Order.findAll({
+        where: {
+          [Op.and]: [
+            state ? { state: state } : {},
+            shopId ? { shopId: shopId } : {},
+            customerId ? { customerId: customerId } : {},
+          ],
         },
-      };
+      });
+
+      if (!listOrder.length) {
+        return resUtil.clientError(404, 'Không có đơn hàng');
+      }
+
+      return resUtil.successful(200, listOrder);
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
     }
   },
 };

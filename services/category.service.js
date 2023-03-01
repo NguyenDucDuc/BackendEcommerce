@@ -1,5 +1,6 @@
 const db = require('../models');
 const { Op } = require('sequelize');
+const resUtil = require('../utils/res.util');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
@@ -19,28 +20,16 @@ const categoryService = {
           },
         },
       });
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: categories,
-        },
-      };
+      return resUtil.successful(200, categories);
     } catch (error) {
       console.log(error);
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra',
-        },
-      };
+      return resUtil.serverError();
     }
   },
   addCategory: async (category) => {
     const transaction = await db.sequelize.transaction();
     try {
-      if(category.image){
+      if (category.image) {
         const result = await cloudinary.uploader.upload(
           category.image.tempFilePath,
           {
@@ -61,24 +50,12 @@ const categoryService = {
 
       await transaction.commit();
       await newCategory.save();
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: newCategory,
-          message: 'Đã thêm thành công',
-        },
-      };
+      return resUtil.successful(200, newCategory, 'Đã thêm thành công');
+      
     } catch (error) {
       console.log(error);
       await transaction.rollback();
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra',
-        },
-      };
+      return resUtil.serverError();
     }
   },
 
