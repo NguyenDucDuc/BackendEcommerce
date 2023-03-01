@@ -4,6 +4,7 @@ const _Product = db.Product;
 const _Shop = db.Shop;
 const _Customer = db.Customer;
 const { QueryTypes } = require('sequelize');
+const resUtil = require('../utils/res.util');
 
 const reviewService = {
   getReviewByProductId: async (productId, page = 1) => {
@@ -27,37 +28,17 @@ const reviewService = {
             productId: productId,
           },
         });
-        return {
-          code: 200,
-          data: {
-            status: 200,
-            data: {
-              listReview: reviews,
-              amountPage: Math.ceil(
-                amountReview / process.env.PAGE_SIZE_REVIEW
-              ),
-              amountReview: amountReview,
-            },
-          },
-        };
+        return resUtil.successful(200, {
+          listReview: reviews,
+          amountPage: Math.ceil(amountReview / process.env.PAGE_SIZE_REVIEW),
+          amountReview: amountReview,
+        });
       } else {
-        return {
-          code: 200,
-          data: {
-            status: 200,
-            message: 'Sản phẩm chưa được đánh giá',
-          },
-        };
+        return resUtil.successful(200, 'Sản phẩm chưa được đánh giá');
       }
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-        data: {
-          status: 500,
-          message: 'Đã có lỗi xảy ra',
-        },
-      };
+      return resUtil.serverError();
     }
   },
   countRateOfProduct: async (productId) => {
@@ -83,21 +64,13 @@ const reviewService = {
           counter: 0,
         }
       );
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: {
-            rate: rate,
-            avgRage: counterRate.point / counterRate.counter,
-          },
-        },
-      };
+      return resUtil.successful(200, {
+        rate: rate,
+        avgRage: parseFloat((counterRate.point / counterRate.counter).toFixed(1)),
+      });
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-      };
+      return resUtil.serverError();
     }
   },
   addReview: async (review) => {
@@ -140,23 +113,51 @@ const reviewService = {
         );
         await transaction.commit();
         await product.save();
-        return {
-          code: 201,
-          data: {
-            status: 201,
-            data: newReview,
-          },
-        };
+        return resUtil.successful(201, newReview);
       }
-      return {
-        code: 400,
-      };
+      return resUtil.serverError();
     } catch (error) {
       await transaction.rollback();
       console.log(error);
-      return {
-        code: 500,
-      };
+      return resUtil.serverError();
+    }
+  },
+
+  getProductPurchased: async (cutomerId) => {
+    try {
+      if (!cutomerId) {
+        return resUtil.clientError(404, [], 'Khách hàng không tồn tại');
+      }
+      const listOrder = await db.Order.findAll({
+        where: {
+          customerId: cutomerId,
+          state: 4,
+        },
+      });
+      if (listOrder.length === 0) {
+        return resUtil.clientError(404, [], 'Chưa có đơn hàng');
+      }
+      let orderIds = listOrder.map((order) => order.id);
+      const listOrderDetails = await db.OrderDetail.findAll({
+        where: {
+          orderId: orderIds,
+        },
+      });
+      let productIds = listOrderDetails.reduce((list, detail) => {
+        if (!list.includes(detail.productId)) {
+          list.push(detail.productId);
+        }
+        return list;
+      }, []);
+      const listProduct = await db.Product.findAll({
+        where: {
+          id: productIds,
+        },
+      });
+      return resUtil.successful(200, listProduct);
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
     }
   },
 

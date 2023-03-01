@@ -38,4 +38,15 @@ module.exports = {
       return res.status(500).json();
     }
   },
+  getProductPurchased: async (req, res) => {
+    try {
+      const { code, data } = await reviewService.getProductPurchased(
+        req.customerId
+      );
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
 };

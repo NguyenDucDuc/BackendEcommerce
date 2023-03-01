@@ -4,6 +4,7 @@ const { QueryTypes } = require('sequelize');
 const db = require('../models');
 const { Op } = require('sequelize');
 const responseUltil = require('../utils/response.util');
+const resUtil = require('../utils/res.util');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
@@ -115,49 +116,6 @@ const shopService = {
       return responseUltil.serverError();
     }
   },
-  getOrder: async ({ shopId, state }) => {
-    try {
-      const listOrder = await Order.findAll({
-        where: {
-          [Op.and]: [
-            {
-              shopId: shopId,
-            },
-            {
-              state: state,
-            },
-          ],
-        },
-      });
-
-      if (listOrder.length === 0) {
-        return {
-          code: 200,
-          data: {
-            status: 200,
-            message: 'Không có đơn hàng',
-          },
-        };
-      }
-
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: listOrder,
-        },
-      };
-    } catch (error) {
-      console.log(error);
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra.',
-        },
-      };
-    }
-  },
 
   revenueStats: async ({
     shopId,
@@ -218,22 +176,10 @@ const shopService = {
         );
       }
 
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: stats,
-        },
-      };
+      return resUtil.successful(200, stats);
     } catch (error) {
       console.log(error);
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra',
-        },
-      };
+      return resUtil.serverError();
     }
   },
 

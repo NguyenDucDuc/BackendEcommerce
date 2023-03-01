@@ -44,7 +44,9 @@ module.exports = {
   },
   deleteProduct: async (req, res) => {
     try {
-      const { code, data } = await productService.deleteProduct(req.params.id);
+      const { code, data } = await productService.deleteProduct(
+        req.params.productId
+      );
       return res.status(code).json(data);
     } catch (error) {
       console.log(error);
@@ -54,7 +56,7 @@ module.exports = {
   updateProduct: async (req, res) => {
     let productData = req.body;
     productData.image = req.files.image;
-    let productId = req.params.id;
+    let productId = req.params.productId;
     try {
       const { code, data } = await productService.updateProduct(
         productId,
@@ -80,4 +82,6 @@ module.exports = {
       return res.status(500);
     }
   },
+
+
 };

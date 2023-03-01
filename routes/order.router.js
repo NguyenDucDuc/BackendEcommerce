@@ -1,8 +1,14 @@
 const orderController = require('../controllers/order.controller');
 const router = require('express').Router();
+const auth = require('../middlewares/auth.middleware');
 
-router.post('/', orderController.buyProduct);
-router.get('/', orderController.getDetails);
-router.post('/action', orderController.confirmOrder);
+router.post('/', auth.verifyCustomer, orderController.buyProduct);
+router.get('/', auth.verifyGetOrderOfShopAndCustomer, orderController.getOrder);
+router.get(
+  '/details',
+  auth.verifyGetOrderOfShopAndCustomer,
+  orderController.getDetails
+);
+router.post('/action', auth.verifyConfirmProduct, orderController.confirmOrder);
 
 module.exports = router;

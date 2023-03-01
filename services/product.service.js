@@ -1,5 +1,6 @@
 const { Op } = require('sequelize');
 const db = require('../models');
+const resUtil = require('../utils/res.util');
 const categoryService = require('./category.service');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
@@ -36,13 +37,7 @@ const productService = {
         listAttributeID.length !== attributes.ids.length ||
         JSON.stringify(listAttributeID) !== JSON.stringify(attributes.ids)
       ) {
-        return {
-          code: 400,
-          data: {
-            status: 400,
-            message: 'Chỉ thêm các thuộc tính của sản phẩm',
-          },
-        };
+        return resUtil.clientError(400, 'Chỉ thêm các thuộc tính của sản phẩm');
       }
 
       if (product.image) {
@@ -93,23 +88,11 @@ const productService = {
 
       await transaction.commit();
 
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          message: 'Thêm sản phẩm thành công',
-        },
-      };
+      return resUtil.successful(200, 'Thêm sản phẩm thành công');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
-      return {
-        code: 500,
-        data: {
-          status: 500,
-          message: 'Thêm sản phẩm thất bại',
-        },
-      };
+      return resUtil.serverError();
     }
     // Lấy hết attribute của loại sp đó từ attributeGroupID
     // So sánh với các attribute của sản phẩm từ request fe đẩy lên
@@ -122,13 +105,7 @@ const productService = {
     try {
       let product = await db.Product.findByPk(productID);
       if (!product) {
-        return {
-          code: 400,
-          data: {
-            status: 400,
-            message: 'Sản phẩm không tồn tại',
-          },
-        };
+        return resUtil.clientError(404, 'Sản phẩm không tồn tại');
       }
 
       let listPromise = Object.keys(DATA_TYPE).map((type) => {
@@ -143,18 +120,10 @@ const productService = {
         return product.destroy();
       });
 
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: 'Sản phẩm đã được xóa',
-        },
-      };
+      return resUtil.successful(200, [], 'Sản phẩm đã được xóa');
     } catch (error) {
       console.log(error);
-      return {
-        code: 500,
-      };
+      return resUtil.serverError();
     }
   },
 
@@ -207,22 +176,11 @@ const productService = {
       }
       await Promise.all(listPromise);
       await transaction.commit();
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: 'Cập nhật sản phẩm thành công',
-        },
-      };
+      return resUtil.successful(200, [], 'Cập nhật sản phẩm thành công');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
-      return {
-        code: 500,
-        data: {
-          status: 500,
-        },
-      };
+      return resUtil.serverError();
     }
   },
 
@@ -274,22 +232,10 @@ const productService = {
         data = product;
       });
 
-      return {
-        code: code,
-        data: {
-          status: code,
-          data: data,
-        },
-      };
+      return resUtil.successful(code, data);
     } catch (error) {
       console.log(error);
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra',
-        },
-      };
+      return resUtil.serverError();
     }
   },
 
@@ -393,20 +339,11 @@ const productService = {
         };
       })
       .catch((error) => {
-        code = 400;
-        data = {
-          code: code,
-          message: 'Đã có lỗi xảy ra',
-        };
+        console.log(error);
+        resUtil.serverError();
       });
 
-    return {
-      code: code,
-      data: {
-        status: code,
-        data: data,
-      },
-    };
+    return resUtil.successful(code, data);
   },
 
   compareProduct: async (productId1, productId2) => {
@@ -421,21 +358,9 @@ const productService = {
           compare: values[1].data?.data,
         };
       });
-      return {
-        code: 200,
-        data: {
-          status: 200,
-          data: data,
-        },
-      };
+      return resUtil.successful(200, data);
     } catch (error) {
-      return {
-        code: 400,
-        data: {
-          status: 400,
-          message: 'Đã có lỗi xảy ra !',
-        },
-      };
+      return resUtil.serverError();
     }
   },
 
