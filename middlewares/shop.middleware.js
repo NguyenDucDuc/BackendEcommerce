@@ -13,7 +13,7 @@ module.exports = {
                     res.status(403).json({
                         status: 403,
                         data: [],
-                        errors: "Fobidden"
+                        errors: "Bạn chưa đăng ký quyền người bán !"
                     })
                 }
             } else {

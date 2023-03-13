@@ -116,7 +116,16 @@ const shopService = {
       return responseUltil.serverError();
     }
   },
-
+  getById: async (shopId) => {
+    try {
+      const shop = await Shop.findByPk(shopId)
+      return responseUltil.getSuccess(shop)
+    } catch (error) {
+      console.log(error)
+      return responseUltil.serverError()
+    }
+    
+  },
   revenueStats: async ({
     shopId,
     type,

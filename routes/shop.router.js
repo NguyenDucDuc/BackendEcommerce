@@ -6,6 +6,8 @@ const { check } = require('express-validator');
 
 const shopRouter = require('express').Router();
 
+shopRouter.get("/:id", shopController.getById)
+
 shopRouter.post(
   '/',
   [

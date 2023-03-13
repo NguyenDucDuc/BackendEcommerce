@@ -5,15 +5,27 @@ const {client} = require('../databases/redis.init')
 module.exports = {
     register: async (userId) => {
         try {
-            const newSeller = await Seller.create({
-                isConfirm: false,
-                userId: userId
-            })
-            const user = await User.findByPk(userId)
-            // add new  seller to redis
-            await client.json.arrAppend("sellers","$",user)
-            console.log("add new seller to redis")
-            return responseUtil.created(newSeller)
+            const seller = await Seller.findOne({where: {userId: userId}})
+            if(!seller){
+                const newSeller = await Seller.create({
+                    isConfirm: false,
+                    userId: userId
+                })
+                const user = await User.findByPk(userId)
+                // add new  seller to redis
+                await client.json.arrAppend("sellers","$",user)
+                console.log("add new seller to redis")
+                return responseUtil.created(newSeller)
+            }else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        errors: "Bạn đã là đối tác của chúng tôi."
+                    }
+                }
+            }
         } catch (error) {
             return responseUtil.serverError()
         }

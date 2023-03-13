@@ -72,7 +72,7 @@ module.exports = {
                     data: {
                         status: 400,
                         data: [],
-                        errors: "Username already exists"
+                        errors: "Tên người dùng đã tồn tại !"
                     }
                 }
             }
@@ -104,7 +104,7 @@ module.exports = {
                         data: {
                             status: 400,
                             data: [],
-                            errors: "Username or password not valid !"
+                            errors: "Tài khoản hoặc mật khẩu không đúng !"
                         }
                         
                     }
@@ -114,7 +114,7 @@ module.exports = {
                     code: 400,
                     data: {
                         status: 400,
-                        data: "Username or password not valid!"
+                        data: "Tài khoản hoặc mật khẩu không đúng!"
                     }
                     
                 }
@@ -211,6 +211,9 @@ module.exports = {
                 }
                 if(body.lastName){
                     user.lastName = body.lastName
+                }
+                if(body.birthDay){
+                    user.birthDay = body.birthDay
                 }
                 if(body.phone){
                     user.phone = body.phone
@@ -311,6 +314,15 @@ module.exports = {
                     }
                 }
             }
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
+    },
+    currentUser: async (userId) => {
+        try {
+            const user = await User.findOne({where: {id: userId}})
+            return responseUtil.getSuccess(user)
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
