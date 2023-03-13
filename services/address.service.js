@@ -1,4 +1,5 @@
 const {Address} = require('../models')
+const responseUtil = require('../utils/response.util')
 
 module.exports = {
     create: async (body, userId) => {
@@ -27,6 +28,15 @@ module.exports = {
                     data: "Error"
                 }
             }
+        }
+    },
+    currentAddress: async (userId) => {
+        try {
+            const address = await Address.findOne({where: {userId: userId}})
+            return responseUtil.getSuccess(address)
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
         }
     }
 }

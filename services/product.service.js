@@ -5,6 +5,7 @@ const categoryService = require('./category.service');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
+
 cloudinary.config({
   cloud_name: 'de5pwc5fq',
   api_key: '747993572847511',

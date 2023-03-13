@@ -61,7 +61,16 @@ module.exports = {
       res.status(code).json(data);
     }
   },
-
+  getById: async (req, res) => {
+    try {
+      const {code, data} = await shopServices.getById(req.params.id)
+      res.status(code).json(data)
+    } catch (error) {
+      console.log(error);
+      const { code, data } = responseUtil.serverError();
+      res.status(code).json(data);
+    }
+  },
   revenueStats: async (req, res) => {
     let params = req.body;
     params.shopId = req.params.shopId;

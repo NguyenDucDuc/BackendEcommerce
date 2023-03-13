@@ -1,4 +1,4 @@
-const {Cart} = require('../models')
+const {Cart, sequelize} = require('../models')
 const responseUtil = require('../utils/response.util')
 
 module.exports = {
@@ -9,6 +9,27 @@ module.exports = {
             })
             return responseUtil.created(newCart)
         } catch (error) {
+            return responseUtil.serverError()
+        }
+    },
+    getProduct: async (userId) => {
+        try {
+            const [products] = await sequelize.query(`
+                select r.*, p.quantity
+                from carts c, productcarts p, products r
+                where c.id = p.cartId and p.productId = r.id and c.userId = ${userId}
+            `)
+            return responseUtil.getSuccess(products)
+        } catch (error) {
+            return responseUtil.serverError()
+        }
+    },
+    getByUserId: async (userId) => {
+        try {
+            const cart = await Cart.findOne({where: {userId: userId}})
+            return responseUtil.getSuccess(cart)
+        } catch (error) {
+            console.log(error)
             return responseUtil.serverError()
         }
     }

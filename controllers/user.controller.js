@@ -38,7 +38,9 @@ module.exports = {
             const errors = validationResult(req)
             if(errors.isEmpty()){
                 const {code, data} = await userService.login(body)
-                res.status(code).json(data)
+                setTimeout( () => {
+                    res.status(code).json(data)
+                }, 2500)
             }else {
                 const {code, data} = responseUtil.errorsValidate(errors.array())
                 res.status(code).json(data)
@@ -140,6 +142,17 @@ module.exports = {
             res.status(200).json(result)
         } catch (error) {
             console.log(error)
+        }
+    },
+    currentUser: async (req, res) => {
+        try {
+            const userId = req.data.userId
+            const {code, data} = await userService.currentUser(userId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
         }
     }
 }

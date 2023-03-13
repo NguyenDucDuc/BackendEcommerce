@@ -52,4 +52,10 @@ userRouter.get('/stats-all', userController.statsAll);
 
 userRouter.post('/upload', userController.uploadAvatar);
 
+//current user
+userRouter.get("/current-user", userMiddleware.verifyToken, userController.currentUser)
+
 module.exports = { userRouter };
+
+
+
