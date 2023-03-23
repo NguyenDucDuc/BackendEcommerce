@@ -1,6 +1,7 @@
 const userController = require('../controllers/user.controller');
 const { check } = require('express-validator');
 const userMiddleware = require('../middlewares/user.middleware');
+const { verify } = require('jsonwebtoken');
 const userRouter = require('express').Router();
 
 // register user
@@ -54,6 +55,8 @@ userRouter.post('/upload', userController.uploadAvatar);
 
 //current user
 userRouter.get("/current-user", userMiddleware.verifyToken, userController.currentUser)
+// check role admin
+userRouter.get("/role-admin", userMiddleware.verifyToken ,userController.roleAdmin)
 
 module.exports = { userRouter };
 
