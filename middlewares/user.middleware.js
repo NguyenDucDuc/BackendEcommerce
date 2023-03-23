@@ -21,7 +21,11 @@ module.exports = {
             }
         } catch (error) {
             console.log(error)
-            return responseUtil.serverError()
+            res.status(500).json({
+                status: 500,
+                data: [],
+                errors: "Server error !"
+            })
         }
     },
     verifyUpdate: async (req, res, next) => {

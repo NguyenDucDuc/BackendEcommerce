@@ -4,13 +4,23 @@ const {ProductCart} = require("../models")
 module.exports = {
     add: async (body) => {
         try {
-            const newProductCart = await ProductCart.create({
+            const productCart = await ProductCart.findOne({where: {
                 productId: body.productId,
-                cartId: body.cartId,
-                quantity: body.quantity,
-                unitPrice: body.unitPrice
-            })
-            return responseUtil.created(newProductCart)
+                cartId: body.cartId
+            }})
+            if(productCart){
+                productCart.quantity = productCart.quantity + 1
+                await productCart.save()
+                return responseUtil.created(productCart)
+            }else {
+                const newProductCart = await ProductCart.create({
+                    productId: body.productId,
+                    cartId: body.cartId,
+                    quantity: body.quantity,
+                    unitPrice: body.unitPrice
+                })
+                return responseUtil.created(newProductCart)
+            }
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
