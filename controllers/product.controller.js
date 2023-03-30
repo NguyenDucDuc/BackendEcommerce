@@ -1,10 +1,10 @@
-const productService = require('../services/product.service');
+const productService = require("../services/product.service");
 module.exports = {
   getProductByKw: async (req, res) => {
     try {
       let params = req.query;
       params.page = params.page === undefined ? 1 : params.page;
-      params.name = params.name === undefined ? '' : params.name;
+      params.name = params.name === undefined ? "" : params.name;
       const { code, data } = await productService.getProductByKw(params);
       return res.status(code).json(data);
     } catch (error) {
@@ -24,11 +24,18 @@ module.exports = {
   },
 
   addProduct: async (req, res) => {
-    let { attributes, ...product } = req.body;
+    let attributes = {ids: [], list: []};
+    let { ids, list, ...product } = req.body;
+    attributes.ids = JSON.parse(ids);
+    attributes.list = JSON.parse(list);
     if (req?.files) {
       product.image = req.files.image;
     }
-
+    product.shopId = 1;
+    product.isActive = true;
+    product.sku = new Date().getTime();
+    product.rate = 0;
+    product.unitOnOrder = 0;
     product.createAt = new Date();
     product.updateAt = new Date();
     try {
@@ -82,6 +89,4 @@ module.exports = {
       return res.status(500);
     }
   },
-
-
 };
