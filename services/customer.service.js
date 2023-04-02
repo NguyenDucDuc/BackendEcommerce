@@ -30,5 +30,18 @@ module.exports = {
         } catch (error) {
             return responseUtil.serverError()
         }
+    },
+    checkBoughtProduct: async (userId, productId) => {
+        try {
+            const [result] = await sequelize.query(`
+                select d.*
+                from customers c, orders o, orderdetails d
+                where c.id = o.customerId and o.id = d.orderId and c.userId=${userId} and d.productId=${productId} and o.status = 'Đợi xét duyệt'
+            `)
+            return responseUtil.getSuccess(result)
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
     }
 }
