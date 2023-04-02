@@ -235,7 +235,7 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    const { page, name, fP, tP, sortBy, order, cateID } = params;
+    const { page, name, fP, tP, sortBy, order, cateID, shopID } = params;
     let data, code, start, categories;
     if (page > 0) {
       start = parseInt((page - 1) * process.env.PAGE_SIZE);
@@ -248,6 +248,7 @@ const productService = {
       where: {
         [Op.and]: [
           name ? { name: { [Op.substring]: name } } : {},
+          shopID ? { shopId: shopID } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
           tP ? { price: { [Op.lte]: tP } } : {},
           cateID ? { categoryId: { [Op.in]: categories } } : {},
@@ -271,6 +272,7 @@ const productService = {
         where: {
           [Op.and]: [
             name ? { name: { [Op.substring]: name } } : {},
+            shopID ? { shopId: shopID } : {},
             fP ? { price: { [Op.gte]: fP } } : {},
             tP ? { price: { [Op.lte]: tP } } : {},
             cateID ? { categoryId: cateID } : {},
