@@ -1,6 +1,6 @@
-const shopServices = require('../services/shop.service');
-const responseUtil = require('../utils/response.util');
-const { Seller } = require('../models');
+const shopServices = require("../services/shop.service");
+const resUtil = require("../utils/res.util");
+const { Seller } = require("../models");
 
 module.exports = {
   create: async (req, res) => {
@@ -63,8 +63,8 @@ module.exports = {
   },
   getById: async (req, res) => {
     try {
-      const {code, data} = await shopServices.getById(req.params.id)
-      res.status(code).json(data)
+      const { code, data } = await shopServices.getById(req.params.id);
+      res.status(code).json(data);
     } catch (error) {
       console.log(error);
       const { code, data } = responseUtil.serverError();
@@ -76,6 +76,17 @@ module.exports = {
     params.shopId = req.params.shopId;
     try {
       const { code, data } = await shopServices.revenueStats(params);
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
+
+  getUserByShopId: async (req, res) => {
+    const shopId = req.params.shopId;
+    try {
+      const { code, data } = await shopServices.getUserByShopId(shopId);
       return res.status(code).json(data);
     } catch (error) {
       console.log(error);
