@@ -13,5 +13,15 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    checkBoughtProduct: async (req, res) => {
+        try {
+            const {code, data} = await customerService.checkBoughtProduct(req.body.userId, req.body.productId)
+            res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            res.status(code).json(data)
+        }
     }
 }

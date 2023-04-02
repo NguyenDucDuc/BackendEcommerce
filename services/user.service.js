@@ -100,43 +100,56 @@ module.exports = {
   login: async (body) => {
     try {
       const user = await User.findOne({ where: { userName: body.userName } });
-      if (user) {
-        const validPassword = await bcrypt.compare(
-          body.passWord,
-          user.passWord
-        );
-        if (validPassword) {
-          const accessToken = await jwt.sign(
-            {
-              userId: user.id,
-            },
-            "duc-nd"
+      console.log(user)
+      if(user.isActive === false){
+        console.log(user.isActive)
+        return {
+          code: 403,
+          data: {
+            status: 403,
+            data: [],
+            errors: "Tài khoản của bạn đã bị khóa!"
+          }
+        }
+      } else {
+        if (user) {
+          const validPassword = await bcrypt.compare(
+            body.passWord,
+            user.passWord
           );
-          console.log(accessToken);
-          //combine object
-          const infoUser = {
-            user: user,
-            accessToken: accessToken,
-          };
-          return responseUtil.getSuccess(infoUser);
+          if (validPassword) {
+            const accessToken = await jwt.sign(
+              {
+                userId: user.id,
+              },
+              "duc-nd"
+            );
+            console.log(accessToken);
+            //combine object
+            const infoUser = {
+              user: user,
+              accessToken: accessToken,
+            };
+            return responseUtil.getSuccess(infoUser);
+          } else {
+            return {
+              code: 400,
+              data: {
+                status: 400,
+                data: [],
+                errors: "Tài khoản hoặc mật khẩu không đúng !",
+              },
+            };
+          }
         } else {
           return {
             code: 400,
             data: {
               status: 400,
-              data: [],
-              errors: "Tài khoản hoặc mật khẩu không đúng !",
+              data: "Tài khoản hoặc mật khẩu không đúng!",
             },
           };
         }
-      } else {
-        return {
-          code: 400,
-          data: {
-            status: 400,
-            data: "Tài khoản hoặc mật khẩu không đúng!",
-          },
-        };
       }
     } catch (error) {
       console.log(error);
