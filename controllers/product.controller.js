@@ -24,14 +24,13 @@ module.exports = {
   },
 
   addProduct: async (req, res) => {
-    let attributes = {ids: [], list: []};
+    let attributes = { ids: [], list: [] };
     let { ids, list, ...product } = req.body;
     attributes.ids = JSON.parse(ids);
     attributes.list = JSON.parse(list);
     if (req?.files) {
       product.image = req.files.image;
     }
-    product.shopId = 1;
     product.isActive = true;
     product.sku = new Date().getTime();
     product.rate = 0;
@@ -49,10 +48,20 @@ module.exports = {
       return res.status(500);
     }
   },
-  deleteProduct: async (req, res) => {
+  updateProduct: async (req, res) => {
+    let attributes = { ids: [], list: [] };
+    let { ids, list, ...product } = req.body;
+    attributes.ids = JSON.parse(ids);
+    attributes.list = JSON.parse(list);
+    if (req?.files) {
+      product.image = req.files.image;
+    }
+    let productId = req.params.productId;
     try {
-      const { code, data } = await productService.deleteProduct(
-        req.params.productId
+      const { code, data } = await productService.updateProduct(
+        productId,
+        product,
+        attributes
       );
       return res.status(code).json(data);
     } catch (error) {
@@ -60,14 +69,10 @@ module.exports = {
       return res.status(500);
     }
   },
-  updateProduct: async (req, res) => {
-    let productData = req.body;
-    productData.image = req.files.image;
-    let productId = req.params.productId;
+  deleteProduct: async (req, res) => {
     try {
-      const { code, data } = await productService.updateProduct(
-        productId,
-        productData
+      const { code, data } = await productService.deleteProduct(
+        req.params.productId
       );
       return res.status(code).json(data);
     } catch (error) {
