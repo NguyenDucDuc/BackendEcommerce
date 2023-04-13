@@ -96,51 +96,24 @@ const productService = {
     }
   },
 
-  deleteProduct: async (productID) => {
-    try {
-      let product = await db.Product.findByPk(productID);
-      if (!product) {
-        return resUtil.clientError(404, "Sản phẩm không tồn tại");
-      }
-
-      let listPromise = Object.keys(DATA_TYPE).map((type) => {
-        db[DATA_TYPE[type]].destroy({
-          where: {
-            productId: productID,
-          },
-        });
-      });
-
-      await Promise.all(listPromise).then(() => {
-        return product.destroy();
-      });
-
-      return resUtil.successful(200, [], "Sản phẩm đã được xóa");
-    } catch (error) {
-      console.log(error);
-      return resUtil.serverError();
-    }
-  },
-
-  updateProduct: async (productID, productData) => {
-    const { attributes, ...productBase } = productData;
+  updateProduct: async (productID, product, attributes) => {
     const transaction = await db.sequelize.transaction();
     try {
-      if (productBase.image) {
+      if (product.image) {
         const result = await cloudinary.uploader.upload(
-          productBase.image.tempFilePath,
+          product.image.tempFilePath,
           {
             public_id: `${new Date().getTime()}`,
             resource_type: "auto",
             folder: "ProductImage",
           }
         );
-        productBase.image = result.secure_url;
+        product.image = result.secure_url;
       }
       const listPromise = [];
-      if (Object.keys(productBase).length) {
+      if (Object.keys(product).length) {
         listPromise.push(
-          db.Product.update(productBase, {
+          db.Product.update(product, {
             where: {
               id: productID,
             },
@@ -148,8 +121,34 @@ const productService = {
           })
         );
       }
-      if (attributes?.length) {
-        attributes.forEach(async (attribute) => {
+
+      // let listValue = attributes.list.reduce((newObj, item) => {
+      //   if (!newObj.hasOwnProperty(item["backendType"])) {
+      //     newObj[item["backendType"]] = [
+      //       {
+      //         value: item.value,
+      //         attributeId: item.attributeId,
+      //         createAt: new Date(),
+      //         updateAt: new Date(),
+      //         productId: productID,
+      //       },
+      //     ];
+      //   } else
+      //     newObj[item["backendType"]].push({
+      //       value: item.value,
+      //       attributeId: item.attributeId,
+      //       createAt: new Date(),
+      //       updateAt: new Date(),
+      //       productId: productID
+      //     });
+      //   return newObj;
+      // }, {});
+
+      // console.log(listValue);
+
+      if (attributes.list.length > 0) {
+        attributes.list.forEach(async (attribute) => {
+          console.log({attribute});
           listPromise.push(
             db[DATA_TYPE[attribute["backendType"]]].update(
               {
@@ -178,6 +177,34 @@ const productService = {
       return resUtil.serverError();
     }
   },
+
+  deleteProduct: async (productID) => {
+    try {
+      let product = await db.Product.findByPk(productID);
+      if (!product) {
+        return resUtil.clientError(404, "Sản phẩm không tồn tại");
+      }
+
+      let listPromise = Object.keys(DATA_TYPE).map((type) => {
+        db[DATA_TYPE[type]].destroy({
+          where: {
+            productId: productID,
+          },
+        });
+      });
+
+      await Promise.all(listPromise).then(() => {
+        return product.destroy();
+      });
+
+      return resUtil.successful(200, [], "Sản phẩm đã được xóa");
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
+    }
+  },
+
+ 
 
   // có thể tạo 1 bảng flat để lấy những thuộc tính hay dùng
   getProductByID: async (productID) => {
@@ -235,7 +262,7 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    const { page, name, fP, tP, sortBy, order, cateID, shopID } = params;
+    const { page, name, fP, tP, sortBy, order, cateID, shopId } = params;
     let data, code, start, categories;
     if (page > 0) {
       start = parseInt((page - 1) * process.env.PAGE_SIZE);
@@ -248,7 +275,7 @@ const productService = {
       where: {
         [Op.and]: [
           name ? { name: { [Op.substring]: name } } : {},
-          shopID ? { shopId: shopID } : {},
+          shopId ? { shopId: shopId } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
           tP ? { price: { [Op.lte]: tP } } : {},
           cateID ? { categoryId: { [Op.in]: categories } } : {},
@@ -272,7 +299,7 @@ const productService = {
         where: {
           [Op.and]: [
             name ? { name: { [Op.substring]: name } } : {},
-            shopID ? { shopId: shopID } : {},
+            shopId ? { shopId: shopId } : {},
             fP ? { price: { [Op.gte]: fP } } : {},
             tP ? { price: { [Op.lte]: tP } } : {},
             cateID ? { categoryId: cateID } : {},
