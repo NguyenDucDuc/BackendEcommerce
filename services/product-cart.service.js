@@ -6,7 +6,7 @@ module.exports = {
         try {
             const productCart = await ProductCart.findOne({where: {
                 productId: body.productId,
-                cartId: body.cartId
+                cartId: body.cartId,
             }})
             if(productCart){
                 productCart.quantity = productCart.quantity + 1
@@ -32,6 +32,38 @@ module.exports = {
             productCart.quantity = body.quantity
             await productCart.save()
             return responseUtil.updateSuccess(productCart)
+        } catch (error) {
+            console.log(error)
+            return responseUtil.serverError()
+        }
+    },
+    delete: async (body) => {
+        try {
+            const productCart = await ProductCart.findOne({
+                where: {
+                    productId: body.productId,
+                    cartId: body.cartId
+                }
+            })
+            if(productCart){
+                await productCart.destroy()
+                return {
+                    code: 200,
+                    data: {
+                        status: 200,
+                        data: productCart
+                    }
+                }
+            } else {
+                return {
+                    code: 400,
+                    data: {
+                        status: 400,
+                        data: [],
+                        message: "Bad request"
+                    }
+                }
+            }
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
