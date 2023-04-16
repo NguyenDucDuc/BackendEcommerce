@@ -1,13 +1,15 @@
-const { Op } = require('sequelize');
-const db = require('../models');
-const resUtil = require('../utils/res.util');
+const { Op } = require("sequelize");
+const db = require("../models");
+const { Customer, User } = require("../models");
+const resUtil = require("../utils/res.util");
+const userService = require("./user.service");
 
 const STATUS_ORDER = {
-  0: 'Đã hủy',
-  1: 'Đợi xét duyệt',
-  2: 'Đang chuẩn bị hàng',
-  3: 'Đang vận chuyển',
-  4: 'Đã nhận',
+  0: "Đã hủy",
+  1: "Đợi xét duyệt",
+  2: "Đang chuẩn bị hàng",
+  3: "Đang vận chuyển",
+  4: "Đã nhận",
 };
 
 const orderService = {
@@ -24,7 +26,7 @@ const orderService = {
       const shop = await db.Shop.findByPk(order.shopId);
       if (!shop) {
         await transaction.commit();
-        return resUtil.clientError(404, 'Không tìm thấy cửa hàng');
+        return resUtil.clientError(404, "Không tìm thấy cửa hàng");
       }
 
       const newOrder = await db.Order.create(order, {
@@ -73,15 +75,15 @@ const orderService = {
       let listProduct = await db.Product.findAll({
         where: {
           id: {
-            [Op.in]: listValidate['ids'],
+            [Op.in]: listValidate["ids"],
           },
         },
       });
 
       for (let i = 0; i < listProduct.length; i++) {
         if (
-          listProduct[i]['unitInStock'] <
-          listValidate['details'][listProduct[i]['id']]['quantity']
+          listProduct[i]["unitInStock"] <
+          listValidate["details"][listProduct[i]["id"]]["quantity"]
         ) {
           checkStock = false;
           break;
@@ -89,7 +91,7 @@ const orderService = {
       }
       if (!checkStock) {
         await transaction.rollback();
-        return resUtil.clientError(404, 'Hiện tại sản phẩm đã hết hàng');
+        return resUtil.clientError(404, "Hiện tại sản phẩm đã hết hàng");
       }
 
       listPromise.push(
@@ -99,7 +101,7 @@ const orderService = {
       );
       await Promise.all(listPromise);
       await transaction.commit();
-      return resUtil.successful(200, [], 'Bạn đã đặt hàng thành công.');
+      return resUtil.successful(200, [], "Bạn đã đặt hàng thành công.");
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -113,20 +115,20 @@ const orderService = {
 
       switch (order.state) {
         case 4:
-          return resUtil.clientError(404, 'Đơn hàng đã hoàn thành');
+          return resUtil.clientError(200, "Đơn hàng đã hoàn thành");
         case 0:
-          return resUtil.clientError(404, 'Đơn hàng đã hủy');
+          return resUtil.clientError(200, "Đơn hàng đã hủy");
       }
 
       switch (action) {
-        case 'DONE':
+        case "DONE":
           await order.update(
             { state: order.state + 1, status: STATUS_ORDER[order.state + 1] },
             { transaction: transaction }
           );
 
           break;
-        case 'CANCEL':
+        case "CANCEL":
           const listOrderDetail = await db.OrderDetail.findAll({
             where: {
               orderId: orderId,
@@ -171,7 +173,7 @@ const orderService = {
       }
 
       await transaction.commit();
-      return resUtil.successful(200, order);
+      return resUtil.successful(200, order, 'Xác nhận thành công');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -190,7 +192,7 @@ const orderService = {
         },
       });
       if (!order) {
-        return resUtil.clientError(404, 'Đơn hàng không tồn tại');
+        return resUtil.clientError(404, "Đơn hàng không tồn tại");
       }
       const listOrderDetail = await db.OrderDetail.findAll({
         where: {
@@ -206,7 +208,9 @@ const orderService = {
       return resUtil.serverError();
     }
   },
-  getOrder: async ({ shopId, customerId, state }) => {
+  getOrder: async ({ shopId, customerId, state, page = 1, pageSize = 1, sortBy, order }) => {
+    const start = parseInt((page - 1) * pageSize)
+    const result = {}
     try {
       const listOrder = await db.Order.findAll({
         where: {
@@ -216,13 +220,38 @@ const orderService = {
             customerId ? { customerId: customerId } : {},
           ],
         },
+        offset: start,
+        limit: parseInt(pageSize),
+        order: [sortBy ? [sortBy, order] : ["id", "desc"]],
+        include: {
+          model: Customer,
+          attributes: ['userId'],
+          include: {
+            model: User,
+            attributes: ['firstName', 'lastName', 'avatar', 'isActive']
+          },
+        },
       });
 
+      
       if (!listOrder.length) {
-        return resUtil.clientError(404, 'Không có đơn hàng');
+        return resUtil.clientError(404, "Không có đơn hàng");
       }
-
-      return resUtil.successful(200, listOrder);
+      
+      const amountOrder = await db.Order.count({
+        where: {
+          [Op.and]: [
+            state ? { state: state } : {},
+            shopId ? { shopId: shopId } : {},
+            customerId ? { customerId: customerId } : {},
+          ],
+        }
+      })
+      result.listOrder = listOrder
+      result.amountOrder = amountOrder
+      result.page = parseInt(page)
+      result.pageSize = parseInt(pageSize)
+      return resUtil.successful(200, result);
     } catch (error) {
       console.log(error);
       return resUtil.serverError();
