@@ -262,10 +262,12 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    const { page, name, fP, tP, sortBy, order, cateID, shopId } = params;
+    let { page, name, fP, tP, sortBy, order, cateID, shopId, pageSize } = params;
     let data, code, start, categories;
+    if(!pageSize) pageSize = parseInt(process.env.PAGE_SIZE)
+    else pageSize = parseInt(pageSize)
     if (page > 0) {
-      start = parseInt((page - 1) * process.env.PAGE_SIZE);
+      start = parseInt((page - 1) * pageSize);
     }
     if (cateID) {
       let category = await db.Category.findByPk(cateID);
@@ -282,7 +284,7 @@ const productService = {
         ],
       },
       offset: start,
-      limit: parseInt(process.env.PAGE_SIZE),
+      limit: pageSize,
       order: [sortBy ? [sortBy, order] : ["id", "desc"]],
     });
     const { listProduct, listProductId, listGroupId } =
@@ -358,7 +360,7 @@ const productService = {
           listProduct: products.map(
             (product) => listProduct[product.dataValues.id]
           ),
-          amountPage: Math.ceil(amountProduct / process.env.PAGE_SIZE),
+          amountPage: Math.ceil(amountProduct / pageSize),
           amountProduct: amountProduct,
         };
       })
