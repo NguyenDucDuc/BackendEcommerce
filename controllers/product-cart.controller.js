@@ -23,5 +23,16 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    delete: async (req, res) => {
+        try {
+            const body = req.body
+            const {code, data} = await productCartService.delete(body)
+            return res.status(code).json(data)
+        } catch (error) {
+            console.log(error)
+            const {code, data} = responseUtil.serverError()
+            return res.status(code).json(data)
+        }
     }
 }
