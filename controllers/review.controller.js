@@ -49,4 +49,15 @@ module.exports = {
       return res.status(500);
     }
   },
+
+  addReviewV2: async (req, res) => {
+    try {
+      const body = req.body
+      const userId = req.data.userId
+      const {code, data} = await reviewService.addReviewV2(body, userId)
+      return res.status(code).json(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };
