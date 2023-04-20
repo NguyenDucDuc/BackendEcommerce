@@ -16,6 +16,7 @@ const attributeGroupRouter = require("./attribute-group.router");
 const { addressRouter } = require("./address.router");
 const { cartRouter } = require("./cart.router");
 const { productCartRouter } = require("./product-cart.router");
+const { messageRouter } = require("./message.router");
 
 const indexRouter = require("express").Router();
 
@@ -37,5 +38,6 @@ indexRouter.use("/cart", cartRouter);
 indexRouter.use("/product-cart", productCartRouter);
 indexRouter.use("/attribute", attributeRouter);
 indexRouter.use("/attribute-group", attributeGroupRouter);
+indexRouter.use("/message", messageRouter);
 
 module.exports = { indexRouter };

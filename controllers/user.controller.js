@@ -170,4 +170,14 @@ module.exports = {
       res.status(code).json(data);
     }
   },
+  getUserByProductId: async (req, res) => {
+    try {
+      const {code, data} = await userService.getUserByProductId(+req.params.productId)
+      return res.status(code).json(data)
+    } catch (error) {
+      console.log(error);
+      const { code, data } = responseUtil.serverError();
+      res.status(code).json(data);
+    }
+  }
 };
