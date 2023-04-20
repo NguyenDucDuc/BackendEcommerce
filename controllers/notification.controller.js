@@ -17,7 +17,7 @@ module.exports = {
   getByUserId: async (req, res) => {
     try {
       const { code, data } = await notificationService.getByUserId(
-        req.data.userId
+        parseInt(req.data.userId)
       );
       res.status(code).json(data);
     } catch (error) {

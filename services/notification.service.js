@@ -21,13 +21,13 @@ module.exports = {
     },
     getByUserId: async (userId) => {
         try {
-            const cacheNotification = await client.get(`notification-${userId}`)
-            if(cacheNotification) {
-                console.log("cache notification")
-                return responseUtil.getSuccess(JSON.parse(cacheNotification))
-            }
+            // const cacheNotification = await client.get(`notification-${userId}`)
+            // if(cacheNotification) {
+            //     console.log("cache notification")
+            //     return responseUtil.getSuccess(JSON.parse(cacheNotification))
+            // }
             const notifications = await Notification.findAll({where: {userId: userId}})
-            await client.set(`notification-${userId}`, JSON.stringify(notifications))
+            // await client.set(`notification-${userId}`, JSON.stringify(notifications))
             return responseUtil.getSuccess(notifications)
         } catch (error) {
             console.log(error)

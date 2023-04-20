@@ -101,7 +101,11 @@ const orderService = {
       );
       await Promise.all(listPromise);
       await transaction.commit();
-      return resUtil.successful(200, [], "Bạn đã đặt hàng thành công.");
+      return resUtil.successful(
+        200,
+        { data: newOrder.id },
+        "Bạn đã đặt hàng thành công."
+      );
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -173,7 +177,7 @@ const orderService = {
       }
 
       await transaction.commit();
-      return resUtil.successful(200, order, 'Xác nhận thành công');
+      return resUtil.successful(200, order, "Xác nhận thành công");
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -208,9 +212,17 @@ const orderService = {
       return resUtil.serverError();
     }
   },
-  getOrder: async ({ shopId, customerId, state, page = 1, pageSize = 1, sortBy, order }) => {
-    const start = parseInt((page - 1) * pageSize)
-    const result = {}
+  getOrder: async ({
+    shopId,
+    customerId,
+    state,
+    page = 1,
+    pageSize = 1,
+    sortBy,
+    order,
+  }) => {
+    const start = parseInt((page - 1) * pageSize);
+    const result = {};
     try {
       const listOrder = await db.Order.findAll({
         where: {
@@ -225,19 +237,18 @@ const orderService = {
         order: [sortBy ? [sortBy, order] : ["id", "desc"]],
         include: {
           model: Customer,
-          attributes: ['userId'],
+          attributes: ["userId"],
           include: {
             model: User,
-            attributes: ['firstName', 'lastName', 'avatar', 'isActive']
+            attributes: ["firstName", "lastName", "avatar", "isActive"],
           },
         },
       });
 
-      
       if (!listOrder.length) {
         return resUtil.clientError(404, "Không có đơn hàng");
       }
-      
+
       const amountOrder = await db.Order.count({
         where: {
           [Op.and]: [
@@ -245,12 +256,12 @@ const orderService = {
             shopId ? { shopId: shopId } : {},
             customerId ? { customerId: customerId } : {},
           ],
-        }
-      })
-      result.listOrder = listOrder
-      result.amountOrder = amountOrder
-      result.page = parseInt(page)
-      result.pageSize = parseInt(pageSize)
+        },
+      });
+      result.listOrder = listOrder;
+      result.amountOrder = amountOrder;
+      result.page = parseInt(page);
+      result.pageSize = parseInt(pageSize);
       return resUtil.successful(200, result);
     } catch (error) {
       console.log(error);
