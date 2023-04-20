@@ -413,4 +413,22 @@ module.exports = {
       return responseUtil.serverError();
     }
   },
+  getUserByProductId: async (productId) => {
+    try {
+      const [[user]] = await sequelize.query(`
+        select u.*
+        from products p, shops s, sellers e, users u
+        where p.shopId = s.id and s.sellerId = e.id and e.userId = u.id and p.id = ${productId}
+      `)
+      return {
+        code: 200,
+        data: {
+          status: 200,
+          data: user
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };

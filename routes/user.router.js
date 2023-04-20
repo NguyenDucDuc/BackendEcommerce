@@ -58,6 +58,8 @@ userRouter.get("/current-user", userMiddleware.verifyToken, userController.curre
 // check role admin
 userRouter.get("/role-admin", userMiddleware.verifyToken ,userController.roleAdmin)
 
+userRouter.get('/get-user-by-productId/:productId', userController.getUserByProductId)
+
 module.exports = { userRouter };
 
 
