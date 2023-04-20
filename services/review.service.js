@@ -3,8 +3,9 @@ const _Review = db.Review;
 const _Product = db.Product;
 const _Shop = db.Shop;
 const _Customer = db.Customer;
-const { QueryTypes } = require('sequelize');
+const { QueryTypes, Utils } = require('sequelize');
 const resUtil = require('../utils/res.util');
+const {Review, User} = require('../models')
 
 const reviewService = {
   getReviewByProductId: async (productId, page = 1) => {
@@ -191,6 +192,29 @@ const reviewService = {
     }
   },
   calAVG: (totalPoint, amnount) => (totalPoint / amnount).toFixed(1),
+  addReviewV2: async (body, userId) => {
+    try {
+      const user = await User.findByPk(userId)
+      const newReview = await Review.create({
+        content: body.content,
+        rate: body.rate,
+        productId: body.productId,
+        userId
+      })
+      return {
+        code: 200,
+        data: {
+          status: 200,
+          data: {
+            ...newReview.dataValues,
+            User: user
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };
 
 module.exports = reviewService;
