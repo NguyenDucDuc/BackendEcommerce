@@ -1,9 +1,9 @@
 module.exports = [
   {
     id: 1,
-    shopName: 'Evisu Go Vap',
+    shopName: 'Quần Áo Gò Vấp',
     rate: 0,
-    desc: 'Quan Ao Dang Cap Sai Gon',
+    desc: 'Quần áo thời trang giá tốt tại Gò Vấp',
     image:
       'https://res.cloudinary.com/djbju13al/image/upload/v1675910681/Shop/1675910679507.jpg',
     isBlock: false,
@@ -13,9 +13,9 @@ module.exports = [
   },
   {
     id: 2,
-    shopName: 'Dickies Shop',
+    shopName: 'Laptop EZHouse',
     rate: 0,
-    desc: 'Do Nhap USA',
+    desc: 'Laptop giá rẻ dành cho sinh viên',
     image:
       'https://res.cloudinary.com/djbju13al/image/upload/v1675910681/Shop/1675910679507.jpg',
     isBlock: false,
@@ -25,10 +25,10 @@ module.exports = [
   },
   {
     id: 3,
-    shopName: 'Hoài Nam Office',
+    shopName: 'Ebook Sài Gòn',
     rate: 0,
-    desc: 'Uy tín - Chất lượng',
-    image: 'link shop',
+    desc: 'Sách hay, giá tốt, kèm nhiều ưu đãi',
+    image: 'https://res.cloudinary.com/djbju13al/image/upload/v1675909925/Avatar/1675909923474.jpg',
     sellerId: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
