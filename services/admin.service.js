@@ -3,7 +3,7 @@ const resUtils = require("../utils/res.util");
 const db = require("../models");
 const responseUtil = require("../utils/response.util");
 const { sequelize } = require("../models");
-const { User } = require("../models");
+const { User, Admin } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken')
 const adminService = {
@@ -166,8 +166,23 @@ const adminService = {
       const user = await User.findOne({
         where: {
           userName: body.userName,
-        },
+        }
       });
+      const isAdmin = await Admin.findOne({
+        where: {
+          userId: user.id
+        }
+      })
+      if(!isAdmin){
+        return {
+          code: 403,
+          data: {
+            status: 403,
+            data: [],
+            errors: "Chỉ admin với có thể truy cập"
+          }
+        }
+      }
       if (user) {
         const validPassword = await bcrypt.compare(
           body.passWord,

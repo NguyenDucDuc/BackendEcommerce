@@ -1,15 +1,27 @@
+const { Conversation } = require("../schemas/conversation.schema");
 const { Message } = require("../schemas/message.schema");
+const {User} = require('../models')
 
 module.exports = {
   create: async (req, res) => {
     try {
       const body = req.body;
+      const user = await User.findByPk(req.data.userId)
+      const creator = {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar
+      }
       const newMessage = await Message.create({
         content: body.content,
-        senderId: body.senderId,
-        receiverId: body.receiverId,
+        conversation: body.conversation,
+        creator: creator
       });
+      const conversation = await Conversation.findById(body.conversation)
       await newMessage.save();
+      await conversation.updateOne({$push: {messages: newMessage._id}})
+      await conversation.updateOne({$set: {lastMessage: newMessage._id}})
       return res.status(200).json({
         status: 200,
         data: newMessage,
@@ -20,23 +32,12 @@ module.exports = {
   },
   getAllMessage: async (req, res) => {
     try {
-      const body = req.body;
-      const query = req.query
       const listMessage = await Message.find({
-        $or: [
-          {
-            senderId: query.senderId,
-            receiverId: query.receiverId,
-          },
-          {
-            receiverId: query.senderId,
-            senderId: query.receiverId,
-          }
-        ],
-      });
+        conversation: "64455503b353c58f8b24808f"
+      })
       return res.status(200).json({
         status: 200,
-        data: listMessage,
+        data: listMessage
       });
     } catch (error) {
       console.log(error);
