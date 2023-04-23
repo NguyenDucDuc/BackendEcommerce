@@ -1,14 +1,13 @@
-'use strict';
-const data = require('../data');
+"use strict";
+const { attributes } = require("../data/attributes.data");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('Attributes', data.attributes);
+    return queryInterface.bulkInsert("Attributes", attributes);
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Attributes', null, {});
+    return queryInterface.bulkDelete("Attributes", null, {});
   },
 };
-

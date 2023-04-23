@@ -27,6 +27,10 @@ module.exports = {
       isBlock: {
         type: Sequelize.BOOLEAN,
       },
+      totalPrice: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
+      },
       sellerId: {
         type: Sequelize.INTEGER,
         allowNull: false,

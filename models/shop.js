@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       desc: DataTypes.TEXT('long'),
       image: DataTypes.STRING,
       isBlock: DataTypes.BOOLEAN,
+      totalPrice: DataTypes.DECIMAL,
       sellerId: DataTypes.INTEGER,
     },
     {
