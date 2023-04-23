@@ -3,8 +3,11 @@ const mongoose = require('mongoose')
 
 const messageSchema = new mongoose.Schema({
     content: String,
-    senderId: Number,
-    receiverId: Number
+    creator: Object,
+    conversation: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation"
+    },
 }, {
     timestamps: true
 })
