@@ -53,6 +53,7 @@ shopRouter.post(
   auth.verifyStatsShop,
   shopController.revenueStats
 );
+shopRouter.put("/:shopId", shopController.updateShop);
 
 shopRouter.get("/:shopId/get-user", shopController.getUserByShopId);
 

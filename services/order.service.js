@@ -103,7 +103,7 @@ const orderService = {
       await transaction.commit();
       return resUtil.successful(
         200,
-        { data: newOrder.id },
+        { data: newOrder },
         "Bạn đã đặt hàng thành công."
       );
     } catch (error) {
@@ -119,11 +119,12 @@ const orderService = {
 
       switch (order.state) {
         case 4:
+          await transaction.commit();
           return resUtil.clientError(200, "Đơn hàng đã hoàn thành");
         case 0:
+          await transaction.commit();
           return resUtil.clientError(200, "Đơn hàng đã hủy");
       }
-
       switch (action) {
         case "DONE":
           await order.update(

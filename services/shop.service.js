@@ -1,5 +1,5 @@
 const { client } = require("../databases/redis.init");
-const { Shop, Seller, Order } = require("../models");
+const { Shop, Seller, Order, Product } = require("../models");
 const { QueryTypes } = require("sequelize");
 const db = require("../models");
 const { Op } = require("sequelize");
@@ -119,7 +119,13 @@ const shopService = {
   getById: async (shopId) => {
     try {
       const shop = await Shop.findByPk(shopId);
-      return responseUltil.getSuccess(shop);
+      const amountProduct = await Product.count({
+        where: {
+          shopId: shopId,
+        },
+      });
+      shop.dataValues.amountProduct = amountProduct;
+      return responseUltil.getSuccess(shop.dataValues);
     } catch (error) {
       console.log(error);
       return responseUltil.serverError();
@@ -281,7 +287,19 @@ const shopService = {
   getUserByShopId: async (shopId) => {
     try {
       const shop = await Shop.findByPk(shopId, { include: db.Seller });
-      return resUtil.successful(200, shop.Seller.userId)
+      return resUtil.successful(200, shop.Seller.userId);
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
+    }
+  },
+
+  updateShop: async ({ shopId, amount }) => {
+    try {
+      const shop = await Shop.findByPk(shopId);
+      shop.totalPrice = Number(shop.totalPrice) + amount;
+      await shop.save();
+      return resUtil.successful(200, shop);
     } catch (error) {
       console.log(error);
       return resUtil.serverError();
