@@ -1,10 +1,10 @@
 'use strict';
-const data = require('../data');
+const {productInt} = require('../data/product.data');
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.bulkInsert('ProductInts', data.productInt);
+    return queryInterface.bulkInsert('ProductInts', productInt);
   },
 
   async down(queryInterface, Sequelize) {
