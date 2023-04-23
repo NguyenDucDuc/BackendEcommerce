@@ -13,11 +13,11 @@ const reviewRouter = require("./review.router");
 const categoryRouter = require("./category.router");
 const attributeRouter = require("./attribute.router");
 const attributeGroupRouter = require("./attribute-group.router");
+const stripeRouter = require('./stripe.router')
 const { addressRouter } = require("./address.router");
 const { cartRouter } = require("./cart.router");
 const { productCartRouter } = require("./product-cart.router");
 const { messageRouter } = require("./message.router");
-
 const indexRouter = require("express").Router();
 
 indexRouter.use("/user", userRouter);
@@ -39,5 +39,6 @@ indexRouter.use("/product-cart", productCartRouter);
 indexRouter.use("/attribute", attributeRouter);
 indexRouter.use("/attribute-group", attributeGroupRouter);
 indexRouter.use("/message", messageRouter);
+indexRouter.use('/checkout', stripeRouter)
 
 module.exports = { indexRouter };

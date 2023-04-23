@@ -93,4 +93,15 @@ module.exports = {
       return res.status(500);
     }
   },
+  updateShop: async (req, res) => {
+    const shopId = req.params.shopId;
+    const amount = Number(req.body.amount);
+    try {
+      const { code, data } = await shopServices.updateShop({ shopId, amount });
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
 };
