@@ -1,5 +1,5 @@
 const { client } = require("../databases/redis.init");
-const { Shop, Seller, Order, Product } = require("../models");
+const { Shop, Seller, Order, Product, User } = require("../models");
 const { QueryTypes } = require("sequelize");
 const db = require("../models");
 const { Op } = require("sequelize");
@@ -287,7 +287,8 @@ const shopService = {
   getUserByShopId: async (shopId) => {
     try {
       const shop = await Shop.findByPk(shopId, { include: db.Seller });
-      return resUtil.successful(200, shop.Seller.userId);
+      const user = await User.findByPk(shop.Seller.userId);
+      return resUtil.successful(200, user);
     } catch (error) {
       console.log(error);
       return resUtil.serverError();
