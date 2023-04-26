@@ -89,25 +89,12 @@ setUpSocketRedis();
 
 io.on("connection", async (socket) => {
   console.log(`${socket.id} connected`);
-  // -- client login
-  socket.on("clientLogin", async (data) => {
-    let arrCientSocket = JSON.parse(await client.get("sockets"));
-    const newSocketClient = {
-      userId: data.userId,
-      socketId: socket.id,
-    };
-    // -- kiem tra neu co trong redis thi update
-    const index = arrCientSocket.findIndex(
-      (item) => item.userId === newSocketClient.userId
-    );
-    if (index === -1) {
-      arrCientSocket.push(newSocketClient);
-      await client.set("sockets", JSON.stringify(arrCientSocket));
-    } else if (index !== -1) {
-      arrCientSocket[index] = newSocketClient;
-      await client.set("sockets", JSON.stringify(arrCientSocket));
-    }
+  // -- client join room
+  socket.on("clientJoinRoom", async (data) => {
+    console.log(`${socket.id} join to room: ${data.conversationId}`)
+    socket.join(data.conversationId)
   });
+
   // -- disconect
   socket.on("disconnect", async (data) => {
     let arrCientSocket = JSON.parse(await client.get("sockets"));
@@ -120,15 +107,7 @@ io.on("connection", async (socket) => {
   });
   // -- send message
   socket.on("clientSendMessage", async (data) => {
-    let arrClientSocket = JSON.parse(await client.get("sockets"));
-    const receiverSocket = arrClientSocket.find(
-      (item) => item.userId === data.receiverId
-    );
-
-    if (receiverSocket) {
-      // socket.to(receiverSocket.socketId).emit("serverSendMessage", data)
-      socket.broadcast.emit("serverSendMessage", data);
-    }
+    socket.to(data.conversation).emit('serverSendMessage', data)
   });
 });
 

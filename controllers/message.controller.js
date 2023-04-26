@@ -33,7 +33,7 @@ module.exports = {
   getAllMessage: async (req, res) => {
     try {
       const listMessage = await Message.find({
-        conversation: "64455503b353c58f8b24808f"
+        conversation: req.params.conversationId
       })
       return res.status(200).json({
         status: 200,
