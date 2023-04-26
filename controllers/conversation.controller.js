@@ -1,11 +1,12 @@
 const { Conversation } = require("../schemas/conversation.schema")
+const {User} = require('../models')
 
 module.exports = {
     create: async (req, res) => {
         try {
             const newConversation = await Conversation.create({
-                name: req.body.name,
-                members: req.body.members,
+                name: null,
+                members: [...req.body.member, req.data.userId],
                 lastMessage: null
             })
             return res.status(200).json({
@@ -18,11 +19,19 @@ module.exports = {
     },
     getMyConversation: async (req, res) => {
         try {
-            const listConversation = await Conversation.find({
+            let listConversation = await Conversation.find({
                 members: {
-                    $in: req.query.userId
+                    $in: req.data.userId
                 }
             }).populate('messages').populate('lastMessage')
+            listConversation = await Promise.all(listConversation.map(async (conversationItem) => {
+                const userId = conversationItem.members.filter((item) => item !== req.data.userId)
+                const userInfo = await User.findByPk(userId[0])
+                return {
+                    ...conversationItem._doc,
+                    name: userInfo.dataValues.userName
+                }
+            }))
             return res.status(200).json({
                 status: 200,
                 data: listConversation
