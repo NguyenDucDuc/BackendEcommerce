@@ -148,7 +148,7 @@ const productService = {
 
       if (attributes.list.length > 0) {
         attributes.list.forEach(async (attribute) => {
-          console.log({attribute});
+          console.log({ attribute });
           listPromise.push(
             db[DATA_TYPE[attribute["backendType"]]].update(
               {
@@ -203,8 +203,6 @@ const productService = {
       return resUtil.serverError();
     }
   },
-
- 
 
   // có thể tạo 1 bảng flat để lấy những thuộc tính hay dùng
   getProductByID: async (productID) => {
@@ -262,10 +260,11 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    let { page, name, fP, tP, sortBy, order, cateID, shopId, pageSize } = params;
+    let { page, name, fP, tP, sortBy, order, cateID, shopId, pageSize } =
+      params;
     let data, code, start, categories;
-    if(!pageSize) pageSize = parseInt(process.env.PAGE_SIZE)
-    else pageSize = parseInt(pageSize)
+    if (!pageSize) pageSize = parseInt(process.env.PAGE_SIZE);
+    else pageSize = parseInt(pageSize);
     if (page > 0) {
       start = parseInt((page - 1) * pageSize);
     }
@@ -385,6 +384,33 @@ const productService = {
         };
       });
       return resUtil.successful(200, data);
+    } catch (error) {
+      return resUtil.serverError();
+    }
+  },
+
+  getImagesById: async ({ id }) => {
+    try {
+      const imageList = await db.ProductImage.findAll({
+        where: {
+          productId: id,
+        },
+      });
+      return resUtil.successful(200, imageList);
+    } catch (error) {
+      return resUtil.serverError();
+    }
+  },
+  addImageForProduct: async ({ image, productId }) => {
+    try {
+      const imageList = await db.ProductImage.create({
+        value: image,
+        productId: productId,
+        attributeId: 26,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      return resUtil.successful(200, [], "Thêm ảnh thành công");
     } catch (error) {
       return resUtil.serverError();
     }

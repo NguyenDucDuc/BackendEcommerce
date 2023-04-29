@@ -94,4 +94,25 @@ module.exports = {
       return res.status(500);
     }
   },
+  getImagesById: async (req, res) => {
+    try {
+      const { code, data } = await productService.getImagesById(req.params);
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
+  addImageForProduct: async (req, res) => {
+    try {
+      const { code, data } = await productService.addImageForProduct({
+        productId: req.params.id,
+        ...req.body,
+      });
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
 };
