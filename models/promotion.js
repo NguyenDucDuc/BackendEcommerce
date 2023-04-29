@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     value: DataTypes.FLOAT,
     isActive: DataTypes.BOOLEAN,
     shopId: DataTypes.INTEGER,
-    productId: DataTypes.INTEGER
+    productId: DataTypes.INTEGER,
+    dateEnd: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Promotion',

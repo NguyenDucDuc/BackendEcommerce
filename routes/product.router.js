@@ -6,7 +6,7 @@ const router = require("express").Router();
 
 router.get("/:id", productController.getProductByID);
 router.get("", productController.getProductByKw);
-router.post('', auth.verifyAddProduct, productController.addProduct);
+router.post("", auth.verifyAddProduct, productController.addProduct);
 router.delete(
   "/:productId",
   auth.verifyDeleteAndUpdateProduct,
@@ -18,6 +18,8 @@ router.put(
   productController.updateProduct
 );
 router.post("/compare", productController.compareProduct);
+router.post("/:id/images", productController.getImagesById);
+router.get("/:id/images", productController.getImagesById);
 router.get("/:id/rate-product", reviewController.countRateOfProduct);
 router.get("/:id/reviews", reviewController.getReviewByProductId);
 

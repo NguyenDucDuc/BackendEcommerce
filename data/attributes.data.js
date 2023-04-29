@@ -200,6 +200,14 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      id: 26,
+      name: "danh sách ảnh",
+      backendType: "string",
+      frontendInput: "text",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
     
    
   ],
