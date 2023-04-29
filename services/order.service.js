@@ -3,6 +3,7 @@ const db = require("../models");
 const { Customer, User } = require("../models");
 const resUtil = require("../utils/res.util");
 const userService = require("./user.service");
+const shopService = require("./shop.service");
 
 const STATUS_ORDER = {
   0: "Đã hủy",
@@ -132,6 +133,20 @@ const orderService = {
             { transaction: transaction }
           );
 
+          if (
+            order.state === 4 &&
+            order.payment === "Thanh toán khi nhận hàng"
+          ) {
+            console.log({ shopId: order.shopId, amout: order.totalPrice });
+            await shopService.updateShop(
+              {
+                shopId: order.shopId,
+                amount: Number(order.totalPrice),
+              },
+              { transaction: transaction }
+            );
+          }
+
           break;
         case "CANCEL":
           const listOrderDetail = await db.OrderDetail.findAll({
@@ -176,7 +191,6 @@ const orderService = {
           await Promise.all(listPromise);
           break;
       }
-
       await transaction.commit();
       return resUtil.successful(200, order, "Xác nhận thành công");
     } catch (error) {
