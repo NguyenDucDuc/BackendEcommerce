@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const { User } = require("./models");
 const { Message } = require("./schemas/message.schema");
 const messageController = require("./controllers/message.controller");
+require('dotenv').config()
 
 // -- connect mongodb
 mongoose
@@ -111,6 +112,6 @@ io.on("connection", async (socket) => {
   });
 });
 
-server.listen(5000, () => {
-  console.log("server is running...");
+server.listen(process.env.CONFIG_PORT, () => {
+  console.log(`server running on port ${process.env.CONFIG_PORT}`);
 });
