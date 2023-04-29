@@ -38,6 +38,10 @@ module.exports = {
       },
       chargeId: {
         type: Sequelize.STRING,
+        allowNull: true,
+      },
+      totalPrice: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
       createdAt: {

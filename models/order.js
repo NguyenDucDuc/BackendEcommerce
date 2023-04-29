@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
       payment: DataTypes.STRING,
       shopId: DataTypes.INTEGER,
       customerId: DataTypes.INTEGER,
-      chargeId: DataTypes.STRING
+      chargeId: DataTypes.STRING,
+      totalPrice: DataTypes.DECIMAL
     },
     {
       sequelize,

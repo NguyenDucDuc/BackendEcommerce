@@ -9,7 +9,7 @@ module.exports = {
       desc: "13 Nguyên Tắc Nghĩ Giàu Làm Giàu là cuốn sách “chỉ dẫn” duy nhất chỉ ra những nguồn lực bạn phải có để thành công. Cuốn sách sẽ giúp bạn trở nên giàu có, làm giàu thêm cho cuộc sống của bạn trên tất cả các phương diện của cuộc sống chứ không chỉ về tài chính và vật chất. Những ý tưởng trong cuốn sách Think and Grow rich – 13 nguyên tắc nghĩ giàu, làm giàu bắt nguồn từ những động lực tốt đẹp: “Thành công cá nhân” và “Quan điểm suy nghĩ tích cực”.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221248/ProductImage/think13__0_hobmb5.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -27,7 +27,7 @@ module.exports = {
       desc: "Điện thoại được trang bị màn hình Dynamic Island siêu ấn tượng với khả năng tuy biến thành nhiều dạng theo điều khiển của người dùng. Nhờ đó người dùng có thể theo dõi và hiển thị nhanh các thông tin như cuộc gọi, chỉ đường, hẹn giờ,...",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221246/ProductImage/ip14__0_zuqnhx.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -45,7 +45,7 @@ module.exports = {
       desc: "Hẳn là khó đồng ý với điều đó. Nhưng nếu bạn thay đổi thêm một chút? Một chút nữa? Rồi thêm một chút nữa? Đến một lúc nào đó, bạn phải công nhận rằng cuộc sống của mình đã chuyển biến nhờ vào một thay đổi nhỏ",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221245/ProductImage/ato__0_ybzmor.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -63,7 +63,7 @@ module.exports = {
       desc: "Trí tuệ Do Thái là một cuốn sách tư duyđầy tham vọng trong việc nâng cao khả năng tự học tập, ghi nhớ và phân tích - những điều đã khiến người Do Thái vượt trội lên, chiếm lĩnh những vị trí quan trọng trong ngành truyền thông, ngân hàng và những giải thưởng sáng tạo trên thế giới.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221247/ProductImage/tritue__0_qlrloy.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -81,7 +81,7 @@ module.exports = {
       desc: "Trong chứng khoán và thị trường tài chính, dám tham gia đầu tư cũng là một thành công tâm lý ban đầu. Dù vậy, 95% nhà đầu tư Việt Nam thuộc nhóm nhà đầu tư nhỏ lẻ với vốn kiến thức tài chính vô cùng hạn chế. ",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221247/ProductImage/pay__0_r4tvhb.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -99,7 +99,7 @@ module.exports = {
       desc: "iPhone 12 đẩy nhanh mọi tác vụ với mạng 5G siêu nhanh.1 A14 Bionic, chip nhanh nhất trên điện thoại thông minh. Hệ thống camera kép mới. Với màn hình Super Retina XDR tuyệt đẹp, nay bạn có thể chiêm ngưỡng từng chi tiết hình ảnh vô cùng sống động.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221246/ProductImage/ip12__0_h3ixoq.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -117,7 +117,7 @@ module.exports = {
       desc: "MacBook Pro 14 inch nay đa năng hơn bao giờ hết. Siêu mạnh mẽ với chip M2 thế hệ tiếp theo, đây là chiếc máy tính xách tay chuyên nghiệp nhỏ gọn nhất của Apple, cùng thời lượng pin lên đến 20 giờ",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221246/ProductImage/macpro__0_v4qiqz.webp",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -135,7 +135,7 @@ module.exports = {
       desc: "Dòng gram 2022 Phiên bản gram 17 có khối lượng rất ấn tượng là 1350g, trọng lượng siêu nhẹ vốn là ưu điểm nổi bật của dòng máy này, với trọng lượng này chỉ cần 1 tay cũng có thể nâng máy thoải mái, dễ dàng để vào túi xách hay balo di chuyển tên mọi hành trình, phù hợp với đối tượng hay phải di chuyển nhiefu như doanh nhân.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221246/ProductImage/lg__0_qpoof3.webp",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -153,7 +153,7 @@ module.exports = {
       desc: "Chiếc áo polo adidas này chính là vũ khí bí mật trong tủ đồ của bạn. Thiết kế polo classic nay được nâng cấp thêm chất vải AEROREADY thấm hút ẩm giúp bạn luôn cảm thấy thoáng mát suốt ngày dài.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221244/ProductImage/adidas__0_ax9di5.jpg",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -171,7 +171,7 @@ module.exports = {
       desc: "Thuộc phân khúc xe ga cao cấp và thừa hưởng thiết kế sang trọng nổi tiếng của dòng xe SH, Sh mode luôn được đánh giá cao nhờ kiểu dáng sang trọng, tinh tế tới từng đường nét, động cơ tiên tiến và các tiện nghi cao cấp xứng tầm phong cách sống thời thượng, đẳng cấp.",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221247/ProductImage/sh__0_wc2omn.webp",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -189,7 +189,7 @@ module.exports = {
       desc: "Kiểu dáng hiện đại - sang trọng - nam tính. Ví da nam , ví nam cao cấp full hộp được gia công tỉ mỉ - chất liệu da mềm , làm quà tặng rất đẹp. Da bò được xử lý đúng theo quy trình nên sử dụng càng lâu thì thắt lưng sẽ càng mềm mại, dẻo dai, bền màu và tăng độ bóng mịn",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221248/ProductImage/tui__0_gqfmbp.webp",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -207,7 +207,7 @@ module.exports = {
       desc: "Giới thiệu Dòng ECB-20 kết nối điện thoại thông minh từ EDIFICE, mẫu đồng hồ ghi thời gian hiệu suất cao, kết hợp các phản hồi trực tiếp từ các đội đua để tạo ra những chiếc đồng hồ mới tiên tiến theo khái niệm “Tốc độ & Trí tuệ.”",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221441/ProductImage/dongho__0_tphxmr.png",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
@@ -225,7 +225,7 @@ module.exports = {
       desc: "Máy ảnh Canon EOS 3000D được sản xuất nhằm hướng đến đối tượng người dùng mới tiếp cận DSLR, bên cạnh một mức giá vừa phải cùng nhiều điểm thiết kế thuận tiện để phù hợp với người mới bắt đầu như trang bị tay nắm giúp bạn nắm chắc máy ảnh, ống ngắm quang học giúp bạn bắt được những khoảnh khắc thoáng qua, và một bánh xe chính để điều chỉnh, chuyển đổi nhanh giữa các chức năng giúp người dùng dễ dàng thao tác và cho ra những bức ảnh đẹp mắt.”",
       image:
         "https://res.cloudinary.com/de5pwc5fq/image/upload/v1682221247/ProductImage/mayanh__0_uhyh3r.webp",
-      unitInStock: 10,
+      unitInStock: 100,
       unitOnOrder: 0,
       rate: 0,
       shopId: 3,
