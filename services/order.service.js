@@ -137,7 +137,6 @@ const orderService = {
             order.state === 4 &&
             order.payment === "Thanh toán khi nhận hàng"
           ) {
-            console.log({ shopId: order.shopId, amout: order.totalPrice });
             await shopService.updateShop(
               {
                 shopId: order.shopId,
