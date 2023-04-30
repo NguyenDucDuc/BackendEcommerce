@@ -1,6 +1,7 @@
 const {Customer, sequelize} = require('../models')
 const responseUtil = require('../utils/response.util')
 const {client} = require('../databases/redis.init')
+const resUtil = require('../utils/res.util')
 
 module.exports = {
     register: async (userId) => {
@@ -29,6 +30,16 @@ module.exports = {
             
         } catch (error) {
             return responseUtil.serverError()
+        }
+    },
+    getDetail: async({userId}) => {
+        try {
+            const customer = await Customer.findOne({where: {
+                userId: userId
+            }})
+            return resUtil.successful(200, customer)
+        } catch (error) {
+            return resUtil.serverError();
         }
     },
     checkBoughtProduct: async (userId, productId) => {

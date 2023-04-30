@@ -10,5 +10,6 @@ router.get(
   orderController.getDetails
 );
 router.post('/action', auth.verifyConfirmProduct, orderController.confirmOrder);
+router.post('/cancel-order', auth.verifyConfirmProductCustomer, orderController.confirmOrder);
 
 module.exports = router;

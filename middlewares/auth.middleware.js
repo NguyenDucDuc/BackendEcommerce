@@ -218,6 +218,33 @@ const auth = {
     }
   },
 
+  verifyConfirmProductCustomer: async(req, res, next) => {
+    try {
+      auth.verifyToken(req, res, async () => {
+        if (req.query.userId) {
+          const customer = await db.Customer.findOne({where: {
+            userId: req.query.userId
+          }});
+          if (customer) {
+            const user = await customer.getUser();
+            if (req.user.userId !== user.id) {
+              return res.status(403).json({
+                data: {
+                  status: 403,
+                  message: 'Không có quyền truy cập',
+                },
+              });
+            }
+          } 
+        }
+        next()
+      })
+    } catch (error) {
+      console.log(error);
+      return res.status(404);
+    }
+  },
+
   verifyConfirmProduct: async (req, res, next) => {
     try {
       auth.verifySeller(req, res, async () => {
@@ -301,10 +328,12 @@ const auth = {
           }
         }
 
-        if (req.query.customerId) {
-          const customer = await db.Customer.findByPk(req.query.customerId);
+        if (req.query.userId) {
+          const customer = await db.Customer.findOne({where: {
+            userId: req.query.userId
+          }});
           if (!customer) {
-            req.query.customerId = null;
+            req.query.userId = null;
           } else {
             const user = await customer.getUser();
             if (req.user.userId !== user.id && !req.query.shopId) {
@@ -318,7 +347,7 @@ const auth = {
           }
         }
 
-        if (!req.query.shopId && !req.query.customerId) {
+        if (!req.query.shopId && !req.query.userId) {
           return res.status(404).json({
             data: {
               status: 404,
