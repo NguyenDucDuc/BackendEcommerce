@@ -6,7 +6,7 @@ const { check } = require("express-validator");
 
 const shopRouter = require("express").Router();
 
-shopRouter.get("/:id", shopController.getById); 
+shopRouter.get("/:id", shopController.getById);
 
 shopRouter.post(
   "/",
@@ -40,6 +40,7 @@ shopRouter.get(
   userMiddleware.verifyAdmin,
   shopController.getAll
 );
+shopRouter.get("/get-all", shopController.getAll);
 //
 shopRouter.delete(
   "/:shopId",
