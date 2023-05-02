@@ -260,7 +260,7 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    let { page, name, fP, tP, sortBy, order, cateID, shopId, pageSize } =
+    let { page, name, fP, tP, sortBy, order, cateId, shopId, pageSize, rate } =
       params;
     let data, code, start, categories;
     if (!pageSize) pageSize = parseInt(process.env.PAGE_SIZE);
@@ -268,8 +268,8 @@ const productService = {
     if (page > 0) {
       start = parseInt((page - 1) * pageSize);
     }
-    if (cateID) {
-      let category = await db.Category.findByPk(cateID);
+    if (cateId) {
+      let category = await db.Category.findByPk(cateId);
       categories = await categoryService.getListCategoryVaild(category);
     }
     let products = await db.Product.findAll({
@@ -279,7 +279,8 @@ const productService = {
           shopId ? { shopId: shopId } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
           tP ? { price: { [Op.lte]: tP } } : {},
-          cateID ? { categoryId: { [Op.in]: categories } } : {},
+          cateId ? { categoryId: { [Op.in]: categories } } : {},
+          rate ? { rate: rate } : {},
         ],
       },
       offset: start,
@@ -303,8 +304,9 @@ const productService = {
             shopId ? { shopId: shopId } : {},
             fP ? { price: { [Op.gte]: fP } } : {},
             tP ? { price: { [Op.lte]: tP } } : {},
-            cateID ? { categoryId: cateID } : {},
-            !name && !cateID ? { isActive: true } : {},
+            cateId ? { categoryId: { [Op.in]: categories } } : {},
+            rate ? { rate: rate } : {},
+            !name && !cateId ? { isActive: true } : {},
           ],
         },
       }),
