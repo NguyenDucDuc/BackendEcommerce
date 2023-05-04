@@ -1,6 +1,6 @@
 const shopServices = require("../services/shop.service");
 const resUtil = require("../utils/res.util");
-const { Seller } = require("../models");
+const { Seller, Shop, sequelize } = require("../models");
 
 module.exports = {
   create: async (req, res) => {
@@ -104,4 +104,13 @@ module.exports = {
       return res.status(500);
     }
   },
+  statsAdmin: async (req,res) => {
+    try {
+      console.log('asda')
+      const countStore = await sequelize.query(`select count(*) as 'count' from shops`)
+      return res.status(200).json({countStore})
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };

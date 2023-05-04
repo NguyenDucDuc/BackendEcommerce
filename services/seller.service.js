@@ -32,12 +32,21 @@ module.exports = {
     },
     getAll: async () => {
         try {
-            const cacheSeller = await client.json.get('sellers', '$')
-            if(cacheSeller){
-                console.log("cached seller")
-                return responseUtil.getSuccess(cacheSeller)
-            }else {
-                const [sellers] = await sequelize.query(`
+            // const cacheSeller = await client.json.get('sellers', '$')
+            // if(cacheSeller){
+            //     console.log("cached seller")
+            //     return responseUtil.getSuccess(cacheSeller)
+            // }else {
+            //     const [sellers] = await sequelize.query(`
+            //     select u.*
+            //     from users u, sellers s
+            //     where u.id = s.userId
+            //     `)
+            //     console.log("add to redis")
+            //     await client.json.set("sellers","$", sellers)
+            //     return responseUtil.getSuccess(sellers)
+            // }
+            const [sellers] = await sequelize.query(`
                 select u.*
                 from users u, sellers s
                 where u.id = s.userId
@@ -45,7 +54,6 @@ module.exports = {
                 console.log("add to redis")
                 await client.json.set("sellers","$", sellers)
                 return responseUtil.getSuccess(sellers)
-            }
         } catch (error) {
             console.log("asd")
             return responseUtil.serverError()
