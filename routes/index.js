@@ -20,6 +20,7 @@ const { productCartRouter } = require("./product-cart.router");
 const { messageRouter } = require("./message.router");
 const { conversationRouter } = require("./conversation.router");
 const { promotionRouter } = require("./promotion.router");
+const { statsRouter } = require("./stats.router");
 
 const indexRouter = require("express").Router();
 
@@ -45,5 +46,7 @@ indexRouter.use("/message", messageRouter);
 indexRouter.use("/conversation", conversationRouter)
 indexRouter.use('/checkout', stripeRouter)
 indexRouter.use('/promotion', promotionRouter)
+indexRouter.use('/stats', statsRouter)
+
 
 module.exports = { indexRouter };

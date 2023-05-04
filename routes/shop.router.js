@@ -58,4 +58,5 @@ shopRouter.put("/:shopId", shopController.updateShop);
 
 shopRouter.get("/:shopId/get-user", shopController.getUserByShopId);
 
+
 module.exports = { shopRouter };
