@@ -5,7 +5,7 @@ const responseUtil = require("../utils/response.util");
 const { sequelize } = require("../models");
 const { User, Admin } = require("../models");
 const bcrypt = require("bcrypt");
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 const adminService = {
   stats: async ({ shopId, type, month, quater, year, date }) => {
     let stats, fromMonth, toMonth;
@@ -127,7 +127,7 @@ const adminService = {
   ) => {
     try {
       const stats = await db.sequelize.query(
-        `select s.shopName as 'Ten shop', sum(d.quantity) as 'Tong san pham ban duoc', sum(d.quantity * d.unitPrice) as 'Doanh thu'
+        `select p.name as 'name', sum(d.quantity) as 'quantity', sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o, ecommerce.shops s 
               where d.productId = p.id and o.id = d.orderId and p.shopId = s.id ${
                 shopId > 0 ? "and p.shopId = :shopId" : ""
@@ -141,7 +141,7 @@ const adminService = {
           date ? "and DATE(o.createdAt) = DATE(:date)" : ""
         }
               group by p.id
-              order by sum(d.quantity * d.unitPrice) desc`,
+              order by sum(d.quantity) desc`,
         {
           replacements: {
             shopId: shopId,
@@ -166,31 +166,34 @@ const adminService = {
       const user = await User.findOne({
         where: {
           userName: body.userName,
-        }
+        },
       });
       const isAdmin = await Admin.findOne({
         where: {
-          userId: user.id
-        }
-      })
-      if(!isAdmin){
+          userId: user.id,
+        },
+      });
+      if (!isAdmin) {
         return {
           code: 403,
           data: {
             status: 403,
             data: [],
-            errors: "Chỉ admin với có thể truy cập"
-          }
-        }
+            errors: "Chỉ admin với có thể truy cập",
+          },
+        };
       }
       if (user) {
         const validPassword = await bcrypt.compare(
           body.passWord,
           user.passWord
         );
-        const accessToken = await jwt.sign({
-          userId: user.id
-        }, "duc-nd")
+        const accessToken = await jwt.sign(
+          {
+            userId: user.id,
+          },
+          "duc-nd"
+        );
         if (validPassword) {
           const [[admin]] = await sequelize.query(`
             select u.*
@@ -203,10 +206,10 @@ const adminService = {
               status: 200,
               data: {
                 ...admin,
-                accessToken
-              }
-            }
-          }
+                accessToken,
+              },
+            },
+          };
         } else {
           return {
             code: 400,

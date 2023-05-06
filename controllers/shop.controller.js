@@ -42,6 +42,7 @@ module.exports = {
   },
   getAll: async (req, res) => {
     try {
+      console.log(12312);
       const { code, data } = await shopServices.getAll();
       res.status(code).json(data);
     } catch (error) {
