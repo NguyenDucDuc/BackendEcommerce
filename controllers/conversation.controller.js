@@ -19,6 +19,7 @@ module.exports = {
     },
     getMyConversation: async (req, res) => {
         try {
+            console.log(req.data.userId)
             let listConversation = await Conversation.find({
                 members: {
                     $in: req.data.userId

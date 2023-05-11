@@ -17,6 +17,9 @@ const customerService = require("./customer.service");
 const cartService = require("./cart.service");
 const cloudinary = require("cloudinary").v2;
 const addressService = require("../services/address.service");
+const { Message } = require("../schemas/message.schema");
+const { Conversation } = require("../schemas/conversation.schema")
+
 require("dotenv").config();
 
 cloudinary.config({
@@ -78,9 +81,15 @@ module.exports = {
           lastVisited: Date.now(),
           isActive: true,
         });
+        
         // add newuser to redis
-        console.log("add new user to redis");
-        await client.json.arrAppend("users", "$", newUser);
+        // tao cuoc tro truyen voi seller
+        const listSeller = await Seller.findAll()
+        await Promise.all(listSeller.map(async (sellerItem) => {
+          await Conversation.create({
+            members: [sellerItem.userId, newUser.id]
+          })
+        }))
         return responseUtil.created(newUser);
       } else {
         return {
@@ -201,6 +210,9 @@ module.exports = {
           },
           "duc-nd"
         );
+        // tao conversation voi chu shop
+        const listSeller = await Seller.find()
+        console.log(listSeller)
         return responseUtil.created({
           user: newUser,
           accessToken: accessToken,
