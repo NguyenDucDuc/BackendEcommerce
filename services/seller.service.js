@@ -1,22 +1,33 @@
-const {Seller, User, sequelize} = require('../models')
+const { Seller, User, sequelize, Customer } = require('../models')
 const responseUtil = require('../utils/response.util')
-const {client} = require('../databases/redis.init')
+const { client } = require('../databases/redis.init')
+const { Conversation } = require('../schemas/conversation.schema')
 
 module.exports = {
     register: async (userId) => {
         try {
-            const seller = await Seller.findOne({where: {userId: userId}})
-            if(!seller){
+            const seller = await Seller.findOne({ where: { userId: userId } })
+            if (!seller) {
                 const newSeller = await Seller.create({
                     isConfirm: false,
                     userId: userId
                 })
                 const user = await User.findByPk(userId)
                 // add new  seller to redis
-                await client.json.arrAppend("sellers","$",user)
-                console.log("add new seller to redis")
+                // await client.json.arrAppend("sellers","$",user)
+                // console.log("add new seller to redis")
+
+                // tạo cuộc trò truyện với customer
+                const listCustomer = await Customer.findAll()
+                await Promise.all(listCustomer.map(async (customer) => {
+                    if (customer.userId !== userId) {
+                        await Conversation.create({
+                            members: [userId, customer.userId]
+                        })
+                    }
+                }))
                 return responseUtil.created(newSeller)
-            }else {
+            } else {
                 return {
                     code: 400,
                     data: {
@@ -51,9 +62,9 @@ module.exports = {
                 from users u, sellers s
                 where u.id = s.userId
                 `)
-                console.log("add to redis")
-                await client.json.set("sellers","$", sellers)
-                return responseUtil.getSuccess(sellers)
+            console.log("add to redis")
+            await client.json.set("sellers", "$", sellers)
+            return responseUtil.getSuccess(sellers)
         } catch (error) {
             console.log("asd")
             return responseUtil.serverError()
@@ -66,15 +77,15 @@ module.exports = {
                 from users u, sellers s
                 where u.id = s.userId and u.id = ${userId}
             `)
-            if(user){
+            if (user) {
                 await sequelize.query(`
                     update users
                     set isActive = ${false}
                     where id = ${userId}
                 `)
-                const newUser = await User.findOne({where: {id: userId}})
+                const newUser = await User.findOne({ where: { id: userId } })
                 return responseUtil.updateSuccess(newUser)
-            }else {
+            } else {
                 return {
                     code: 400,
                     data: {
@@ -84,7 +95,7 @@ module.exports = {
                     }
                 }
             }
-            
+
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
@@ -97,15 +108,15 @@ module.exports = {
                 from users u, sellers s
                 where u.id = s.userId and u.id = ${userId}
             `)
-            if(user){
+            if (user) {
                 await sequelize.query(`
                     update users
                     set isActive = ${true}
                     where id = ${userId}
                 `)
-                const newUser = await User.findOne({where: {id: userId}})
+                const newUser = await User.findOne({ where: { id: userId } })
                 return responseUtil.updateSuccess(newUser)
-            }else {
+            } else {
                 return {
                     code: 400,
                     data: {
@@ -115,7 +126,7 @@ module.exports = {
                     }
                 }
             }
-            
+
         } catch (error) {
             console.log(error)
             return responseUtil.serverError()
