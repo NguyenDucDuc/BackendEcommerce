@@ -97,7 +97,7 @@ module.exports = [
         userId: 9,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
-    },{
+    }, {
         id: 10,
         city: "Ho Chi Minh",
         district: "Quận Phú Nhuận",
@@ -105,6 +105,61 @@ module.exports = [
         street: "Trần Huy Liệu",
         detail: "623",
         userId: 10,
+        createdAt: "2023-02-08 02:24:35",
+        updatedAt: "2023-02-08 02:24:35"
+    },
+    {
+        id: 11,
+        city: "Ho Chi Minh",
+        district: "Quận Phú Nhuận",
+        ward: "Phuong 8",
+        street: "Trần Huy Liệu",
+        detail: "616",
+        userId: 11,
+        createdAt: "2023-02-08 02:24:35",
+        updatedAt: "2023-02-08 02:24:35"
+    },
+    {
+        id: 12,
+        city: "Ho Chi Minh",
+        district: "Quận 8",
+        ward: "Phuong 8",
+        street: "Trần Huy Liệu",
+        detail: "623",
+        userId: 12,
+        createdAt: "2023-02-08 02:24:35",
+        updatedAt: "2023-02-08 02:24:35"
+    },
+    {
+        id: 13,
+        city: "Ho Chi Minh",
+        district: "Quận 4",
+        ward: "Phuong 8",
+        street: "Nguyễn Du",
+        detail: "623",
+        userId: 13,
+        createdAt: "2023-02-08 02:24:35",
+        updatedAt: "2023-02-08 02:24:35"
+    },
+    {
+        id: 14,
+        city: "Ho Chi Minh",
+        district: "Quận 2",
+        ward: "Phường 2",
+        street: "Huỳnh Khương An",
+        detail: "120/40",
+        userId: 14,
+        createdAt: "2023-02-08 02:24:35",
+        updatedAt: "2023-02-08 02:24:35"
+    },
+    {
+        id: 15,
+        city: "Ho Chi Minh",
+        district: "Quận Phú Nhuận",
+        ward: "Phuong 8",
+        street: "Trần Huy Liệu",
+        detail: "623/4",
+        userId: 15,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
     }

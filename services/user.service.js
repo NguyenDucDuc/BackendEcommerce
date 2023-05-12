@@ -17,6 +17,9 @@ const customerService = require("./customer.service");
 const cartService = require("./cart.service");
 const cloudinary = require("cloudinary").v2;
 const addressService = require("../services/address.service");
+const { Message } = require("../schemas/message.schema");
+const { Conversation } = require("../schemas/conversation.schema")
+
 require("dotenv").config();
 
 cloudinary.config({
@@ -26,11 +29,11 @@ cloudinary.config({
 });
 
 const newLocation = {
-    city: "TP Hồ Chí Minh",
-    district: "Quận 3",
-    ward: "Phường 1",
-    street: "Điện Biên Phủ",
-    detail: "700",
+  city: "TP Hồ Chí Minh",
+  district: "Quận 3",
+  ward: "Phường 1",
+  street: "Điện Biên Phủ",
+  detail: "700",
 }
 
 module.exports = {
@@ -56,32 +59,70 @@ module.exports = {
       });
       if (!oldUser) {
         //upload image to cloudinary
-        const avatar = files.avatar;
-        const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
-          public_id: `${Date.now()}`,
-          resource_type: "auto",
-          folder: "Avatar",
-        });
-        //
-        const salt = await bcrypt.genSalt(10);
-        const hashed = await bcrypt.hash(body.passWord, salt);
-        const newUser = await User.create({
-          userName: body.userName,
-          passWord: hashed,
-          firstName: body.firstName,
-          lastName: body.lastName,
-          phone: body.phone,
-          avatar: result.url,
-          email: body.email,
-          birthDay: body.birthDay,
-          status: true,
-          lastVisited: Date.now(),
-          isActive: true,
-        });
-        // add newuser to redis
-        console.log("add new user to redis");
-        await client.json.arrAppend("users", "$", newUser);
-        return responseUtil.created(newUser);
+        const avatar = files?.avatar;
+        if (avatar !== undefined) {
+          console.log('123')
+          const result = await cloudinary.uploader.upload(avatar.tempFilePath, {
+            public_id: `${Date.now()}`,
+            resource_type: "auto",
+            folder: "Avatar",
+          });
+          //
+          const salt = await bcrypt.genSalt(10);
+          const hashed = await bcrypt.hash(body.passWord, salt);
+          const newUser = await User.create({
+            userName: body.userName,
+            passWord: hashed,
+            firstName: body.firstName,
+            lastName: body.lastName,
+            phone: body.phone,
+            avatar: result.url,
+            email: body.email,
+            birthDay: body.birthDay,
+            status: true,
+            lastVisited: Date.now(),
+            isActive: true,
+          });
+          // add newuser to redis
+          // tao cuoc tro truyen voi seller
+          const listSeller = await Seller.findAll()
+          await Promise.all(listSeller.map(async (sellerItem) => {
+            await Conversation.create({
+              members: [sellerItem.userId, newUser.id]
+            })
+          }))
+          return responseUtil.created(newUser);
+        } else {
+
+          //
+          const salt = await bcrypt.genSalt(10);
+          const hashed = await bcrypt.hash(body.passWord, salt);
+          const newUser = await User.create({
+            userName: body.userName,
+            passWord: hashed,
+            firstName: body.firstName,
+            lastName: body.lastName,
+            phone: body.phone,
+            avatar: 'https://res.cloudinary.com/djbju13al/image/upload/v1639489568/samples/landscapes/architecture-signs.jpg',
+            email: body.email,
+            birthDay: body.birthDay,
+            status: true,
+            lastVisited: Date.now(),
+            isActive: true,
+          });
+          // add newuser to redis
+          // tao cuoc tro truyen voi seller
+          const listSeller = await Seller.findAll()
+          await Promise.all(listSeller.map(async (sellerItem) => {
+            await Conversation.create({
+              members: [sellerItem.userId, newUser.id]
+            })
+          }))
+          return responseUtil.created(newUser);
+        }
+
+
+
       } else {
         return {
           code: 400,
@@ -101,7 +142,7 @@ module.exports = {
     try {
       const user = await User.findOne({ where: { userName: body.userName } });
       console.log(user)
-      if(user.isActive === false){
+      if (user.isActive === false) {
         console.log(user.isActive)
         return {
           code: 403,
@@ -201,6 +242,9 @@ module.exports = {
           },
           "duc-nd"
         );
+        // tao conversation voi chu shop
+        const listSeller = await Seller.find()
+        console.log(listSeller)
         return responseUtil.created({
           user: newUser,
           accessToken: accessToken,
@@ -239,6 +283,7 @@ module.exports = {
       return responseUtil.serverError;
     }
   },
+
   getAll: async (query) => {
     try {
       const cacheUser = await client.json.get("users");
