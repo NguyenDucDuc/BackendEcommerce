@@ -8,5 +8,8 @@ sellerRouter.post("/", userMiddleware.verifyToken, sellerMiddleware.verifyRegist
 sellerRouter.get("/", sellerController.getAll)
 sellerRouter.patch("/lock/:userId", sellerController.lock)
 sellerRouter.patch("/un-lock/:userId", sellerController.unLock)
+sellerRouter.get('/unofficial', sellerController.getSellerUnofficial)
+sellerRouter.get('/check-official', userMiddleware.verifyToken ,sellerController.checkSellerOfficial)
+sellerRouter.post('/:userId/confirm', sellerController.confirmSeller)
 
 module.exports = {sellerRouter}

@@ -1,4 +1,4 @@
-const {Seller} = require('../models')
+const {Seller, sequelize} = require('../models')
 const sellerService = require('../services/seller.service')
 const responseUtil = require('../utils/response.util')
 
@@ -42,6 +42,80 @@ module.exports = {
             console.log(error)
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
+        }
+    },
+    getSellerUnofficial: async (req, res) => {
+        try {
+            const [listSeller] = await sequelize.query(`
+                select u.*
+                from users u, sellers s
+                where u.id = s.userId and s.isConfirm = 0
+            `)
+            return res.status(200).json({
+                status: 200,
+                data: listSeller
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({
+                status: 500,
+                data: [],
+                error: 'Server Errors'
+            })
+        }
+    },
+    checkSellerOfficial: async (req, res) => {
+        try {
+            const userId = req.data.userId
+            const sellerOfficial = await Seller.findOne({
+                where: {
+                    userId,
+                    isConfirm: true
+                }
+            })
+            if(sellerOfficial){
+                return res.status(200).json({
+                    status: 200,
+                    data: sellerOfficial
+                })
+            }
+            return res.status(200).json({
+                status: 200,
+                data: []
+            })            
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json({
+                status: 400,
+                data: [],
+                error: 'Not found user'
+            })
+        }
+    },
+    confirmSeller: async (req, res) => {
+        try {
+            const userId = req.params.userId
+            const seller = await Seller.findOne({where: {userId}})
+            if(seller){
+                seller.isConfirm = true
+                await seller.save()
+                return res.status(200).json({
+                    status: 200,
+                    data: seller
+                })
+            }
+            return res.status(400).json({
+                status: 400,
+                data: [],
+                error: 'User not found!'
+            })
+        } catch (error) {
+            console.log(error)
+            return res.status(400).json({
+                status: 500,
+                data: [],
+                error: 'Server error'
+            })
         }
     }
 }
