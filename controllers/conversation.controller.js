@@ -24,13 +24,14 @@ module.exports = {
                 members: {
                     $in: req.data.userId
                 }
-            }).populate('messages').populate('lastMessage')
+            }).populate('lastMessage')
             listConversation = await Promise.all(listConversation.map(async (conversationItem) => {
                 const userId = conversationItem.members.filter((item) => item !== req.data.userId)
                 const userInfo = await User.findByPk(userId[0])
                 return {
                     ...conversationItem._doc,
-                    name: userInfo.dataValues.userName
+                    name: userInfo.dataValues.userName,
+                    avatar: userInfo.dataValues.avatar
                 }
             }))
             return res.status(200).json({
