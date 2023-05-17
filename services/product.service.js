@@ -1,23 +1,24 @@
-const { Op } = require("sequelize");
-const db = require("../models");
-const resUtil = require("../utils/res.util");
-const categoryService = require("./category.service");
-const cloudinary = require("cloudinary").v2;
-require("dotenv").config();
+const { Op } = require('sequelize');
+const db = require('../models');
+const resUtil = require('../utils/res.util');
+const categoryService = require('./category.service');
+const shopService = require('./shop.service');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
 cloudinary.config({
-  cloud_name: "de5pwc5fq",
-  api_key: "747993572847511",
-  api_secret: "Mw8_L682h95W9Wu_ixd8hg92rj0",
+  cloud_name: 'de5pwc5fq',
+  api_key: '747993572847511',
+  api_secret: 'Mw8_L682h95W9Wu_ixd8hg92rj0',
 });
 
 const DATA_TYPE = {
-  int: "ProductInt",
-  string: "ProductVarchar",
-  datetime: "ProductDateTime",
-  image: "ProductImage",
-  decimal: "ProductDecimal",
-  text: "ProductText",
+  int: 'ProductInt',
+  string: 'ProductVarchar',
+  datetime: 'ProductDateTime',
+  image: 'ProductImage',
+  decimal: 'ProductDecimal',
+  text: 'ProductText',
 };
 
 const productService = {
@@ -37,7 +38,7 @@ const productService = {
         listAttributeID.length !== attributes.ids.length ||
         JSON.stringify(listAttributeID) !== JSON.stringify(attributes.ids)
       ) {
-        return resUtil.clientError(400, "Chỉ thêm các thuộc tính của sản phẩm");
+        return resUtil.clientError(400, 'Chỉ thêm các thuộc tính của sản phẩm');
       }
 
       if (product.image) {
@@ -45,8 +46,8 @@ const productService = {
           product.image.tempFilePath,
           {
             public_id: `${new Date().getTime()}`,
-            resource_type: "auto",
-            folder: "ProductImage",
+            resource_type: 'auto',
+            folder: 'ProductImage',
           }
         );
         product.image = result.secure_url;
@@ -57,8 +58,8 @@ const productService = {
       });
 
       let listValue = attributes.list.reduce((newObj, item) => {
-        if (!newObj.hasOwnProperty(item["backendType"])) {
-          newObj[item["backendType"]] = [
+        if (!newObj.hasOwnProperty(item['backendType'])) {
+          newObj[item['backendType']] = [
             {
               value: item.value,
               attributeId: item.attributeId,
@@ -68,7 +69,7 @@ const productService = {
             },
           ];
         } else
-          newObj[item["backendType"]].push({
+          newObj[item['backendType']].push({
             value: item.value,
             attributeId: item.attributeId,
             createAt: new Date(),
@@ -88,7 +89,7 @@ const productService = {
 
       await transaction.commit();
 
-      return resUtil.successful(201, [], "Thêm sản phẩm thành công");
+      return resUtil.successful(201, [], 'Thêm sản phẩm thành công');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -104,8 +105,8 @@ const productService = {
           product.image.tempFilePath,
           {
             public_id: `${new Date().getTime()}`,
-            resource_type: "auto",
-            folder: "ProductImage",
+            resource_type: 'auto',
+            folder: 'ProductImage',
           }
         );
         product.image = result.secure_url;
@@ -150,16 +151,16 @@ const productService = {
         attributes.list.forEach(async (attribute) => {
           console.log({ attribute });
           listPromise.push(
-            db[DATA_TYPE[attribute["backendType"]]].update(
+            db[DATA_TYPE[attribute['backendType']]].update(
               {
-                value: attribute["value"],
+                value: attribute['value'],
                 updateAt: new Date(),
               },
               {
                 where: {
                   [Op.and]: [
                     { productId: productID },
-                    { attributeId: attribute["attributeId"] },
+                    { attributeId: attribute['attributeId'] },
                   ],
                 },
                 transaction: transaction,
@@ -170,7 +171,7 @@ const productService = {
       }
       await Promise.all(listPromise);
       await transaction.commit();
-      return resUtil.successful(200, [], "Cập nhật sản phẩm thành công");
+      return resUtil.successful(200, [], 'Cập nhật sản phẩm thành công');
     } catch (error) {
       console.log(error);
       await transaction.rollback();
@@ -182,7 +183,7 @@ const productService = {
     try {
       let product = await db.Product.findByPk(productID);
       if (!product) {
-        return resUtil.clientError(404, "Sản phẩm không tồn tại");
+        return resUtil.clientError(404, 'Sản phẩm không tồn tại');
       }
 
       let listPromise = Object.keys(DATA_TYPE).map((type) => {
@@ -197,7 +198,7 @@ const productService = {
         return product.destroy();
       });
 
-      return resUtil.successful(200, [], "Sản phẩm đã được xóa");
+      return resUtil.successful(200, [], 'Sản phẩm đã được xóa');
     } catch (error) {
       console.log(error);
       return resUtil.serverError();
@@ -234,17 +235,17 @@ const productService = {
         }, []);
 
         listValueFlat.forEach((value) => {
-          value.dataValues["name"] =
-            listAttributeValidate[value.attributeId]["name"];
-          value.dataValues["backendType"] =
-            listAttributeValidate[value.attributeId]["backendType"];
-          value.dataValues["frontendInput"] =
-            listAttributeValidate[value.attributeId]["frontendInput"];
+          value.dataValues['name'] =
+            listAttributeValidate[value.attributeId]['name'];
+          value.dataValues['backendType'] =
+            listAttributeValidate[value.attributeId]['backendType'];
+          value.dataValues['frontendInput'] =
+            listAttributeValidate[value.attributeId]['frontendInput'];
 
-          if (!product.dataValues.hasOwnProperty("attributes")) {
-            product.dataValues["attributes"] = [value.dataValues];
+          if (!product.dataValues.hasOwnProperty('attributes')) {
+            product.dataValues['attributes'] = [value.dataValues];
           } else {
-            product.dataValues["attributes"].push(value.dataValues);
+            product.dataValues['attributes'].push(value.dataValues);
           }
         });
 
@@ -285,7 +286,7 @@ const productService = {
       },
       offset: start,
       limit: pageSize,
-      order: [sortBy ? [sortBy, order] : ["id", "desc"]],
+      order: [sortBy ? [sortBy, order] : ['id', 'desc']],
     });
     const { listProduct, listProductId, listGroupId } =
       productService.createListProductData(products);
@@ -334,23 +335,23 @@ const productService = {
           return list;
         }, []);
         listValueFlat.forEach((value) => {
-          value.dataValues["name"] =
-            listAttributeValidate[value.attributeId]["name"];
-          value.dataValues["backendType"] =
-            listAttributeValidate[value.attributeId]["backendType"];
-          value.dataValues["frontendInput"] =
-            listAttributeValidate[value.attributeId]["frontendInput"];
+          value.dataValues['name'] =
+            listAttributeValidate[value.attributeId]['name'];
+          value.dataValues['backendType'] =
+            listAttributeValidate[value.attributeId]['backendType'];
+          value.dataValues['frontendInput'] =
+            listAttributeValidate[value.attributeId]['frontendInput'];
 
           if (
             !listProduct[value.productId].dataValues.hasOwnProperty(
-              "attributes"
+              'attributes'
             )
           ) {
-            listProduct[value.productId].dataValues["attributes"] = [
+            listProduct[value.productId].dataValues['attributes'] = [
               value.dataValues,
             ];
           } else {
-            listProduct[value.productId].dataValues["attributes"].push(
+            listProduct[value.productId].dataValues['attributes'].push(
               value.dataValues
             );
           }
@@ -379,12 +380,31 @@ const productService = {
       await Promise.all([
         productService.getProductByID(productId1),
         productService.getProductByID(productId2),
-      ]).then((values) => {
-        data = {
-          base: values[0].data?.data,
-          compare: values[1].data?.data,
-        };
-      });
+      ])
+        .then((values) => {
+          data = {
+            base: values[0].data?.data,
+            compare: values[1].data?.data,
+          };
+
+          return Promise.all([
+            shopService.getById(values[0].data.data.shopId),
+            shopService.getById(values[1].data.data.shopId),
+          ]);
+        })
+        .then((values) => {
+          data = {
+            ...data,
+            base: {
+              ...data.base.dataValues,
+              shop: values[0].data?.data,
+            },
+            compare: {
+              ...data.compare.dataValues,
+              shop: values[1].data?.data,
+            },
+          };
+        });
       return resUtil.successful(200, data);
     } catch (error) {
       return resUtil.serverError();
@@ -412,7 +432,7 @@ const productService = {
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-      return resUtil.successful(200, [], "Thêm ảnh thành công");
+      return resUtil.successful(200, [], 'Thêm ảnh thành công');
     } catch (error) {
       return resUtil.serverError();
     }
@@ -428,16 +448,16 @@ const productService = {
     };
 
     return listAttribute.reduce((obj, attribute) => {
-      obj["listAttributeValidate"][attribute.id] = attribute;
+      obj['listAttributeValidate'][attribute.id] = attribute;
 
-      Array.isArray(obj["listAttributeID"])
-        ? obj["listAttributeID"].push(attribute.id)
-        : (obj["listAttributeID"] = [attribute.id]);
+      Array.isArray(obj['listAttributeID'])
+        ? obj['listAttributeID'].push(attribute.id)
+        : (obj['listAttributeID'] = [attribute.id]);
 
-      if (!obj["listAttributeFetch"][attribute["backendType"]]) {
-        obj["listAttributeFetch"][attribute["backendType"]] = [attribute];
+      if (!obj['listAttributeFetch'][attribute['backendType']]) {
+        obj['listAttributeFetch'][attribute['backendType']] = [attribute];
       } else {
-        obj["listAttributeFetch"][attribute["backendType"]].push(attribute);
+        obj['listAttributeFetch'][attribute['backendType']].push(attribute);
       }
 
       return obj;
@@ -452,15 +472,15 @@ const productService = {
     };
 
     return products.reduce((obj, product) => {
-      obj["listProduct"][product.id] = product;
+      obj['listProduct'][product.id] = product;
 
-      Array.isArray(obj["listGroupId"])
-        ? obj["listGroupId"].push(product.attributeGroupId)
-        : (obj["listGroupId"] = [product.attributeGroupId]);
+      Array.isArray(obj['listGroupId'])
+        ? obj['listGroupId'].push(product.attributeGroupId)
+        : (obj['listGroupId'] = [product.attributeGroupId]);
 
-      Array.isArray(obj["listProductId"])
-        ? obj["listProductId"].push(product.id)
-        : (obj["listProductId"] = [product.id]);
+      Array.isArray(obj['listProductId'])
+        ? obj['listProductId'].push(product.id)
+        : (obj['listProductId'] = [product.id]);
 
       return obj;
     }, initListProductData);
