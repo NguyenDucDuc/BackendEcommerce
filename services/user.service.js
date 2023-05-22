@@ -141,9 +141,17 @@ module.exports = {
   login: async (body) => {
     try {
       const user = await User.findOne({ where: { userName: body.userName } });
-      console.log(user)
+      if(!user){
+        return {
+          code: 400,
+          data: {
+            status: 400,
+            data: [],
+            errors: "Tài khoản hoặc mật khẩu không chính xác!"
+          }
+        }
+      }
       if (user.isActive === false) {
-        console.log(user.isActive)
         return {
           code: 403,
           data: {
@@ -233,8 +241,8 @@ module.exports = {
         // create new address
         await addressService.create(newLocation, newUser.id);
         // add new user to redis
-        console.log("add new user to redis");
-        await client.json.arrAppend("users", "$", newUser);
+        // console.log("add new user to redis");
+        // await client.json.arrAppend("users", "$", newUser);
         // create new accessToken
         const accessToken = await jwt.sign(
           {
@@ -242,10 +250,15 @@ module.exports = {
           },
           "duc-nd"
         );
-        // tao conversation voi chu shop
-        const listSeller = await Seller.find()
-        console.log(listSeller)
-        return responseUtil.created({
+        // tao cuoc tro truyen voi seller
+        const listSeller = await Seller.findAll()
+        await Promise.all(listSeller.map(async (sellerItem) => {
+          await Conversation.create({
+            members: [sellerItem.userId, newUser.id]
+          })
+        }))
+        console.log(accessToken)
+        return responseUtil.getSuccess({
           user: newUser,
           accessToken: accessToken,
         });
