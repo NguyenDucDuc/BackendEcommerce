@@ -324,6 +324,11 @@ module.exports = {
         if (body.lastName) {
           user.lastName = body.lastName;
         }
+        if(body.passWord) {
+          const salt = await bcrypt.genSalt(10)
+          const hashed = await bcrypt.hash(body.passWord, salt)
+          user.passWord = hashed
+        }
         if (body.birthDay) {
           user.birthDay = body.birthDay;
         }
