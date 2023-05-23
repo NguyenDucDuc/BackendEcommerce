@@ -179,5 +179,5 @@ module.exports = {
       const { code, data } = responseUtil.serverError();
       res.status(code).json(data);
     }
-  }
+  },
 };
