@@ -83,7 +83,7 @@ const adminService = {
       const stats = await db.sequelize.query(
         `select s.shopName as 'name', sum(d.quantity) as 'quantity', sum(d.quantity * d.unitPrice) as 'revenue'
           from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o, ecommerce.shops s 
-          where d.productId = p.id and o.id = d.orderId and p.shopId = s.id ${
+          where d.productId = p.id and o.id = d.orderId and o.state = 4 and p.shopId = s.id ${
             shopId > 0 ? "and p.shopId = :shopId" : ""
           } ${
           month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""
@@ -129,7 +129,7 @@ const adminService = {
       const stats = await db.sequelize.query(
         `select p.name as 'name', sum(d.quantity) as 'quantity', sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o, ecommerce.shops s 
-              where d.productId = p.id and o.id = d.orderId and p.shopId = s.id ${
+              where d.productId = p.id and o.id = d.orderId and o.state = 4 and p.shopId = s.id ${
                 shopId > 0 ? "and p.shopId = :shopId" : ""
               } ${
           month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""

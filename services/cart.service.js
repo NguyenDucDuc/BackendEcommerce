@@ -15,7 +15,7 @@ module.exports = {
     getProduct: async (userId) => {
         try {
             const [products] = await sequelize.query(`
-                select r.*, p.quantity
+                select r.*, p.quantity, p.unitPrice
                 from carts c, productcarts p, products r
                 where c.id = p.cartId and p.productId = r.id and c.userId = ${userId}
             `)
