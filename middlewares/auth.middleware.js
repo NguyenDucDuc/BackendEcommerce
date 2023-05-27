@@ -155,6 +155,35 @@ const auth = {
     }
   },
 
+  verifyShop: async (req, res, next) => {
+    try {
+      auth.verifySeller(req, res, async () => {
+        let shopId = req.body.shopId;
+        if (!shopId) {
+          return res.status(404).json({
+            data: {
+              status: 403,
+              message: 'Vui lòng chọn cửa hàng',
+            },
+          });
+        }
+        const listShop = await req.seller.getShops();
+        if (!listShop.some((shop) => shop.id === parseInt(shopId))) {
+          return res.status(403).json({
+            data: {
+              status: 403,
+              message: 'Không có quyền sử dụng dịnh vụ này trên cửa hàng này',
+            },
+          });
+        }
+        next();
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(404);
+    }
+  },
+
   verifyAddProduct: async (req, res, next) => {
     try {
       auth.verifySeller(req, res, async () => {

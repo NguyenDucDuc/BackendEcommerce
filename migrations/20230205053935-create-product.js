@@ -67,6 +67,14 @@ module.exports = {
           key: 'id',
         },
       },
+      promotionId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Promotions',
+          key: 'id'
+        }
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

@@ -204,6 +204,23 @@ const productService = {
       return resUtil.serverError();
     }
   },
+  deleteProductV2: async (productID) => {
+    try {
+      let product = await db.Product.findByPk(productID);
+      if (!product) {
+        return resUtil.clientError(404, 'Sản phẩm không tồn tại');
+      }
+
+      product.isActive = false;
+
+      await product.save();
+
+      return resUtil.successful(200, [], 'Sản phẩm đã được xóa');
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
+    }
+  },
 
   // có thể tạo 1 bảng flat để lấy những thuộc tính hay dùng
   getProductByID: async (productID) => {
@@ -227,6 +244,20 @@ const productService = {
           },
         });
       });
+
+      const promotion = await product.getPromotion();
+      if (promotion) {
+        product.dataValues['promotion'] = promotion;
+        const priceDiscount = await db.ProductDecimal.findOne({
+          where: {
+            productId: productID,
+          },
+        });
+
+        if (priceDiscount) {
+          product.dataValues['priceDiscount'] = priceDiscount.value;
+        }
+      }
 
       await Promise.all(listPromise).then((values) => {
         let listValueFlat = values.reduce((list, value) => {
@@ -276,6 +307,7 @@ const productService = {
     let products = await db.Product.findAll({
       where: {
         [Op.and]: [
+          { isActive: true },
           name ? { name: { [Op.substring]: name } } : {},
           shopId ? { shopId: shopId } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
@@ -288,8 +320,24 @@ const productService = {
       limit: pageSize,
       order: [sortBy ? [sortBy, order] : ['id', 'desc']],
     });
+
     const { listProduct, listProductId, listGroupId } =
       productService.createListProductData(products);
+
+    Object.values(listProduct).forEach(async (product) => {
+      const promotion = await product.getPromotion();
+      if (promotion) {
+        product.dataValues['promotion'] = promotion;
+        const priceDiscount = await db.ProductDecimal.findOne({
+          where: {
+            productId: product.id,
+          },
+        });
+        if (priceDiscount) {
+          product.dataValues['priceDiscount'] = priceDiscount.value;
+        }
+      }
+    });
 
     let listAttribute = await productService.getAtrributeByListGroupID(
       listGroupId

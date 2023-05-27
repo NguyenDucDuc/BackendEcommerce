@@ -1,10 +1,13 @@
-const productService = require("../services/product.service");
+const productService = require('../services/product.service');
+const promotionService = require('../services/promotion.service');
 module.exports = {
   getProductByKw: async (req, res) => {
     try {
       let params = req.query;
       params.page = params.page === undefined ? 1 : params.page;
-      params.name = params.name === undefined ? "" : params.name;
+      params.name = params.name === undefined ? '' : params.name;
+      await promotionService.validateExpiredPromotion();
+
       const { code, data } = await productService.getProductByKw(params);
       return res.status(code).json(data);
     } catch (error) {
@@ -15,6 +18,7 @@ module.exports = {
 
   getProductByID: async (req, res) => {
     try {
+      await promotionService.validateExpiredPromotion();
       const { code, data } = await productService.getProductByID(req.params.id);
       return res.status(code).json(data);
     } catch (error) {
@@ -71,7 +75,7 @@ module.exports = {
   },
   deleteProduct: async (req, res) => {
     try {
-      const { code, data } = await productService.deleteProduct(
+      const { code, data } = await productService.deleteProductV2(
         req.params.productId
       );
       return res.status(code).json(data);

@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(ProductImage, { foreignKey: 'productId' });
       this.hasMany(ProductInt, { foreignKey: 'productId' });
       this.hasMany(ProductVarchar, { foreignKey: 'productId' });
-      this.hasMany(Promotion, { foreignKey: 'productId' });
+      this.belongsTo(Promotion, { foreignKey: 'promotionId' });
       this.belongsTo(AttributeGroup, { foreignKey: 'attributeGroupId' });
       this.hasMany(Review, { foreignKey: 'productId' });
     }
@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
       unitOnOrder: DataTypes.INTEGER,
       shopId: DataTypes.INTEGER,
       categoryId: DataTypes.INTEGER,
+      promotionId: DataTypes.INTEGER,
       attributeGroupId: DataTypes.INTEGER,
     },
     {

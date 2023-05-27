@@ -34,15 +34,6 @@ module.exports = {
           key:'id'
         }
       },
-      productId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-
-        references: {
-          model: 'Products',
-          key:'id'
-        }
-      },
       dateEnd: {
         allowNull: false,
         type: Sequelize.DATE

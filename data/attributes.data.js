@@ -208,7 +208,14 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-    
+    {
+      id: 27,
+      name: "giá khuyến mãi",
+      backendType: "string",
+      frontendInput: "text",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
    
   ],
 };
