@@ -1,79 +1,83 @@
-const { Promotion } = require("../models");
-const randomString = require("randomstring");
+const { Promotion } = require('../models');
+const promotionService = require('../services/promotion.service');
 
 module.exports = {
   create: async (req, res) => {
     try {
-      const body = req.body;
-      const code = randomString.generate(10);
-      const newPromotion = await Promotion.create({
-        code,
-        desc: body.desc,
-        value: body.value,
-        isActive: 1,
-        dateEnd: body.dateEnd,
-        shopId: body.shopId,
-        productId: body.productId,
-      });
-      return res.status(200).json({
-        status: 200,
-        data: newPromotion,
-      });
+      const { data, code } = await promotionService.create(req.body);
+      return res.status(code).json(data);
     } catch (error) {
       console.log(error);
+      return res.status(500);
+    }
+  },
+  getPromotionByPK: async (req, res) => {
+    try {
+      await promotionService.validateExpiredPromotion();
+      const { data, code } = await promotionService.getPromotionByPK(
+        req.params
+      );
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
+  getPromotionByShop: async (req, res) => {
+    try {
+      await promotionService.validateExpiredPromotion();
+      const { data, code } = await promotionService.getPromotionByShop(
+        req.params,
+        req.query
+      );
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
+  // getPromotionByProduct: async (req, res) => {
+  //   try {
+  //     await promotionService.validateExpiredPromotion();
+  //     const { data, code } = await promotionService.getPromotionByProduct(
+  //       req.params
+  //     );
+  //     return res.status(code).json(data);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return res.status(500);
+  //   }
+  // },
+  addPromotionForProduct: async (req, res) => {
+    try {
+      const { data, code } = await promotionService.addPromotionForProduct(
+        req.body
+      );
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
     }
   },
   delete: async (req, res) => {
     try {
-      const params = req.params;
-      if (params) {
-        const promotion = await Promotion.findByPk(+params.promotionId);
-        await promotion.destroy();
-        return res.status(200).json({
-          status: 200,
-          data: promotion,
-        });
-      }
+      const { data, code } = await promotionService.delete(req.params);
+      return res.status(code).json(data);
     } catch (error) {
       console.log(error);
+      return res.status(500);
     }
   },
   update: async (req, res) => {
     try {
-        const params = req.params
-        const body = req.body
-        const newPromotion = await Promotion.update({
-            desc: body.desc,
-            value: body.value,
-            dateEnd: body.dateEnd
-        }, {where: {id: +params.promotionId}})
-        const afterUpdatedPromotion = await Promotion.findByPk(params.promotionId)
-        return res.status(200).json({
-            status: 200,
-            data: afterUpdatedPromotion
-        })
+      const { data, code } = await promotionService.update(
+        req.params,
+        req.body
+      );
+      return res.status(code).json(data);
     } catch (error) {
       console.log(error);
+      return res.status(500);
     }
   },
-  getAll: async (req, res) => {
-    try {
-      const params = req.params
-      const limit = +req.query.limit || 10
-      const listPromostion = await Promotion.findAll({
-        where: {
-          shopId: params.shopId,
-          isActive: true
-        },
-        limit: limit,
-        offset: req.query.page ? (req.query.page - 1) * limit : null
-      })
-      return res.status(200).json({
-        status: 200,
-        data: listPromostion
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
 };

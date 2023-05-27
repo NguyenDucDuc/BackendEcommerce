@@ -211,7 +211,7 @@ const shopService = {
       const stats = await db.sequelize.query(
         `select p.id, p.name, sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o 
-        where d.productId = p.id and o.id = d.orderId and p.shopId = :shopId and p.name like '%${name}%' ${
+        where d.productId = p.id and o.id = d.orderId and p.shopId = :shopId and o.state = 4 and p.name like '%${name}%' ${
           month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""
         } ${
           quater !== 0
@@ -254,7 +254,7 @@ const shopService = {
       const stats = await db.sequelize.query(
         `select c.id, c.name, sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o , ecommerce.categories c
-        where d.productId = p.id and o.id = d.orderId and c.id = p.categoryId and p.shopId = :shopId ${
+        where d.productId = p.id and o.id = d.orderId and c.id = p.categoryId and o.state = 4 and p.shopId = :shopId ${
           categoryId > 0 ? "and p.categoryId = :categoryId" : ""
         } ${month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""} ${
           quater !== 0
