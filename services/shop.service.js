@@ -40,14 +40,15 @@ const shopService = {
         });
         const newShop = await Shop.create({
           shopName: body.shopName,
+          totalPrice: 0,
           rate: 0,
           desc: body.desc,
-          isBlock: true,
+          isBlock: false,
           image: result.url,
           sellerId: sellerId,
         });
         // add new shop to redis
-        await client.json.arrAppend("shops", "$", newShop);
+        // await client.json.arrAppend("shops", "$", newShop);
         return responseUltil.created(newShop);
       } else {
         return {
