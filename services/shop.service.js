@@ -1,12 +1,12 @@
-const { client } = require("../databases/redis.init");
-const { Shop, Seller, Order, Product, User } = require("../models");
-const { QueryTypes } = require("sequelize");
-const db = require("../models");
-const { Op } = require("sequelize");
-const responseUltil = require("../utils/response.util");
-const resUtil = require("../utils/res.util");
-const cloudinary = require("cloudinary").v2;
-require("dotenv").config();
+const { client } = require('../databases/redis.init');
+const { Shop, Seller, Order, Product, User } = require('../models');
+const { QueryTypes } = require('sequelize');
+const db = require('../models');
+const { Op } = require('sequelize');
+const responseUltil = require('../utils/response.util');
+const resUtil = require('../utils/res.util');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -24,7 +24,7 @@ const shopService = {
           data: {
             status: 400,
             data: [],
-            errors: "You can only create one store",
+            errors: 'You can only create one store',
           },
         };
       }
@@ -35,8 +35,8 @@ const shopService = {
         const image = files.image;
         const result = await cloudinary.uploader.upload(image.tempFilePath, {
           public_id: `${Date.now()}`,
-          resource_type: "auto",
-          folder: "Shop",
+          resource_type: 'auto',
+          folder: 'Shop',
         });
         const newShop = await Shop.create({
           shopName: body.shopName,
@@ -56,7 +56,7 @@ const shopService = {
           data: {
             status: 400,
             data: [],
-            errors: "Shop is already exists",
+            errors: 'Shop is already exists',
           },
         };
       }
@@ -167,7 +167,7 @@ const shopService = {
         break;
     }
     try {
-      if (type === "PRODUCT") {
+      if (type === 'PRODUCT') {
         stats = await shopService.statsByProduct(
           shopId,
           name,
@@ -178,7 +178,7 @@ const shopService = {
           year,
           date
         );
-      } else if (type === "CATEGORY") {
+      } else if (type === 'CATEGORY') {
         stats = await shopService.statsByCategory(
           shopId,
           categoryId,
@@ -213,13 +213,13 @@ const shopService = {
         `select p.id, p.name, sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o 
         where d.productId = p.id and o.id = d.orderId and p.shopId = :shopId and o.state = 4 and p.name like '%${name}%' ${
-          month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""
+          month > 0 && month < 13 ? 'and MONTH(o.createdAt) = :month' : ''
         } ${
           quater !== 0
-            ? "and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth"
-            : ""
-        } ${year > 0 ? "and YEAR(o.createdAt) = :year" : ""} ${
-          date ? "and DATE(o.createdAt) = DATE(:date)" : ""
+            ? 'and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth'
+            : ''
+        } ${year > 0 ? 'and YEAR(o.createdAt) = :year' : ''} ${
+          date ? 'and DATE(o.createdAt) = DATE(:date)' : ''
         }
         group by p.id
         order by sum(d.quantity * d.unitPrice) desc`,
@@ -256,13 +256,13 @@ const shopService = {
         `select c.id, c.name, sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o , ecommerce.categories c
         where d.productId = p.id and o.id = d.orderId and c.id = p.categoryId and o.state = 4 and p.shopId = :shopId ${
-          categoryId > 0 ? "and p.categoryId = :categoryId" : ""
-        } ${month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""} ${
+          categoryId > 0 ? 'and p.categoryId = :categoryId' : ''
+        } ${month > 0 && month < 13 ? 'and MONTH(o.createdAt) = :month' : ''} ${
           quater !== 0
-            ? "and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth"
-            : ""
-        } ${year > 0 ? "and YEAR(o.createdAt) = :year" : ""} ${
-          date ? "and DATE(o.createdAt) = DATE(:date)" : ""
+            ? 'and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth'
+            : ''
+        } ${year > 0 ? 'and YEAR(o.createdAt) = :year' : ''} ${
+          date ? 'and DATE(o.createdAt) = DATE(:date)' : ''
         }
         group by c.id
         order by sum(d.quantity * d.unitPrice) desc`,
@@ -290,6 +290,30 @@ const shopService = {
       const shop = await Shop.findByPk(shopId, { include: db.Seller });
       const user = await User.findByPk(shop.Seller.userId);
       return resUtil.successful(200, user);
+    } catch (error) {
+      console.log(error);
+      return resUtil.serverError();
+    }
+  },
+
+  getShopByUserId: async ({ userId }) => {
+    try {
+      let shop;
+      const user = await db.User.findByPk(userId);
+      const seller = await db.Seller.findOne({
+        where: {
+          userId: user.id,
+        },
+      });
+      if (seller) {
+        shop = await db.Shop.findAll({
+          where: {
+            sellerId: seller.id,
+          },
+        });
+      }
+
+      return resUtil.successful(200, shop);
     } catch (error) {
       console.log(error);
       return resUtil.serverError();

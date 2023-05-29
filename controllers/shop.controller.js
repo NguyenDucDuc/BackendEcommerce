@@ -1,6 +1,6 @@
-const shopServices = require("../services/shop.service");
-const resUtil = require("../utils/res.util");
-const { Seller, Shop, sequelize } = require("../models");
+const shopServices = require('../services/shop.service');
+const resUtil = require('../utils/res.util');
+const { Seller, Shop, sequelize } = require('../models');
 
 module.exports = {
   create: async (req, res) => {
@@ -94,6 +94,15 @@ module.exports = {
       return res.status(500);
     }
   },
+  getShopByUserId: async (req, res) => {
+    try {
+      const { code, data } = await shopServices.getShopByUserId(req.params);
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500);
+    }
+  },
   updateShop: async (req, res) => {
     const shopId = req.params.shopId;
     const amount = Number(req.body.amount);
@@ -105,13 +114,15 @@ module.exports = {
       return res.status(500);
     }
   },
-  statsAdmin: async (req,res) => {
+  statsAdmin: async (req, res) => {
     try {
-      console.log('asda')
-      const countStore = await sequelize.query(`select count(*) as 'count' from shops`)
-      return res.status(200).json({countStore})
+      console.log('asda');
+      const countStore = await sequelize.query(
+        `select count(*) as 'count' from shops`
+      );
+      return res.status(200).json({ countStore });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  },
 };
