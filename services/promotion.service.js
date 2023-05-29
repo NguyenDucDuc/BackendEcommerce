@@ -114,13 +114,14 @@ const promotionService = {
 
       if (priceDiscount) {
         priceDiscount.promotionId = promotionId;
-        priceDiscount.value = product.price - product.price * promotion.value;
+        priceDiscount.value =
+          product.price - parseInt(product.price * promotion.value);
         await priceDiscount.save();
       } else {
         await db.ProductDecimal.create({
           productId: productId,
           attributeId: 27,
-          value: product.price - product.price * promotion.value,
+          value: product.price - parseInt(product.price * promotion.value),
           createdAt: new Date(),
           updatedAt: new Date(),
         });

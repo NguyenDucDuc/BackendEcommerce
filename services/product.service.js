@@ -292,8 +292,19 @@ const productService = {
   },
 
   getProductByKw: async (params) => {
-    let { page, name, fP, tP, sortBy, order, cateId, shopId, pageSize, rate } =
-      params;
+    let {
+      page,
+      name,
+      fP,
+      tP,
+      sortBy,
+      order,
+      cateId,
+      shopId,
+      pageSize,
+      rate,
+      isActive,
+    } = params;
     let data, code, start, categories;
     if (!pageSize) pageSize = parseInt(process.env.PAGE_SIZE);
     else pageSize = parseInt(pageSize);
@@ -307,7 +318,7 @@ const productService = {
     let products = await db.Product.findAll({
       where: {
         [Op.and]: [
-          { isActive: true },
+          isActive ? {} : { isActive: true },
           name ? { name: { [Op.substring]: name } } : {},
           shopId ? { shopId: shopId } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
