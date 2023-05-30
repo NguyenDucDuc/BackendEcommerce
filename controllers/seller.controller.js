@@ -117,5 +117,28 @@ module.exports = {
                 error: 'Server error'
             })
         }
-    }
+    },
+    grant: async (req, res) => {
+        try {
+          const seller = await Seller.findOne({where: {userId: +req.params.userId}})
+          if(seller){
+            return res.status(200).json({
+              status: 200,
+              data: true
+            })
+          } else {
+            const newSeller = await Seller.create({
+              point: 10,
+              userId: +req.params.userId,
+              isConfirm: true
+            })
+            return res.status(200).json({
+              status: 200,
+              data: true
+            })
+          }
+        } catch (error) {
+          console.log(error)
+        }
+      }
 }

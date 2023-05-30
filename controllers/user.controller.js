@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const responseUtil = require("../utils/response.util");
 const customerService = require("../services/customer.service");
 const cartService = require("../services/cart.service");
+const { sequelize, User, Staff, Admin, Seller, Customer } = require("../models");
 
 module.exports = {
   registerUser: async (req, res) => {
@@ -180,4 +181,40 @@ module.exports = {
       res.status(code).json(data);
     }
   },
+  getAllUserNotAdmin: async (req, res) => {
+    try {
+      const [users] = await sequelize.query(`
+        SELECT *
+        FROM users
+        WHERE id NOT IN (
+          SELECT userId
+          FROM admins
+        )
+      `)
+      return res.status(200).json({
+        status: 200,
+        data: users
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  getAllRole: async (req, res) => {
+    try {
+      let roles = []
+      const seller = await Seller.findOne({where: {userId: +req.params.userId}})
+      seller !== null ? roles.push({name: 'Nguời bán'}) : null
+      const staff = await Staff.findOne({where: {userId: +req.params.userId}})
+      staff !== null ? roles.push({name: 'Nhân viên'}) : null
+      const customer = await Customer.findOne({where: {userId: +req.params.userId}})
+      customer !== null ? roles.push({name: 'Khách hàng'}) : null
+      
+      return res.status(200).json({
+        status: 200,
+        data: roles
+      })
+    } catch (error) {
+      console.log(error)
+    }
+  }
 };

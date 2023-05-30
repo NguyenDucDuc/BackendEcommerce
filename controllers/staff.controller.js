@@ -14,5 +14,27 @@ module.exports = {
             const {code, data} = responseUtil.serverError()
             res.status(code).json(data)
         }
+    },
+    grantStaff: async (req, res) => {
+        try {
+            const staff = await Staff.findOne({where: {userId: +req.params.userId}})
+            if(staff !== null){
+                return res.status(200).json({
+                    status: 200,
+                    data: true
+                })
+            } else {
+                const newStaff = await Staff.create({
+                    joinDate: new Date(),
+                    userId: +req.params.userId
+                })
+                return res.status(200).json({
+                    status: 200,
+                    data: true
+                })
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 }

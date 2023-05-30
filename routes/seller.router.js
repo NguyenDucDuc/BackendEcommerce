@@ -11,5 +11,6 @@ sellerRouter.patch("/un-lock/:userId", sellerController.unLock)
 sellerRouter.get('/unofficial', userMiddleware.verifyToken, sellerMiddleware.verifyAdminOrStaff ,sellerController.getSellerUnofficial)
 sellerRouter.get('/check-official', userMiddleware.verifyToken ,sellerController.checkSellerOfficial)
 sellerRouter.post('/:userId/confirm', userMiddleware.verifyToken, sellerMiddleware.verifyAdminOrStaff ,sellerController.confirmSeller)
+sellerRouter.post('/:userId/grant', userMiddleware.verifyToken, userMiddleware.verifyAdmin, sellerController.grant)
 
 module.exports = {sellerRouter}
