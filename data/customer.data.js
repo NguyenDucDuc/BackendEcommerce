@@ -62,4 +62,11 @@ module.exports = [
         createdAt: new Date(),
         updatedAt: new Date(),
     },
+    {
+        id: 10,
+        point: 10,
+        userId: 5,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+    }
 ]

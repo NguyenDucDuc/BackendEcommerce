@@ -60,6 +60,10 @@ userRouter.get("/role-admin", userMiddleware.verifyToken ,userController.roleAdm
 
 userRouter.get('/get-user-by-productId/:productId', userController.getUserByProductId)
 
+userRouter.get('/get-user-not-admin', userController.getAllUserNotAdmin)
+
+userRouter.get('/:userId/get-all-role', userController.getAllRole)
+
 module.exports = { userRouter };
 
 
