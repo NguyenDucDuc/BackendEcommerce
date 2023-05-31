@@ -50,6 +50,7 @@ module.exports = {
     },
     verifyAdmin: async (req, res, next) => {
         try {
+            console.log(req.data.userId)
             const userId = req.data.userId
             const admin = await Admin.findOne({where: {userId: userId}})
             if(admin){

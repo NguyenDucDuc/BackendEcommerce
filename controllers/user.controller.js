@@ -203,7 +203,7 @@ module.exports = {
     try {
       let roles = []
       const seller = await Seller.findOne({where: {userId: +req.params.userId}})
-      seller !== null ? roles.push({name: 'Nguời bán'}) : null
+      seller !== null ? roles.push({name: 'Người bán'}) : null
       const staff = await Staff.findOne({where: {userId: +req.params.userId}})
       staff !== null ? roles.push({name: 'Nhân viên'}) : null
       const customer = await Customer.findOne({where: {userId: +req.params.userId}})
