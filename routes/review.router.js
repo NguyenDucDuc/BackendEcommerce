@@ -10,5 +10,7 @@ router.get(
   reviewController.getProductPurchased
 );
 router.post('/create-v2', userMiddleware.verifyToken, reviewController.addReviewV2)
+router.get('/:productId/stats', reviewController.statsReviewV2)
+router.post('/:productId/check-review', userMiddleware.verifyToken ,reviewController.checkReviewed)
 
 module.exports = router;
