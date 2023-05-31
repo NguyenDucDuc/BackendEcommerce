@@ -13,7 +13,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       rate: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        allowNull: true
       },
       productId: {
         type: Sequelize.INTEGER,

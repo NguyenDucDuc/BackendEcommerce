@@ -1,5 +1,5 @@
 const reviewService = require('../services/review.service');
-const {Review} = require('../models')
+const {Review, Shop, Product} = require('../models')
 
 module.exports = {
   getReviewByProductId: async (req, res) => {
@@ -56,6 +56,18 @@ module.exports = {
       const body = req.body
       const userId = req.data.userId
       const {code, data} = await reviewService.addReviewV2(body, userId)
+      // update rate shop
+      const product = await Product.findOne({where: {id: body.productId}})
+      const shop = await Shop.findOne({where: {id: product.shopId}})
+      if(shop){
+        if(shop.rate === null){
+          shop.rate = body.rate
+          await shop.save()
+        } else {
+          shop.rate = Math.ceil((shop.rate + body.rate) / 2)
+          await shop.save()
+        }
+      }
       return res.status(code).json(data)
     } catch (error) {
       console.log(error)
