@@ -2,7 +2,7 @@ module.exports = [
   {
     id: 1,
     shopName: 'Quần Áo Gò Vấp',
-    rate: 0,
+    rate: null,
     desc: 'Quần áo thời trang giá tốt tại Gò Vấp',
     image:
       'https://res.cloudinary.com/djbju13al/image/upload/v1675910681/Shop/1675910679507.jpg',
@@ -15,7 +15,7 @@ module.exports = [
   {
     id: 2,
     shopName: 'Laptop EZHouse',
-    rate: 0,
+    rate: null,
     desc: 'Laptop giá rẻ dành cho sinh viên',
     image:
       'https://res.cloudinary.com/djbju13al/image/upload/v1675910681/Shop/1675910679507.jpg',
@@ -28,7 +28,7 @@ module.exports = [
   {
     id: 3,
     shopName: 'Ebook Sài Gòn',
-    rate: 0,
+    rate: null,
     desc: 'Sách hay, giá tốt, kèm nhiều ưu đãi',
     image: 'https://res.cloudinary.com/djbju13al/image/upload/v1675909925/Avatar/1675909923474.jpg',
     sellerId: 1,
