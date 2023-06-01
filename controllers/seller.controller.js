@@ -1,7 +1,16 @@
-const { Seller, sequelize } = require('../models')
+const { Seller, sequelize, User } = require('../models')
 const sellerService = require('../services/seller.service')
 const responseUtil = require('../utils/response.util')
+const nodemailer = require('nodemailer')
 
+const mailerTransport = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  auth: {
+    user: "nguyenducduc2441@gmail.com",
+    pass: process.env.GMAIL_PASSWORD,
+  },
+});
 
 module.exports = {
   register: async (req, res) => {
@@ -96,9 +105,24 @@ module.exports = {
     try {
       const userId = req.params.userId
       const seller = await Seller.findOne({ where: { userId } })
+      const user = await User.findOne({where: {id: userId}})
       if (seller) {
         seller.isConfirm = true
         await seller.save()
+        // send mail
+        const mailerTransport = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          auth: {
+            user: "nguyenducduc2441@gmail.com",
+            pass: process.env.GMAIL_PASSWORD,
+          },
+        });
+        await mailerTransport.sendMail({
+          to: user.email,
+          subject: "ĐĂNG KÝ ĐỐI TÁC",
+          html: `<h4>Yêu cầu đăng ký đối tác của bạn đã được xác nhận!!!</h4>`,
+        });
         return res.status(200).json({
           status: 200,
           data: seller

@@ -12,8 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     static associate({User, Order, Report}) {
       // define association here
       this.belongsTo(User, {foreignKey: 'userId', onDelete: 'CASCADE', onUpdate: 'CASCADE'})
-      this.hasMany(Order, {foreignKey: 'customerId'})
-      this.hasMany(Report, {foreignKey: 'customerId'})
+      this.hasMany(Order, {foreignKey: 'customerId', onDelete: 'CASCADE'})
+      this.hasMany(Report, {foreignKey: 'customerId', onDelete: 'CASCADE'})
     }
   }
   Customer.init({

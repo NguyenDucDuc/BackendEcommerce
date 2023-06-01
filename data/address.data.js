@@ -6,6 +6,7 @@ module.exports = [
         ward: "Phường 1",
         street: "Điện Biên Phủ",
         detail: "209",
+        isSelect: true,
         userId: 1,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -17,6 +18,7 @@ module.exports = [
         ward: "Phường 11",
         street: "Bùi Thị Xuân",
         detail: "120",
+        isSelect: true,
         userId: 2,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -28,6 +30,7 @@ module.exports = [
         ward: "Phường 10",
         street: "Nguyễn Công Trứ",
         detail: "18",
+        isSelect: true,
         userId: 3,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -39,6 +42,7 @@ module.exports = [
         ward: "Phường 10",
         street: "Lý Thái Tổ",
         detail: "290",
+        isSelect: true,
         userId: 4,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -50,6 +54,7 @@ module.exports = [
         ward: "Phường 1",
         street: "Điện Biên Phủ",
         detail: "623",
+        isSelect: true,
         userId: 5,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -61,6 +66,7 @@ module.exports = [
         ward: "Phuong 1",
         street: "Lê Hồng Phong",
         detail: "78",
+        isSelect: true,
         userId: 6,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -72,6 +78,7 @@ module.exports = [
         ward: "Phường 5",
         street: "Nguyễn Đình Chiểu",
         detail: "889",
+        isSelect: true,
         userId: 7,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -83,6 +90,7 @@ module.exports = [
         ward: "Phường 10",
         street: "Nguyễn Văn Quá",
         detail: "170",
+        isSelect: true,
         userId: 8,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -94,6 +102,7 @@ module.exports = [
         ward: "Phường 10",
         street: "Nguyễn Văn Quá",
         detail: "24/50",
+        isSelect: true,
         userId: 9,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -104,6 +113,7 @@ module.exports = [
         ward: "Phuong 8",
         street: "Trần Huy Liệu",
         detail: "623",
+        isSelect: true,
         userId: 10,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -115,6 +125,7 @@ module.exports = [
         ward: "Phuong 8",
         street: "Trần Huy Liệu",
         detail: "616",
+        isSelect: true,
         userId: 11,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -126,6 +137,7 @@ module.exports = [
         ward: "Phuong 8",
         street: "Trần Huy Liệu",
         detail: "623",
+        isSelect: true,
         userId: 12,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"
@@ -137,6 +149,7 @@ module.exports = [
         ward: "Phuong 8",
         street: "Nguyễn Du",
         detail: "623",
+        isSelect: true,
         userId: 13,
         createdAt: "2023-02-08 02:24:35",
         updatedAt: "2023-02-08 02:24:35"

@@ -18,14 +18,14 @@ module.exports = (sequelize, DataTypes) => {
       Review,
     }) {
       // define association here
-      this.hasMany(Address, { foreignKey: 'userId' });
-      this.hasMany(Admin, { foreignKey: 'userId' });
-      this.hasMany(Cart, { foreignKey: 'userId' });
-      this.hasMany(Customer, { foreignKey: 'userId' });
-      this.hasMany(Notification, { foreignKey: 'userId' });
-      this.hasMany(Payment, { foreignKey: 'userId' });
-      this.hasMany(Staff, { foreignKey: 'userId' });
-      this.hasMany(Review, { foreignKey: 'userId' });
+      this.hasMany(Address, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Admin, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Cart, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Customer, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Notification, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Payment, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Staff, { foreignKey: 'userId', onDelete: 'CASCADE' });
+      this.hasMany(Review, { foreignKey: 'userId', onDelete: 'CASCADE' });
     }
   }
   User.init(

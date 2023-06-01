@@ -28,6 +28,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
+      isSelect: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       userId: {
         type: Sequelize.INTEGER,
         references: {
