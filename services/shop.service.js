@@ -6,6 +6,7 @@ const { Op } = require('sequelize');
 const responseUltil = require('../utils/response.util');
 const resUtil = require('../utils/res.util');
 const cloudinary = require('cloudinary').v2;
+const nodemailer = require('nodemailer')
 require('dotenv').config();
 
 cloudinary.config({
@@ -71,6 +72,22 @@ const shopService = {
       if (shop) {
         shop.isBlock = true;
         await shop.save();
+        // send mail
+        const seller = await Seller.findOne({where: {id: shop.sellerId}})
+        const user = await User.findOne({where: {id: seller.userId}})
+        const mailerTransport = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          auth: {
+            user: "nguyenducduc2441@gmail.com",
+            pass: process.env.GMAIL_PASSWORD,
+          },
+        });
+        await mailerTransport.sendMail({
+          to: user.email,
+          subject: "TẠM KHÓA CỬA HÀNG",
+          html: `<h4>Cửa hàng của bạn tạm thời bị khóa!!!</h4>`,
+        });
       }
       return responseUltil.getSuccess(shop);
     } catch (error) {
@@ -84,6 +101,22 @@ const shopService = {
       if (shop) {
         shop.isBlock = false;
         await shop.save();
+        // send mail
+        const seller = await Seller.findOne({where: {id: shop.sellerId}})
+        const user = await User.findOne({where: {id: seller.userId}})
+        const mailerTransport = nodemailer.createTransport({
+          service: "gmail",
+          host: "smtp.gmail.com",
+          auth: {
+            user: "nguyenducduc2441@gmail.com",
+            pass: process.env.GMAIL_PASSWORD,
+          },
+        });
+        await mailerTransport.sendMail({
+          to: user.email,
+          subject: "Mở KHÓA CỬA HÀNG",
+          html: `<h4>Cửa hàng của bạn đã được mở khóa!!!</h4>`,
+        });
       }
       return responseUltil.getSuccess(shop);
     } catch (error) {
