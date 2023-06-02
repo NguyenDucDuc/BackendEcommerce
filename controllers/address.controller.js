@@ -53,5 +53,25 @@ module.exports = {
     } catch (error) {
       console.log(error)
     }
+  },
+  setDefault: async (req, res) => {
+    try {
+      const addressDefault = await Address.findOne({where: {isSelect: true, userId: req.data.userId}})
+      if(!addressDefault !== null){
+        addressDefault.isSelect = false
+        await addressDefault.save()
+      }
+      const newAddressDefault = await Address.findOne({where: {id: +req.params.id}})
+      if(newAddressDefault !== null){
+        newAddressDefault.isSelect = true
+        await newAddressDefault.save()
+      }
+      return res.status(200).json({
+        status: 200,
+        data: true
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }

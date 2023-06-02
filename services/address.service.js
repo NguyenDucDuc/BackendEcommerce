@@ -32,7 +32,7 @@ module.exports = {
     },
     currentAddress: async (userId) => {
         try {
-            const address = await Address.findOne({where: {userId: userId}})
+            const address = await Address.findOne({where: {userId: userId, isSelect: true}})
             return responseUtil.getSuccess(address)
         } catch (error) {
             console.log(error)
