@@ -11,6 +11,7 @@ const mongoose = require("mongoose");
 const { User } = require("./models");
 const { Message } = require("./schemas/message.schema");
 const messageController = require("./controllers/message.controller");
+const productService = require("./services/product.service");
 require('dotenv').config()
 
 // -- connect mongodb
@@ -114,6 +115,7 @@ io.on("connection", async (socket) => {
 
 
 
-server.listen(process.env.CONFIG_PORT, () => {
+server.listen(process.env.CONFIG_PORT, async() => {
   console.log(`server running on port ${process.env.CONFIG_PORT}`);
+  await productService.createFullTextSearch()
 });
