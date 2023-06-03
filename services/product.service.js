@@ -3,6 +3,11 @@ const db = require('../models');
 const resUtil = require('../utils/res.util');
 const categoryService = require('./category.service');
 const shopService = require('./shop.service');
+const {
+  createSlug,
+  removeVietnameseTones,
+  createKwSearch,
+} = require('../utils/common.utils');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
@@ -315,11 +320,19 @@ const productService = {
       let category = await db.Category.findByPk(cateId);
       categories = await categoryService.getListCategoryVaild(category);
     }
+    if (name) {
+      name = createKwSearch(name);
+    }
     let products = await db.Product.findAll({
       where: {
         [Op.and]: [
           isActive ? {} : { isActive: true },
-          name ? { name: { [Op.substring]: name } } : {},
+          // name ? { slug: { [Op.substring]: name } } : {},
+          name
+            ? db.sequelize.literal(
+                `MATCH(slug) AGAINST('${name}' IN NATURAL LANGUAGE MODE)`
+              )
+            : {},
           shopId ? { shopId: shopId } : {},
           fP ? { price: { [Op.gte]: fP } } : {},
           tP ? { price: { [Op.lte]: tP } } : {},
@@ -360,7 +373,12 @@ const productService = {
       db.Product.count({
         where: {
           [Op.and]: [
-            name ? { name: { [Op.substring]: name } } : {},
+            // name ? { slug: { [Op.substring]: name } } : {},
+            name
+              ? db.sequelize.literal(
+                  `MATCH(slug) AGAINST('${name}' IN NATURAL LANGUAGE MODE)`
+                )
+              : {},
             shopId ? { shopId: shopId } : {},
             fP ? { price: { [Op.gte]: fP } } : {},
             tP ? { price: { [Op.lte]: tP } } : {},
@@ -497,7 +515,60 @@ const productService = {
     }
   },
 
-  //-----------------------------------------------------
+  //--------------------------------------------------------------------------------------------------
+
+  isFullTextSearchForSlug: async () => {
+    try {
+      const [results, metadata] = await db.sequelize.query(
+        'SHOW INDEX FROM ecommerce.products'
+      );
+      const isFullTextSearch = results.some((result) => {
+        if (result.Column_name === 'slug' && result.Index_type === 'FULLTEXT')
+          return true;
+        return false;
+      });
+      console.log(`check full text search successfuly ${isFullTextSearch}`);
+      return isFullTextSearch;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  createFullTextSearch: async () => {
+    try {
+      if (!(await productService.isFullTextSearchForSlug())) {
+        await db.sequelize.query(
+          'ALTER TABLE ecommerce.products ADD FULLTEXT(slug)'
+        );
+        console.log('create full text search successfuly');
+        await productService.syncSlugForProduct();
+        return;
+      }
+      console.log('exitst full text search successfuly');
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  syncSlugForProduct: async () => {
+    try {
+      const products = await db.Product.findAll();
+      const listPromiseUpdateSlug = products.map((product) => {
+        return db.Product.update(
+          { slug: createSlug(product.name) },
+          {
+            where: {
+              id: product.id,
+            },
+          }
+        );
+      });
+      await Promise.all(listPromiseUpdateSlug);
+      console.log('sync slug for product successfuly');
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   createListAttributeData: (listAttribute) => {
     const initListAttributeData = {
