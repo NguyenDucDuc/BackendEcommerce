@@ -16,6 +16,17 @@ module.exports = {
     }
   },
 
+  getProductTrend: async (req, res) => {
+    try {
+      await promotionService.validateExpiredPromotion();
+      const { code, data } = await productService.getProductTrend();
+      return res.status(code).json(data);
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+  },
+
   getProductByID: async (req, res) => {
     try {
       await promotionService.validateExpiredPromotion();

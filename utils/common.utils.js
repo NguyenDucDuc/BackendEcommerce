@@ -44,4 +44,13 @@ const createKwSearch = (str) => {
   return str.split(' ').join(',');
 };
 
-module.exports = { createSlug, removeVietnameseTones, createKwSearch };
+const roundToHundreds = (amount) => {
+  return Math.round(amount / 100) * 100;
+};
+
+module.exports = {
+  createSlug,
+  removeVietnameseTones,
+  createKwSearch,
+  roundToHundreds,
+};
