@@ -4,6 +4,7 @@ const auth = require("../middlewares/auth.middleware");
 
 const router = require("express").Router();
 
+router.get("/hot-trend", productController.getProductTrend);
 router.get("/:id", productController.getProductByID);
 router.get("", productController.getProductByKw);
 router.post("", auth.verifyAddProduct, productController.addProduct);

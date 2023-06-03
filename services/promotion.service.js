@@ -3,6 +3,7 @@ const { Promotion } = require('../models');
 const db = require('../models');
 const resUtil = require('../utils/res.util');
 const randomString = require('randomstring');
+const { roundToHundreds } = require('../utils/common.utils');
 
 const promotionService = {
   create: async ({ desc, value, dateEnd, shopId }) => {
@@ -104,7 +105,11 @@ const promotionService = {
       });
 
       await db.ProductCart.update(
-        { unitPrice: product.price - product.price * promotion.value },
+        {
+          unitPrice: roundToHundreds(
+            product.price - product.price * promotion.value
+          ),
+        },
         {
           where: {
             productId: product.id,
@@ -114,14 +119,17 @@ const promotionService = {
 
       if (priceDiscount) {
         priceDiscount.promotionId = promotionId;
-        priceDiscount.value =
-          product.price - parseInt(product.price * promotion.value);
+        priceDiscount.value = roundToHundreds(
+          product.price - parseInt(product.price * promotion.value)
+        );
         await priceDiscount.save();
       } else {
         await db.ProductDecimal.create({
           productId: productId,
           attributeId: 27,
-          value: product.price - parseInt(product.price * promotion.value),
+          value: roundToHundreds(
+            product.price - parseInt(product.price * promotion.value)
+          ),
           createdAt: new Date(),
           updatedAt: new Date(),
         });

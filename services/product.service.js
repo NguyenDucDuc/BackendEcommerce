@@ -7,6 +7,7 @@ const {
   createSlug,
   removeVietnameseTones,
   createKwSearch,
+  roundToHundreds,
 } = require('../utils/common.utils');
 const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
@@ -451,6 +452,105 @@ const productService = {
     return resUtil.successful(code, data);
   },
 
+  getProductTrend: async () => {
+    let products = await db.Product.findAll({
+      where: {
+        [Op.and]: [{ isActive: true }, { name: { [Op.substring]: '' } }],
+      },
+      order: ['promotionId', 'DESC'],
+    });
+    if (products.length === 0) {
+      products = await db.Product.findAll({
+        offset: 0,
+        limit: 12,
+        order: ['unitOnOrder', 'asc'],
+      });
+    }
+    const { listProduct, listProductId, listGroupId } =
+      productService.createListProductData(products);
+
+    Object.values(listProduct).forEach(async (product) => {
+      const promotion = await product.getPromotion();
+      if (promotion) {
+        product.dataValues['promotion'] = promotion;
+        const priceDiscount = await db.ProductDecimal.findOne({
+          where: {
+            productId: product.id,
+          },
+        });
+        if (priceDiscount) {
+          product.dataValues['priceDiscount'] = priceDiscount.value;
+        }
+      }
+    });
+
+    let listAttribute = await productService.getAtrributeByListGroupID(
+      listGroupId
+    );
+    let { listAttributeFetch, listAttributeValidate, listAttributeID } =
+      productService.createListAttributeData(listAttribute);
+
+    let listPromise = [];
+
+    Object.keys(listAttributeFetch).forEach((attribute) => {
+      listPromise.push(
+        db[DATA_TYPE[attribute]].findAll({
+          where: {
+            productId: {
+              [Op.in]: listProductId,
+            },
+            attributeId: {
+              [Op.in]: listAttributeID,
+            },
+          },
+        })
+      );
+    });
+
+    await Promise.all(listPromise)
+      .then(([...values]) => {
+        let listValueFlat = values.reduce((list, value) => {
+          list.push(...value);
+          return list;
+        }, []);
+        listValueFlat.forEach((value) => {
+          value.dataValues['name'] =
+            listAttributeValidate[value.attributeId]['name'];
+          value.dataValues['backendType'] =
+            listAttributeValidate[value.attributeId]['backendType'];
+          value.dataValues['frontendInput'] =
+            listAttributeValidate[value.attributeId]['frontendInput'];
+
+          if (
+            !listProduct[value.productId].dataValues.hasOwnProperty(
+              'attributes'
+            )
+          ) {
+            listProduct[value.productId].dataValues['attributes'] = [
+              value.dataValues,
+            ];
+          } else {
+            listProduct[value.productId].dataValues['attributes'].push(
+              value.dataValues
+            );
+          }
+        });
+
+        code = 200;
+        data = {
+          listProduct: products.map(
+            (product) => listProduct[product.dataValues.id]
+          ).reverse(),
+        };
+      })
+      .catch((error) => {
+        console.log(error);
+        resUtil.serverError();
+      });
+
+    return resUtil.successful(code, data);
+  },
+
   compareProduct: async (productId1, productId2) => {
     try {
       let data;
@@ -555,7 +655,10 @@ const productService = {
       const products = await db.Product.findAll();
       const listPromiseUpdateSlug = products.map((product) => {
         return db.Product.update(
-          { slug: createSlug(product.name) },
+          {
+            slug: createSlug(product.name),
+            price: roundToHundreds(product.price),
+          },
           {
             where: {
               id: product.id,
