@@ -31,7 +31,7 @@ module.exports = [
     rate: null,
     desc: 'Sách hay, giá tốt, kèm nhiều ưu đãi',
     image: 'https://res.cloudinary.com/djbju13al/image/upload/v1675909925/Avatar/1675909923474.jpg',
-    sellerId: 1,
+    sellerId: 3,
     totalPrice: 0,
     createdAt: new Date(),
     updatedAt: new Date(),

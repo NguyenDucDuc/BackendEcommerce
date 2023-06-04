@@ -73,5 +73,17 @@ module.exports = {
     } catch (error) {
       console.log(error)
     }
+  },
+  delete: async (req, res) => {
+    try {
+      const address = await Address.findOne({where: {id: +req.params.id}})
+      await address.destroy()
+      return res.status(200).json({
+        status: 200,
+        data: true
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
