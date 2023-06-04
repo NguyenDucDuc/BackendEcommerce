@@ -7,5 +7,6 @@ addressRouter.get("/current", userMiddleware.verifyToken, addressController.curr
 addressRouter.get("/", userMiddleware.verifyToken,addressController.getAll)
 addressRouter.post("/", userMiddleware.verifyToken, addressController.create)
 addressRouter.post("/:id/set-default", userMiddleware.verifyToken, addressController.setDefault)
+addressRouter.post("/:id/delete", userMiddleware.verifyToken, addressController.delete)
 
 module.exports = {addressRouter}
