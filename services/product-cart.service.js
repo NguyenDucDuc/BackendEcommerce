@@ -9,7 +9,7 @@ module.exports = {
                 cartId: body.cartId,
             }})
             if(productCart){
-                productCart.quantity = productCart.quantity + 1
+                productCart.quantity = productCart.quantity + body.quantity
                 await productCart.save()
                 return responseUtil.created(productCart)
             }else {
