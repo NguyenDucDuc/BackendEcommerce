@@ -4,6 +4,8 @@ const { Customer, User } = require("../models");
 const resUtil = require("../utils/res.util");
 const userService = require("./user.service");
 const shopService = require("./shop.service");
+const nodemailer = require('nodemailer')
+
 
 const STATUS_ORDER = {
   0: "Đã hủy",
@@ -14,7 +16,7 @@ const STATUS_ORDER = {
 };
 
 const orderService = {
-  buyProduct: async ({ orderDetails, ...order }) => {
+  buyProduct: async ({ orderDetails, ...order }, userId) => {
     const transaction = await db.sequelize.transaction();
     try {
       order = {
@@ -101,6 +103,23 @@ const orderService = {
         })
       );
       await Promise.all(listPromise);
+
+      const buyer = await User.findByPk(userId)
+
+      const mailerTransport = nodemailer.createTransport({
+        service: "gmail",
+        host: "smtp.gmail.com",
+        auth: {
+          user: "nguyenducduc2441@gmail.com",
+          pass: process.env.GMAIL_PASSWORD,
+        },
+      });
+      await mailerTransport.sendMail({
+        to: buyer.email,
+        subject: "Đơn hàng đã được đặt",
+        html: `<h4>Cửa hàng đang chuẩn bị đơn hàng có mã số ${newOrder.id} - ${new Intl.NumberFormat().format(newOrder.totalPrice)} VNĐ. Vui lòng chờ !!!</h4>`,
+      });
+      
       await transaction.commit();
       return resUtil.successful(
         200,
@@ -234,16 +253,25 @@ const orderService = {
     pageSize = 1,
     sortBy,
     order,
+    userId
   }) => {
     const start = parseInt((page - 1) * pageSize);
     const result = {};
     try {
+      let customer = false;
+
+      if(userId){
+         customer = await db.Customer.findOne({where: {
+          userId: userId
+        }});
+      }
+
       const listOrder = await db.Order.findAll({
         where: {
           [Op.and]: [
             state ? { state: state } : {},
             shopId ? { shopId: shopId } : {},
-            customerId ? { customerId: customerId } : {},
+            customer ? { customerId: customer.id } : {},
           ],
         },
         offset: start,

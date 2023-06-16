@@ -18,7 +18,7 @@ module.exports = {
 
   addReview: async (req, res) => {
     const review = req.body;
-    review.userId = 1;
+    review.userId = req.user.userId;
     review.createdAt = new Date();
     review.updatedAt = new Date();
     try {

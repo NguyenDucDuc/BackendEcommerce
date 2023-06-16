@@ -82,6 +82,8 @@ const reviewService = {
         transaction: transaction,
       });
       if (newReview) {
+        const user = await newReview.getUser()
+        newReview.dataValues.User = user
         const product = await newReview.getProduct();
         const shopId = product.shopId;
         const { totalRate: totalRateReview, amount: amountReview } =
@@ -114,7 +116,7 @@ const reviewService = {
         );
         await transaction.commit();
         await product.save();
-        return resUtil.successful(201, newReview);
+        return resUtil.successful(201, newReview.dataValues);
       }
       return resUtil.serverError();
     } catch (error) {
@@ -180,7 +182,7 @@ const reviewService = {
   calAVGRateOnShop: async (shopId, productId) => {
     try {
       const result = await db.sequelize.query(
-        `select sum(rate) as totalRate, count(id) as amount from ecommerce.products where shopId = :shopId and not id = :id`,
+        `select sum(rate) as totalRate, count(id) as amount from ecommerce.products where shopId = :shopId and not id = :id and not rate = 0`,
         {
           replacements: { shopId: shopId, id: productId },
           plain: true,

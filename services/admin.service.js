@@ -1,11 +1,11 @@
-const { QueryTypes } = require("sequelize");
-const resUtils = require("../utils/res.util");
-const db = require("../models");
-const responseUtil = require("../utils/response.util");
-const { sequelize } = require("../models");
-const { User, Admin } = require("../models");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { QueryTypes } = require('sequelize');
+const resUtils = require('../utils/res.util');
+const db = require('../models');
+const responseUtil = require('../utils/response.util');
+const { sequelize } = require('../models');
+const { User, Admin } = require('../models');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const adminService = {
   stats: async ({ shopId, type, month, quater, year, date }) => {
     let stats, fromMonth, toMonth;
@@ -34,7 +34,7 @@ const adminService = {
     }
     try {
       switch (type) {
-        case "TOTAL_PRODUCT":
+        case 'TOTAL_PRODUCT':
           stats = await adminService.statsByTotalProduct(
             shopId,
             month,
@@ -45,7 +45,7 @@ const adminService = {
             date
           );
           break;
-        case "FREQUENCY":
+        case 'FREQUENCY':
           stats = await adminService.statsByFrequency(
             shopId,
             month,
@@ -84,15 +84,15 @@ const adminService = {
         `select s.shopName as 'name', sum(d.quantity) as 'quantity', sum(d.quantity * d.unitPrice) as 'revenue'
           from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o, ecommerce.shops s 
           where d.productId = p.id and o.id = d.orderId and o.state = 4 and p.shopId = s.id ${
-            shopId > 0 ? "and p.shopId = :shopId" : ""
+            shopId > 0 ? 'and p.shopId = :shopId' : ''
           } ${
-          month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""
+          month > 0 && month < 13 ? 'and MONTH(o.createdAt) = :month' : ''
         } ${
           quater !== 0
-            ? "and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth"
-            : ""
-        } ${year > 0 ? "and YEAR(o.createdAt) = :year" : ""} ${
-          date ? "and DATE(o.createdAt) = DATE(:date)" : ""
+            ? 'and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth'
+            : ''
+        } ${year > 0 ? 'and YEAR(o.createdAt) = :year' : ''} ${
+          date ? 'and DATE(o.createdAt) = DATE(:date)' : ''
         }
           group by s.id
           order by sum(d.quantity * d.unitPrice) desc`,
@@ -130,15 +130,15 @@ const adminService = {
         `select p.name as 'name', sum(d.quantity) as 'quantity', sum(d.quantity * d.unitPrice) as 'revenue'
         from ecommerce.orderdetails as d, ecommerce.products as p, ecommerce.orders as o, ecommerce.shops s 
               where d.productId = p.id and o.id = d.orderId and o.state = 4 and p.shopId = s.id ${
-                shopId > 0 ? "and p.shopId = :shopId" : ""
+                shopId > 0 ? 'and p.shopId = :shopId' : ''
               } ${
-          month > 0 && month < 13 ? "and MONTH(o.createdAt) = :month" : ""
+          month > 0 && month < 13 ? 'and MONTH(o.createdAt) = :month' : ''
         } ${
           quater !== 0
-            ? "and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth"
-            : ""
-        } ${year > 0 ? "and YEAR(o.createdAt) = :year" : ""} ${
-          date ? "and DATE(o.createdAt) = DATE(:date)" : ""
+            ? 'and MONTH(o.createdAt) BETWEEN :fromMonth AND :toMonth'
+            : ''
+        } ${year > 0 ? 'and YEAR(o.createdAt) = :year' : ''} ${
+          date ? 'and DATE(o.createdAt) = DATE(:date)' : ''
         }
               group by p.id
               order by sum(d.quantity) desc`,
@@ -168,68 +168,84 @@ const adminService = {
           userName: body.userName,
         },
       });
+      const isStaff = await db.Staff.findOne({
+        where: {
+          userId: user.id,
+        },
+      });
       const isAdmin = await Admin.findOne({
         where: {
           userId: user.id,
         },
       });
-      if (!isAdmin) {
-        return {
-          code: 403,
-          data: {
-            status: 403,
-            data: [],
-            errors: "Chỉ admin với có thể truy cập",
-          },
-        };
-      }
-      if (user) {
-        const validPassword = await bcrypt.compare(
-          body.passWord,
-          user.passWord
-        );
-        const accessToken = await jwt.sign(
-          {
-            userId: user.id,
-          },
-          "duc-nd"
-        );
-        if (validPassword) {
-          const [[admin]] = await sequelize.query(`
-            select u.*
-            from users u, admins a
-            where u.id = a.userId and a.userId = ${user.id}
-          `);
-          return {
-            code: 200,
-            data: {
-              status: 200,
-              data: {
-                ...admin,
-                accessToken,
-              },
+      if (isAdmin || isStaff) {
+        if (user) {
+          const validPassword = await bcrypt.compare(
+            body.passWord,
+            user.passWord
+          );
+          const accessToken = await jwt.sign(
+            {
+              userId: user.id,
             },
-          };
+            'duc-nd'
+          );
+          if (validPassword) {
+            let data;
+            if (isAdmin) {
+              const [[admin]] = await sequelize.query(`
+              select u.*
+              from users u, admins a
+              where u.id = a.userId and a.userId = ${user.id}
+              `);
+              data = admin;
+            } else {
+              const [[staff]] = await sequelize.query(`
+                select u.*
+                from users u, staffs a
+                where u.id = a.userId and a.userId = ${user.id}
+              `);
+              data = staff;
+            }
+            return {
+              code: 200,
+              data: {
+                status: 200,
+                data: {
+                  ...data,
+                  accessToken,
+                },
+              },
+            };
+          } else {
+            return {
+              code: 400,
+              data: {
+                status: 400,
+                data: [],
+                errors: 'Mật khẩu không chính xác!',
+              },
+            };
+          }
         } else {
           return {
             code: 400,
             data: {
               status: 400,
               data: [],
-              errors: "Mật khẩu không chính xác!",
+              errors: 'Tên tài khoản không chính xác!',
             },
           };
         }
-      } else {
-        return {
-          code: 400,
-          data: {
-            status: 400,
-            data: [],
-            errors: "Tên tài khoản không chính xác!",
-          },
-        };
       }
+      return {
+        code: 403,
+        data: {
+          status: 403,
+          data: [],
+          errors: 'Chỉ người trị và nhân viên mới có thể truy cập',
+        },
+      };
     } catch (error) {
       console.log(error);
       return responseUtil.serverError();
