@@ -10,7 +10,6 @@ router.get("", productController.getProductByKw);
 router.post("", auth.verifyAddProduct, productController.addProduct);
 router.delete(
   "/:productId",
-  auth.verifyDeleteAndUpdateProduct,
   productController.deleteProduct
 );
 router.put(

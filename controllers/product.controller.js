@@ -87,7 +87,7 @@ module.exports = {
   deleteProduct: async (req, res) => {
     try {
       const { code, data } = await productService.deleteProductV2(
-        req.params.productId
+       parseInt(req.params.productId)
       );
       return res.status(code).json(data);
     } catch (error) {

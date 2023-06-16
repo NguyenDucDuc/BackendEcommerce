@@ -67,7 +67,7 @@ const auth = {
         const listOrder = await db.Order.findAll({
           where: {
             customerId: req.customerId,
-            state: 4,
+            // state: 4,
           },
         });
         if (listOrder.length === 0) {

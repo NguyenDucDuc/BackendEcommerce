@@ -4,7 +4,7 @@ const orderController = {
     const order = req.body;
     order.customerId = req.customerId;
     try {
-      const { code, data } = await orderService.buyProduct(order);
+      const { code, data } = await orderService.buyProduct(order, req.user.userId);
       return res.status(code).json(data);
     } catch (error) {
       console.log(error);

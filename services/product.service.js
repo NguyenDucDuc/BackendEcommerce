@@ -217,9 +217,14 @@ const productService = {
         return resUtil.clientError(404, 'Sản phẩm không tồn tại');
       }
 
-      product.isActive = false;
-
-      await product.save();
+      await db.Product.update(
+        { isActive: false },
+        {
+          where: {
+            id: productID,
+          },
+        }
+      );
 
       return resUtil.successful(200, [], 'Sản phẩm đã được xóa');
     } catch (error) {
@@ -538,9 +543,9 @@ const productService = {
 
         code = 200;
         data = {
-          listProduct: products.map(
-            (product) => listProduct[product.dataValues.id]
-          ).reverse(),
+          listProduct: products
+            .map((product) => listProduct[product.dataValues.id])
+            .reverse(),
         };
       })
       .catch((error) => {
