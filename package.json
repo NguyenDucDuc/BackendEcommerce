@@ -25,8 +25,8 @@
     "otp-generator": "^4.0.1",
     "randomstring": "^1.2.3",
     "redis": "^4.6.4",
-    "sequelize": "^6.28.0",
-    "sequelize-cli": "^6.6.0",
+    "sequelize": "^6.32.0",
+    "sequelize-cli": "^6.6.1",
     "socket.io": "^4.5.4",
     "stripe": "^12.2.0"
   }

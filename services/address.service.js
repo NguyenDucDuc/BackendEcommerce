@@ -10,6 +10,7 @@ module.exports = {
                 ward: body.ward,
                 street: body.street,
                 detail: body.detail,
+                isSelect: true,
                 userId: userId
             })
             return {
