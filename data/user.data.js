@@ -8,7 +8,7 @@ module.exports = [
     phone: '0356879921',
     email: 'nguyenducduc26797@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1675700522/Avatar/1675700519338.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686964098/Avatar/1686964094943.jpg',
     birthDay: '2001-02-07 03:40:00',
     status: true,
     isActive: true,
@@ -25,7 +25,7 @@ module.exports = [
     phone: '0356879921',
     email: 'tuandz21@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1675700522/Avatar/1675700519338.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1687021683/reus_qwyegn.jpg',
     birthDay: '2001-02-07 03:40:00',
     status: true,
     isActive: true,
@@ -42,7 +42,7 @@ module.exports = [
     phone: '0356879921',
     email: 'thethanh686@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1676628807/Avatar/1676628804303.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1687021683/messi_xsncar.jpg',
     birthDay: '2002-02-07 03:40:00',
     status: true,
     isActive: true,
@@ -76,7 +76,7 @@ module.exports = [
     phone: '0356879921',
     email: 'nguyenducduc26797@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1675700522/Avatar/1675700519338.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1687021683/messi_xsncar.jpg',
     birthDay: '2001-02-07 03:40:00',
     status: true,
     isActive: true,
@@ -110,7 +110,7 @@ module.exports = [
     phone: '0356879921',
     email: 'yenhi260401@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1668442347/Avatar/1668442346650.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1687021830/thiet-ke-logo-nha-sach-book-pink_jsmsqe.png',
     birthDay: '2001-02-07 03:40:00',
     status: true,
     isActive: true,
@@ -127,7 +127,7 @@ module.exports = [
     phone: '0356879921',
     email: 'hoangloc2512@gmail.com',
     avatar:
-      'https://res.cloudinary.com/djbju13al/image/upload/v1675909925/Avatar/1675909923474.jpg',
+      'https://res.cloudinary.com/de5pwc5fq/image/upload/v1687021683/ronal_gzq1xf.jpg',
     birthDay: '2001-02-07 03:40:00',
     status: true,
     isActive: true,

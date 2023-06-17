@@ -1,9 +1,9 @@
 module.exports = [
   {
     id: 1,
-    shopName: 'Quần Áo Gò Vấp',
+    shopName: 'Ebook Sài Gòn',
     rate: null,
-    desc: 'Quần áo thời trang giá tốt tại Gò Vấp',
+    desc: 'Sách hay, giá tốt, kèm nhiều ưu đãi',
     image:
       'https://res.cloudinary.com/djbju13al/image/upload/v1675910681/Shop/1675910679507.jpg',
     isBlock: false,
@@ -27,9 +27,9 @@ module.exports = [
   },
   {
     id: 3,
-    shopName: 'Ebook Sài Gòn',
+    shopName: 'Nhà sách Gò Vấp',
     rate: null,
-    desc: 'Sách hay, giá tốt, kèm nhiều ưu đãi',
+    desc: 'Nhà sách uy tín nhất Gò Vấp.',
     image: 'https://res.cloudinary.com/djbju13al/image/upload/v1675909925/Avatar/1675909923474.jpg',
     sellerId: 3,
     totalPrice: 0,
