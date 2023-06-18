@@ -5,7 +5,7 @@ const _Shop = db.Shop;
 const _Customer = db.Customer;
 const { QueryTypes, Utils } = require('sequelize');
 const resUtil = require('../utils/res.util');
-const {Review, User} = require('../models')
+const { Review, User } = require('../models');
 
 const reviewService = {
   getReviewByProductId: async (productId, page = 1) => {
@@ -67,7 +67,9 @@ const reviewService = {
       );
       return resUtil.successful(200, {
         rate: rate,
-        avgRage: parseFloat((counterRate.point / counterRate.counter).toFixed(1)),
+        avgRage: parseFloat(
+          (counterRate.point / counterRate.counter).toFixed(1)
+        ),
       });
     } catch (error) {
       console.log(error);
@@ -82,8 +84,8 @@ const reviewService = {
         transaction: transaction,
       });
       if (newReview) {
-        const user = await newReview.getUser()
-        newReview.dataValues.User = user
+        const user = await newReview.getUser();
+        newReview.dataValues.User = user;
         const product = await newReview.getProduct();
         const shopId = product.shopId;
         const { totalRate: totalRateReview, amount: amountReview } =
@@ -91,7 +93,7 @@ const reviewService = {
 
         product.rate = reviewService.calAVG(
           totalRateReview
-            ? parseInt(totalRateReview) + newReview.rate
+            ? parseInt(totalRateReview) + parseInt(newReview.rate)
             : newReview.rate,
           parseInt(amountReview) + 1
         );
@@ -102,7 +104,7 @@ const reviewService = {
           {
             rate: reviewService.calAVG(
               totalRateProduct
-                ? parseInt(totalRateProduct) + product.rate
+                ? parseInt(totalRateProduct) + parseInt(product.rate)
                 : product.rate,
               amountProduct ? parseInt(amountProduct) + 1 : 1
             ),
@@ -196,27 +198,27 @@ const reviewService = {
   calAVG: (totalPoint, amnount) => (totalPoint / amnount).toFixed(1),
   addReviewV2: async (body, userId) => {
     try {
-      const user = await User.findByPk(userId)
+      const user = await User.findByPk(userId);
       const newReview = await Review.create({
         content: body.content,
         rate: body.rate,
         productId: body.productId,
-        userId
-      })
+        userId,
+      });
       return {
         code: 200,
         data: {
           status: 200,
           data: {
             ...newReview.dataValues,
-            User: user
-          }
-        }
-      }
+            User: user,
+          },
+        },
+      };
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  },
 };
 
 module.exports = reviewService;

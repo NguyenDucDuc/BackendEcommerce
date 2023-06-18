@@ -11,7 +11,7 @@ module.exports = {
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754421/ProductImage/think13__0_yj8szl.jpg',
       unitInStock: 100,
       unitOnOrder: 0,
-      rate: 0,
+      rate: 5,
       shopId: 1,
       categoryId: 12,
       attributeGroupId: 12,
@@ -28,8 +28,8 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754418/ProductImage/ip14__0_oife0d.jpg',
       unitInStock: 100,
-      unitOnOrder: 0,
-      rate: 0,
+      unitOnOrder: 2,
+      rate: 5,
       shopId: 2,
       categoryId: 2,
       attributeGroupId: 2,
@@ -47,7 +47,7 @@ module.exports = {
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754417/ProductImage/ato__0_jkd9ng.jpg',
       unitInStock: 100,
       unitOnOrder: 0,
-      rate: 0,
+      rate: 5,
       shopId: 3,
       categoryId: 12,
       attributeGroupId: 12,
@@ -64,8 +64,8 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754421/ProductImage/tritue__0_bphssy.jpg',
       unitInStock: 100,
-      unitOnOrder: 0,
-      rate: 0,
+      unitOnOrder: 6,
+      rate: 5,
       shopId: 1,
       categoryId: 12,
       attributeGroupId: 12,
@@ -100,7 +100,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754417/ProductImage/ip12__0_yiiy01.jpg',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 3,
       rate: 0,
       shopId: 3,
       categoryId: 2,
@@ -118,7 +118,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754419/ProductImage/macpro__0_gbrhub.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 3,
       rate: 0,
       shopId: 1,
       categoryId: 3,
@@ -154,7 +154,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754417/ProductImage/adidas__0_ljb4fy.jpg',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 3,
       categoryId: 4,
@@ -172,7 +172,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754421/ProductImage/sh__0_nyzwmf.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 4,
       rate: 0,
       shopId: 1,
       categoryId: 5,
@@ -190,7 +190,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754421/ProductImage/tui__0_fwq3d7.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 2,
       categoryId: 6,
@@ -226,7 +226,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686754420/ProductImage/mayanh__0_h5bmkd.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 3,
       categoryId: 16,
@@ -459,7 +459,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760829/ProductImage/kinhdoanh__0_zpszdu.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -480,7 +480,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760828/ProductImage/7hatbit__0_gdwhnu.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 5,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -501,7 +501,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760829/ProductImage/batdaucauhoitaisao__0_jjfzfn.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -522,7 +522,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760830/ProductImage/luathapdan_o2zgkp.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -543,7 +543,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760827/ProductImage/3nguoithay_mltn2b.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 7,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -564,7 +564,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686760831/ProductImage/sucmanhteimthuc__0_tgwckq.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 3,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -585,7 +585,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686761461/ProductImage/ikigai__0_hbh6dx.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 1,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -606,7 +606,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686844327/tutottoividai__0_tvqg5k.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 4,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -627,7 +627,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686844326/chientrangtinte__0_cmljbg.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 3,
       rate: 0,
       shopId: 1,
       categoryId: 12,
@@ -648,7 +648,7 @@ module.exports = {
       image:
         'https://res.cloudinary.com/de5pwc5fq/image/upload/v1686844327/kynangbanhang__0_pgrtz0.webp',
       unitInStock: 100,
-      unitOnOrder: 0,
+      unitOnOrder: 2,
       rate: 0,
       shopId: 1,
       categoryId: 12,
